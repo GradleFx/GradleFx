@@ -1,0 +1,30 @@
+h2. GradleFx: A Gradle plugin for building Flex projects
+
+GradleFx is a Gradle plugin which adds some common targets used in almost every Flex/Actionscript project.
+It can create both swc and swf files. The plugin uses the compc and mxmlc java tasks under the hood.
+All compiler arguments are supported. Some are automatically filled in by the plugin (like source directory,
+dependencies) and other more specific arguments can be provided to the plugin by adding them on the
+additionalCompilerOptions convention property.
+
+It adds the following tasks:
+* compile
+* build
+* publish
+* clean
+* copyresources
+
+The plugin has support for the following dependency scopes:
+* internal
+* external
+* merged
+* rsl
+
+h2. Useful links
+* Documentation: "https://github.com/GradleFx/GradleFx/wiki":https://github.com/GradleFx/GradleFx/wiki
+* Examples: "https://github.com/GradleFx/GradleFx-Examples":https://github.com/GradleFx/GradleFx-Examples
+* Help & Support: "http://gradlefx.tenderapp.com/home":http://gradlefx.tenderapp.com/home
+* Bug Tracking: "https://github.com/GradleFx/GradleFx/issues":https://github.com/GradleFx/GradleFx/issues
+
+h2. Upcoming features
+* FlexUnit testing
+* IDEA and Eclipse project generation support
