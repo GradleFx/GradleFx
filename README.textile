@@ -28,3 +28,4 @@ h2. Useful links
 h2. Upcoming features
 * FlexUnit testing
 * IDEA and Eclipse project generation support
+* HTML wrapper generation
