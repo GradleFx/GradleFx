@@ -31,6 +31,8 @@ import org.gradlefx.tasks.Mxmlc
 import org.gradlefx.tasks.Publish
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.gradle.api.artifacts.dsl.ArtifactHandler
+import org.gradle.api.artifacts.Configuration
 
 class GradleFxPlugin implements Plugin<Project> {
 
@@ -56,13 +58,16 @@ class GradleFxPlugin implements Plugin<Project> {
         addDefaultConfigurations(project)
 
 		addBuild(project)
-		addCompile(project, pluginConvention)
         addCopyResources(project)
 		addClean(project)
         addPublish(project)
 
-		addDependsOnOtherProjects(project)
-		addDefaultArtifact(project)
+        //do these tasks in the afterEvaluate phase because they need property access
+        project.afterEvaluate {
+            addCompile(project, pluginConvention)
+            addDependsOnOtherProjects(project)
+            addDefaultArtifact(project)
+        }
 	}
 
     private void addDefaultConfigurations(Project project) {
@@ -80,25 +85,26 @@ class GradleFxPlugin implements Plugin<Project> {
 	}
 	
 	private void addCompile(Project project, GradleFxConvention pluginConvention) {
-		Task compileFlex = null
-		if(project.type == FlexType.swc) {
-			log.info "Adding ${COMPILE_TASK_NAME} task using compc to project ${project.name}" 
-			compileFlex = project.tasks.add(COMPILE_TASK_NAME, Compc)
-			compileFlex.outputs.dir project.buildDir
-			pluginConvention.output = "${project.buildDir}/${project.name}.swc"
-		}
-		else if(project.type == FlexType.swf) {
-			log.info "Adding ${COMPILE_TASK_NAME} task using mxmlc to project ${project.name}" 
-			compileFlex = project.tasks.add(COMPILE_TASK_NAME, Mxmlc)
-			pluginConvention.output = "${project.buildDir}/${project.name}.swf"
-		}
-		else {
-			log.warn "Adding ${COMPILE_TASK_NAME} task using default implementation"
-			compileFlex = project.tasks.add(COMPILE_TASK_NAME, DefaultTask)
-			compileFlex.description = "Oops - we couldn't figure out if ${project.name} is a Flex component or a Flex application/module project."
-		}
+        def compile = null
 
-        compileFlex.dependsOn(COPY_RESOURCES_TASK_NAME)
+        if(project.type == FlexType.swc) {
+            log.info "Adding ${COMPILE_TASK_NAME} task using compc to project ${project.name}"
+            compile = project.tasks.add(COMPILE_TASK_NAME, Compc)
+            compile.outputs.dir project.buildDir
+            pluginConvention.output = "${project.buildDir}/${project.name}.swc"
+        }
+        else if(project.type == FlexType.swf) {
+            log.info "Adding ${COMPILE_TASK_NAME} task using mxmlc to project ${project.name}"
+            compile = project.tasks.add(COMPILE_TASK_NAME, Mxmlc)
+            pluginConvention.output = "${project.buildDir}/${project.name}.swf"
+        }
+        else {
+            log.warn "Adding ${COMPILE_TASK_NAME} task using default implementation"
+            compile = project.tasks.add(COMPILE_TASK_NAME, DefaultTask)
+            compile.description = "Oops - we couldn't figure out if ${project.name} is a Flex component or a Flex application/module project."
+        }
+
+        compile.dependsOn(COPY_RESOURCES_TASK_NAME)
 	}
 
     private void addCopyResources(Project project) {
@@ -116,25 +122,30 @@ class GradleFxPlugin implements Plugin<Project> {
     }
 	
 	private void addDependsOnOtherProjects(Project project) {
-		// dependencies need to be added as a closure as we don't have the information at the moment to wire them up
-		project.tasks.compile.dependsOn {
-			Set dependentTasks = new HashSet()
-			['external', 'merge', 'rsl'].each { configuration ->
-				Set deps = project.configurations."${configuration}".getDependencies(ProjectDependency)
-				println "deps are: ${deps}"
-		    	deps.each { projectDependency ->
-					//def projectDependency = (ProjectDependency) dependency
-					println "path to dependency: ${projectDependency.dependencyProject.path}"
-					dependentTasks.add(projectDependency.dependencyProject.path + ':compile')
-				}
-			}
-			dependentTasks
-		}
+        // dependencies need to be added as a closure as we don't have the information at the moment to wire them up
+        project.tasks.compile.dependsOn {
+            Set dependentTasks = new HashSet()
+            project.configurations.each { Configuration configuration ->
+                Set deps = project.configurations."${configuration.name}".getDependencies(ProjectDependency)
+                deps.each { projectDependency ->
+                    //def projectDependency = (ProjectDependency) dependency
+                    println "path to dependency: ${projectDependency.dependencyProject.path}"
+                    dependentTasks.add(projectDependency.dependencyProject.path + ':compile')
+                }
+            }
+            dependentTasks
+        }
 	}
 
+    /**
+     * Adds an artifact of the given project to every configuration.
+     * @param project
+     */
 	private void addDefaultArtifact(Project project) {
-		project.artifacts {
-			libraries new DefaultPublishArtifact(project.name, project.type.toString(), project.type.toString(), null, new Date(), new File(project.output))
+		project.artifacts { ArtifactHandler artifactHandler ->
+            project.configurations.each { Configuration configuration ->
+                artifactHandler."${configuration.name}" new DefaultPublishArtifact(project.name, project.type.toString(), project.type.toString(), null, new Date(), new File(project.output))
+            }
 		}
 	}
     
