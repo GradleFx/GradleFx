@@ -64,6 +64,7 @@ class GradleFxPlugin implements Plugin<Project> {
 
         //do these tasks in the afterEvaluate phase because they need property access
         project.afterEvaluate {
+            checkRequiredPropertiesArePresent(project);
             addCompile(project, pluginConvention)
             addDependsOnOtherProjects(project)
             addDefaultArtifact(project)
@@ -91,12 +92,13 @@ class GradleFxPlugin implements Plugin<Project> {
             log.info "Adding ${COMPILE_TASK_NAME} task using compc to project ${project.name}"
             compile = project.tasks.add(COMPILE_TASK_NAME, Compc)
             compile.outputs.dir project.buildDir
-            pluginConvention.output = "${project.buildDir}/${project.name}.swc"
+            pluginConvention.output = "${project.name}.swc"
         }
         else if(project.type == FlexType.swf) {
             log.info "Adding ${COMPILE_TASK_NAME} task using mxmlc to project ${project.name}"
             compile = project.tasks.add(COMPILE_TASK_NAME, Mxmlc)
-            pluginConvention.output = "${project.buildDir}/${project.name}.swf"
+            compile.outputs.dir project.buildDir
+            pluginConvention.output = "${project.name}.swf"
         }
         else {
             log.warn "Adding ${COMPILE_TASK_NAME} task using default implementation"
@@ -148,5 +150,12 @@ class GradleFxPlugin implements Plugin<Project> {
             }
 		}
 	}
+
+    /**
+     * Checks whether every required property is present, and if not, throws an exception.
+     */
+    private void checkRequiredPropertiesArePresent(Project project) {
+        project.convention.plugins.flex.checkRequiredPropertiesArePresent()
+    }
     
 }

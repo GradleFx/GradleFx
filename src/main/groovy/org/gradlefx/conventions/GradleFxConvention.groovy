@@ -47,4 +47,10 @@ class GradleFxConvention {
 
     //array of additional compiler options as defined by the compc or mxmlc compiler
     def additionalCompilerOptions = []
+
+    public void checkRequiredPropertiesArePresent() {
+        if(type == null) {
+            throw new RuntimeException("'type' is a required property, possible values are 'swc' or 'swf'");
+        }
+    }
 }
