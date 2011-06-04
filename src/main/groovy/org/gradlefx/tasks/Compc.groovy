@@ -26,14 +26,14 @@ class Compc extends AbstractCompileTask {
 	@TaskAction
 	def compileFlex() {
         ant.java(jar: project.flexHome + '/lib/compc.jar',
-             dir: project.path,
+             dir: project.flexHome + '/frameworks',
              fork: true,
              resultproperty: 'swcBuildResult',
              errorProperty: 'errorString') {
 
             //add every source directory
             project.srcDirs.each {
-                dir -> arg(value: "-include-sources+=" + dir)
+                dir -> arg(value: "-include-sources+=" + project.projectDir.path + dir)
             }
 
             //add dependencies
