@@ -3,6 +3,9 @@ package org.gradlefx.tasks
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ResolveException
 import org.gradle.api.internal.AbstractTask
+import org.gradlefx.FlexType
+import org.gradle.api.Task
+import org.apache.tools.ant.taskdefs.Java
 
 /*
  * Copyright (c) 2011 the original author or authors
@@ -26,15 +29,15 @@ class AbstractCompileTask extends AbstractTask {
      * @param configuration
      * @param compilerArgument
      */
-    protected void addLibraries(Configuration configuration, String compilerArgument) {
-        configuration.files.each { dep ->
+    protected void addLibraries(Configuration configuration, String compilerArgument, List compilerArguments) {
+        configuration.files.each { dependency ->
             //only add swc dependencies, no use in adding pom dependencies
-            if(dep.ext == FlexType.swc.toString()) {
-                if(!dep.exists()) {
-                    throw new ResolveException("Couldn't find the ${dep.name} file - are you sure the path is correct?")
+            if(dependency.name.endsWith(FlexType.swc.toString())) {
+                if(!dependency.exists()) {
+                    throw new ResolveException("Couldn't find the ${dependency.name} file - are you sure the path is correct?")
                 }
 
-                arg(value: compilerArgument + "+=" + dep.path)
+                compilerArguments.add(compilerArgument + "+=" + dependency.path);
             }
         }
     }

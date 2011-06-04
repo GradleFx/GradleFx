@@ -18,6 +18,8 @@ package org.gradlefx.tasks
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ResolveException
 import org.gradle.api.tasks.TaskAction
+import org.gradle.api.Task
+import org.gradle.api.Project
 
 class Mxmlc extends AbstractCompileTask {
 
@@ -28,31 +30,17 @@ class Mxmlc extends AbstractCompileTask {
 	
 	@TaskAction
 	def compileFlex() {
+        List compilerArguments = createCompilerArguments(project)
+
         ant.java(jar: project.flexHome + '/lib/mxmlc.jar',
-             dir: project.path,
+             dir: project.flexHome + '/frameworks',
              fork: true,
              resultproperty: 'swcBuildResult',
-             errorProperty: 'errorString') {
+             errorProperty: 'errorString') { javaTask ->
 
-            arg(value: "-output=" + project.output)
-
-            //add every source directory
-            project.srcDirs.each {
-                dir -> arg(value: "-source-path+=" + project.projectDir.path + dir)
+            compilerArguments.each { compilerArgument ->
+                arg(value: compilerArgument)
             }
-
-            //add dependencies
-            addLibraries(project.configurations.internal, "-include-libraries")
-            addLibraries(project.configurations.merged, "-library-path")
-            addRsls(project.configurations.rsl)
-
-            //add all the other user specified compiler options
-            project.additionalCompilerOptions.each {
-                compilerOption -> arg(value: compilerOption)
-            }
-
-            //add the target file
-            arg(value: project.projectDir.path + project.srcDirs.get(0) + '/' + project.mainClass)
         }
 
         //handle failed compile
@@ -60,11 +48,37 @@ class Mxmlc extends AbstractCompileTask {
            throw new Exception("swc compilation failed: \n" + ant.properties.errorString);
         }
 	}
+
+    private List createCompilerArguments(Project project) {
+        List compilerArguments = []
+
+        compilerArguments.add("-output=" + project.output)
+
+        //add every source directory
+        project.srcDirs.each { sourcePath ->
+            compilerArguments.add("-source-path+=" + project.projectDir.path + sourcePath)
+        }
+
+        //add dependencies
+        addLibraries(project.configurations.internal, "-include-libraries", compilerArguments)
+        addLibraries(project.configurations.merged, "-library-path", compilerArguments)
+        addRsls(project.configurations.rsl, compilerArguments)
+
+        //add all the other user specified compiler options
+        project.additionalCompilerOptions.each { compilerOption ->
+            compilerArguments.add(compilerOption)
+        }
+
+        //add the target file
+        compilerArguments.add(project.projectDir.path + project.srcDirs.get(0) + '/' + project.mainClass)
+
+        return compilerArguments
+    }
 	
-	def addRsls(Configuration configuration) {
+	def addRsls(Configuration configuration, List compilerArguments) {
 		configuration.files.each { dependency ->
 			if(dependency.exists()) {
-                arg(value: "-runtime-shared-library-path" + "=" + dependency.path + "," + dependency.name[0..-2] + 'f')
+                compilerArguments.add("-runtime-shared-library-path" + "=" + dependency.path + "," + dependency.name[0..-2] + 'f')
 			}
 			else {
 				throw new ResolveException("Couldn't find the ${dependency.name} file - are you sure the path is correct?")

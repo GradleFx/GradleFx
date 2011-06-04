@@ -16,6 +16,7 @@ package org.gradlefx.tasks
  */
 
 import org.gradle.api.tasks.TaskAction
+import org.gradle.api.Project
 
 class Compc extends AbstractCompileTask {
 
@@ -25,29 +26,17 @@ class Compc extends AbstractCompileTask {
 
 	@TaskAction
 	def compileFlex() {
+         List compilerArguments = createCompilerArguments(project)
+
         ant.java(jar: project.flexHome + '/lib/compc.jar',
              dir: project.flexHome + '/frameworks',
              fork: true,
              resultproperty: 'swcBuildResult',
              errorProperty: 'errorString') {
 
-            //add every source directory
-            project.srcDirs.each {
-                dir -> arg(value: "-include-sources+=" + project.projectDir.path + dir)
+             compilerArguments.each { compilerArgument ->
+                arg(value: compilerArgument)
             }
-
-            //add dependencies
-            addLibraries(project.configurations.internal, "-include-libraries")
-            addLibraries(project.configurations.external, "-external-library-path")
-            addLibraries(project.configurations.merged, "-library-path")
-            addLibraries(project.configurations.rsl, "-runtime-shared-library-path")
-
-            //add all the other user specified compiler options
-            project.additionalCompilerOptions.each {
-                compilerOption -> arg(value: compilerOption)
-            }
-
-            arg(value: "-output=" + project.buildDir.path + '/' + project.output)
         }
 
         //handle failed compile
@@ -55,5 +44,27 @@ class Compc extends AbstractCompileTask {
            throw new Exception("swc compilation failed: \n" + ant.properties.errorString);
         }
 	}
+
+    private List createCompilerArguments(Project project) {
+        List compilerArguments = []
+
+        //add every source directory
+        project.srcDirs.each { sourcePath ->
+            compilerArguments.add("-include-sources+=" + project.projectDir.path + sourcePath)
+        }
+
+        //add dependencies
+        addLibraries(project.configurations.internal, "-include-libraries", compilerArguments)
+        addLibraries(project.configurations.external, "-external-library-path", compilerArguments)
+        addLibraries(project.configurations.merged, "-library-path", compilerArguments)
+
+        //add all the other user specified compiler options
+        project.additionalCompilerOptions.each { compilerOption ->
+            compilerArguments.add(compilerOption)
+        }
+
+        compilerArguments.add("-output=" + project.buildDir.path + '/' + project.output)
+        return compilerArguments
+    }
 
 }
