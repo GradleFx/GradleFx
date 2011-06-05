@@ -50,6 +50,7 @@ class Compc extends AbstractCompileTask {
 
         //add every source directory
         project.srcDirs.each { sourcePath ->
+            compilerArguments.add("-source-path+=" + project.projectDir.path + sourcePath)
             compilerArguments.add("-include-sources+=" + project.projectDir.path + sourcePath)
         }
 
