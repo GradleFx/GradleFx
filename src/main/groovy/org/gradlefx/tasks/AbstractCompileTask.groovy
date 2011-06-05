@@ -4,8 +4,7 @@ import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ResolveException
 import org.gradle.api.internal.AbstractTask
 import org.gradlefx.FlexType
-import org.gradle.api.Task
-import org.apache.tools.ant.taskdefs.Java
+import org.gradle.api.DefaultTask
 
 /*
  * Copyright (c) 2011 the original author or authors
@@ -22,7 +21,22 @@ import org.apache.tools.ant.taskdefs.Java
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class AbstractCompileTask extends AbstractTask {
+class AbstractCompileTask extends DefaultTask {
+
+    protected AbstractCompileTask() {
+        initInputDirectory()
+        initOutputDirectory()
+    }
+
+    private def initInputDirectory() {
+        project.srcDirs.each { sourceDirectory ->
+            inputs.dir sourceDirectory
+        }
+    }
+
+    private def initOutputDirectory() {
+        outputs.dir project.buildDir
+    }
 
     /**
      * Adds all the dependencies for the given configuration as compile arguments

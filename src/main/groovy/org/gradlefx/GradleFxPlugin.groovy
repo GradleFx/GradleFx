@@ -19,11 +19,11 @@ package org.gradlefx
 import org.gradle.api.DefaultTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-
+import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ProjectDependency
+import org.gradle.api.artifacts.dsl.ArtifactHandler
 import org.gradle.api.internal.artifacts.publish.DefaultPublishArtifact
 import org.gradle.api.tasks.Delete
-
 import org.gradlefx.conventions.GradleFxConvention
 import org.gradlefx.tasks.Compc
 import org.gradlefx.tasks.CopyResources
@@ -31,8 +31,9 @@ import org.gradlefx.tasks.Mxmlc
 import org.gradlefx.tasks.Publish
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.gradle.api.artifacts.dsl.ArtifactHandler
-import org.gradle.api.artifacts.Configuration
+import org.gradlefx.tasks.factory.CompileTaskClassFactory
+import org.gradlefx.tasks.factory.CompileTaskClassFactoryImpl
+import org.gradle.api.Task
 
 class GradleFxPlugin implements Plugin<Project> {
 
@@ -91,27 +92,13 @@ class GradleFxPlugin implements Plugin<Project> {
 	}
 	
 	private void addCompile(GradleFxConvention pluginConvention) {
-        def compile = null
+        CompileTaskClassFactory compileTaskClassFactory = new CompileTaskClassFactoryImpl()
 
-        if(project.type == FlexType.swc) {
-            log.info "Adding ${COMPILE_TASK_NAME} task using compc to project ${project.name}"
-            compile = project.tasks.add(COMPILE_TASK_NAME, Compc)
-            compile.outputs.dir project.buildDir
-            pluginConvention.output = "${project.name}.swc"
-        }
-        else if(project.type == FlexType.swf) {
-            log.info "Adding ${COMPILE_TASK_NAME} task using mxmlc to project ${project.name}"
-            compile = project.tasks.add(COMPILE_TASK_NAME, Mxmlc)
-            compile.outputs.dir project.buildDir
-            pluginConvention.output = "${project.name}.swf"
-        }
-        else {
-            log.warn "Adding ${COMPILE_TASK_NAME} task using default implementation"
-            compile = project.tasks.add(COMPILE_TASK_NAME, DefaultTask)
-            compile.description = "Oops - we couldn't figure out if ${project.name} is a Flex component or a Flex application/module project."
-        }
-
+        Class<Task> compileClass = compileTaskClassFactory.createCompileTaskClass(project.type)
+        Task compile = project.tasks.add(COMPILE_TASK_NAME, compileClass)
         compile.dependsOn(COPY_RESOURCES_TASK_NAME)
+
+        pluginConvention.output = "${project.name}.${project.type}"
 	}
 
     private void addCopyResources() {

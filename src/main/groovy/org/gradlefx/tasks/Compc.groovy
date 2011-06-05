@@ -16,7 +16,6 @@ package org.gradlefx.tasks
  */
 
 import org.gradle.api.tasks.TaskAction
-import org.gradle.api.Project
 
 class Compc extends AbstractCompileTask {
 
@@ -26,7 +25,7 @@ class Compc extends AbstractCompileTask {
 
 	@TaskAction
 	def compileFlex() {
-         List compilerArguments = createCompilerArguments(project)
+         List compilerArguments = createCompilerArguments()
 
         ant.java(jar: project.flexHome + '/lib/compc.jar',
              dir: project.flexHome + '/frameworks',
@@ -45,7 +44,7 @@ class Compc extends AbstractCompileTask {
         }
 	}
 
-    private List createCompilerArguments(Project project) {
+    private List createCompilerArguments() {
         List compilerArguments = []
 
         //add every source directory

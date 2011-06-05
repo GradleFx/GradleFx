@@ -27,10 +27,9 @@ class Mxmlc extends AbstractCompileTask {
         description = 'Compiles Flex application/module (*.swf) using the mxmlc compiler'
     }
 
-	
 	@TaskAction
 	def compileFlex() {
-        List compilerArguments = createCompilerArguments(project)
+        List compilerArguments = createCompilerArguments()
 
         ant.java(jar: project.flexHome + '/lib/mxmlc.jar',
              dir: project.flexHome + '/frameworks',
@@ -49,7 +48,7 @@ class Mxmlc extends AbstractCompileTask {
         }
 	}
 
-    private List createCompilerArguments(Project project) {
+    private List createCompilerArguments() {
         List compilerArguments = []
 
         //add every source directory
@@ -60,7 +59,7 @@ class Mxmlc extends AbstractCompileTask {
         //add dependencies
         addLibraries(project.configurations.internal, "-include-libraries", compilerArguments)
         addLibraries(project.configurations.merged, "-library-path", compilerArguments)
-        addRsls(project.configurations.rsl, compilerArguments)
+        addRsls(compilerArguments)
 
         //add all the other user specified compiler options
         project.additionalCompilerOptions.each { compilerOption ->
@@ -75,8 +74,8 @@ class Mxmlc extends AbstractCompileTask {
         return compilerArguments
     }
 	
-	def addRsls(Configuration configuration, List compilerArguments) {
-		configuration.files.each { dependency ->
+	def addRsls(List compilerArguments) {
+		project.configurations.rsl.files.each { dependency ->
 			if(dependency.exists()) {
                 compilerArguments.add("-runtime-shared-library-path" + "=" + dependency.path + "," + dependency.name[0..-2] + 'f')
 			}
