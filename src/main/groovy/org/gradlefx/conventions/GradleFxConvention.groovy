@@ -40,17 +40,11 @@ class GradleFxConvention {
     FlexType type
 
     // the directory where we should publish the build artifacts
-    String publishDir
+    String publishDir = 'publish'
 
     //the root class which is used by the mxmlc compiler to create a swf
     def mainClass = 'Main.mxml'
 
     //array of additional compiler options as defined by the compc or mxmlc compiler
     def additionalCompilerOptions = []
-
-    public void checkRequiredPropertiesArePresent() {
-        if(type == null) {
-            throw new RuntimeException("'type' is a required property, possible values are 'swc' or 'swf'");
-        }
-    }
 }

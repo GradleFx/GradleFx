@@ -50,28 +50,31 @@ class GradleFxPlugin implements Plugin<Project> {
     public static final String TEST_CONFIGURATION_NAME = 'test'
 
 	Logger log = LoggerFactory.getLogger('flex')
+
+    private Project project
 	
 	public void apply(Project project) {
+        this.project = project
+
 		GradleFxConvention pluginConvention = new GradleFxConvention()
 		project.convention.plugins.flex = pluginConvention
 
-        addDefaultConfigurations(project)
+        addDefaultConfigurations()
 
-		addBuild(project)
-        addCopyResources(project)
-		addClean(project)
-        addPublish(project)
+		addBuild()
+        addCopyResources()
+		addClean()
+        addPublish()
 
         //do these tasks in the afterEvaluate phase because they need property access
         project.afterEvaluate {
-            checkRequiredPropertiesArePresent(project);
-            addCompile(project, pluginConvention)
-            addDependsOnOtherProjects(project)
-            addDefaultArtifact(project)
+            addCompile(pluginConvention)
+            addDependsOnOtherProjects()
+            addDefaultArtifact()
         }
 	}
 
-    private void addDefaultConfigurations(Project project) {
+    private void addDefaultConfigurations() {
         project.configurations.add(INTERNAL_CONFIGURATION_NAME)
         project.configurations.add(EXTERNAL_CONFIGURATION_NAME)
         project.configurations.add(MERGE_CONFIGURATION_NAME)
@@ -79,13 +82,13 @@ class GradleFxPlugin implements Plugin<Project> {
         project.configurations.add(TEST_CONFIGURATION_NAME)
     }
 	
-	private void addBuild(Project project) {
+	private void addBuild() {
 		DefaultTask buildTask = project.tasks.add(BUILD_TASK_NAME, DefaultTask)
 		buildTask.setDescription("Assembles and tests this project.")
         buildTask.dependsOn(COMPILE_TASK_NAME)
 	}
 	
-	private void addCompile(Project project, GradleFxConvention pluginConvention) {
+	private void addCompile(GradleFxConvention pluginConvention) {
         def compile = null
 
         if(project.type == FlexType.swc) {
@@ -109,21 +112,21 @@ class GradleFxPlugin implements Plugin<Project> {
         compile.dependsOn(COPY_RESOURCES_TASK_NAME)
 	}
 
-    private void addCopyResources(Project project) {
+    private void addCopyResources() {
         project.tasks.add(COPY_RESOURCES_TASK_NAME, CopyResources)
     }
 	
-	private void addClean(final Project project) {
+	private void addClean() {
 		Delete clean = project.tasks.add(CLEAN_TASK_NAME, Delete)
 		clean.description = "Deletes the build directory."
 		clean.delete { project.buildDir }
 	}
 
-    private void addPublish(Project project) {
+    private void addPublish() {
         project.tasks.add(PUBLISH_TASK_NAME, Publish)
     }
 	
-	private void addDependsOnOtherProjects(Project project) {
+	private void addDependsOnOtherProjects() {
         // dependencies need to be added as a closure as we don't have the information at the moment to wire them up
         project.tasks.compile.dependsOn {
             Set dependentTasks = new HashSet()
@@ -140,22 +143,34 @@ class GradleFxPlugin implements Plugin<Project> {
 	}
 
     /**
-     * Adds an artifact of the given project to every configuration.
+     * If this is an implementation project (compiles a swc of swf), it adds an artifact
+     * of the given project to every configuration.
      * @param project
      */
-	private void addDefaultArtifact(Project project) {
-		project.artifacts { ArtifactHandler artifactHandler ->
-            project.configurations.each { Configuration configuration ->
-                artifactHandler."${configuration.name}" new DefaultPublishArtifact(project.name, project.type.toString(), project.type.toString(), null, new Date(), new File(project.output))
-            }
-		}
+	private void addDefaultArtifact() {
+        if(isImplementationProject()) {
+            addProjectArtifactToConfigurations()
+        }
 	}
 
     /**
-     * Checks whether every required property is present, and if not, throws an exception.
+     * This project is an implementation project when it compiles to a swc of swf file.
+     * @return
      */
-    private void checkRequiredPropertiesArePresent(Project project) {
-        project.convention.plugins.flex.checkRequiredPropertiesArePresent()
+    private Boolean isImplementationProject() {
+        return project.type != null;
+    }
+
+    /**
+     * Adds an artifact to every configuration.
+     * @param project
+     */
+    private void addProjectArtifactToConfigurations() {
+        project.artifacts { ArtifactHandler artifactHandler ->
+            project.configurations.each { Configuration configuration ->
+                artifactHandler."${configuration.name}" new DefaultPublishArtifact(project.name, project.type.toString(), project.type.toString(), null, new Date(), new File(project.output))
+            }
+        }
     }
     
 }
