@@ -34,7 +34,9 @@ class AbstractCompileTask extends AbstractTask {
             //only add swc dependencies, no use in adding pom dependencies
             if(dependency.name.endsWith(FlexType.swc.toString())) {
                 if(!dependency.exists()) {
-                    throw new ResolveException(configuration, "Couldn't find the ${dependency.name} file - are you sure the path is correct?")
+                    String errorMessage = "Couldn't find the ${dependency.name} file - are you sure the path is correct? "
+                    errorMessage += "Dependency path: " + dependency.path
+                    throw new ResolveException(configuration, errorMessage)
                 }
 
                 compilerArguments.add(compilerArgument + "+=" + dependency.path);
