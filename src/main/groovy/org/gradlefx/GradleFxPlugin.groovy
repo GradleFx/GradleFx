@@ -19,11 +19,11 @@ package org.gradlefx
 import org.gradle.api.DefaultTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.Task
+
 import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.api.internal.artifacts.publish.DefaultPublishArtifact
 import org.gradle.api.tasks.Delete
-import org.gradlefx.FlexType
+
 import org.gradlefx.conventions.GradleFxConvention
 import org.gradlefx.tasks.Compc
 import org.gradlefx.tasks.CopyResources
@@ -43,6 +43,7 @@ class GradleFxPlugin implements Plugin<Project> {
 	public static final String CLEAN_TASK_NAME = 'clean'
 
     // configurations
+    public static final String DEFAULT_CONFIGURATION_NAME = 'default'
     public static final String INTERNAL_CONFIGURATION_NAME = 'internal'
     public static final String EXTERNAL_CONFIGURATION_NAME = 'external'
     public static final String MERGE_CONFIGURATION_NAME = 'merged'
@@ -75,6 +76,7 @@ class GradleFxPlugin implements Plugin<Project> {
 	}
 
     private void addDefaultConfigurations() {
+        project.configurations.add(DEFAULT_CONFIGURATION_NAME)
         project.configurations.add(INTERNAL_CONFIGURATION_NAME)
         project.configurations.add(EXTERNAL_CONFIGURATION_NAME)
         project.configurations.add(MERGE_CONFIGURATION_NAME)
@@ -144,12 +146,12 @@ class GradleFxPlugin implements Plugin<Project> {
 
     /**
      * If this is an implementation project (compiles a swc of swf), it adds an artifact
-     * of the given project to every configuration.
+     * of the given project to the default configuration.
      * @param project
      */
 	private void addDefaultArtifact() {
         if(isImplementationProject()) {
-            addProjectArtifactToConfigurations()
+            addProjectArtifactToDefaultConfiguration()
         }
 	}
 
@@ -162,14 +164,12 @@ class GradleFxPlugin implements Plugin<Project> {
     }
 
     /**
-     * Adds an artifact to every configuration.
+     * Adds an artifact to the default configuration.
      * @param project
      */
-    private void addProjectArtifactToConfigurations() {
+    private void addProjectArtifactToDefaultConfiguration() {
         project.artifacts { ArtifactHandler artifactHandler ->
-            project.configurations.each { Configuration configuration ->
-                artifactHandler."${configuration.name}" new DefaultPublishArtifact(project.name, project.type.toString(), project.type.toString(), null, new Date(), new File(project.output))
-            }
+            artifactHandler."${DEFAULT_CONFIGURATION_NAME}" new DefaultPublishArtifact(project.name, project.type.toString(), project.type.toString(), null, new Date(), new File(project.buildDir.path + "/" + project.output))
         }
     }
     
