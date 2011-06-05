@@ -52,8 +52,6 @@ class Mxmlc extends AbstractCompileTask {
     private List createCompilerArguments(Project project) {
         List compilerArguments = []
 
-        compilerArguments.add("-output=" + project.output)
-
         //add every source directory
         project.srcDirs.each { sourcePath ->
             compilerArguments.add("-source-path+=" + project.projectDir.path + sourcePath)
@@ -68,6 +66,8 @@ class Mxmlc extends AbstractCompileTask {
         project.additionalCompilerOptions.each { compilerOption ->
             compilerArguments.add(compilerOption)
         }
+
+        compilerArguments.add("-output=" + project.buildDir.path + '/' + project.output)
 
         //add the target file
         compilerArguments.add(project.projectDir.path + project.srcDirs.get(0) + '/' + project.mainClass)
