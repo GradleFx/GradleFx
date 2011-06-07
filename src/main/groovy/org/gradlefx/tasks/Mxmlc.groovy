@@ -15,11 +15,8 @@ package org.gradlefx.tasks
  * limitations under the License.
  */
 
-import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ResolveException
 import org.gradle.api.tasks.TaskAction
-import org.gradle.api.Task
-import org.gradle.api.Project
 
 class Mxmlc extends AbstractCompileTask {
 
@@ -27,15 +24,15 @@ class Mxmlc extends AbstractCompileTask {
         description = 'Compiles Flex application/module (*.swf) using the mxmlc compiler'
     }
 
-	@TaskAction
-	def compileFlex() {
+    @TaskAction
+    def compileFlex() {
         List compilerArguments = createCompilerArguments()
 
         ant.java(jar: project.flexHome + '/lib/mxmlc.jar',
-             dir: project.flexHome + '/frameworks',
-             fork: true,
-             resultproperty: 'swcBuildResult',
-             errorProperty: 'errorString') { javaTask ->
+                dir: project.flexHome + '/frameworks',
+                fork: true,
+                resultproperty: 'swcBuildResult',
+                errorProperty: 'errorString') { javaTask ->
 
             compilerArguments.each { compilerArgument ->
                 arg(value: compilerArgument)
@@ -43,10 +40,10 @@ class Mxmlc extends AbstractCompileTask {
         }
 
         //handle failed compile
-        if(ant.properties.swcBuildResult != '0') {
-           throw new Exception("swc compilation failed: \n" + ant.properties.errorString);
+        if (ant.properties.swcBuildResult != '0') {
+            throw new Exception("swc compilation failed: \n" + ant.properties.errorString);
         }
-	}
+    }
 
     private List createCompilerArguments() {
         List compilerArguments = []
@@ -73,16 +70,16 @@ class Mxmlc extends AbstractCompileTask {
 
         return compilerArguments
     }
-	
-	def addRsls(List compilerArguments) {
-		project.configurations.rsl.files.each { dependency ->
-			if(dependency.exists()) {
+
+    def addRsls(List compilerArguments) {
+        project.configurations.rsl.files.each { dependency ->
+            if (dependency.exists()) {
                 compilerArguments.add("-runtime-shared-library-path" + "=" + dependency.path + "," + dependency.name[0..-2] + 'f')
-			}
-			else {
-				throw new ResolveException("Couldn't find the ${dependency.name} file - are you sure the path is correct?")
-			}
-				
-		}
-	}
+            }
+            else {
+                throw new ResolveException("Couldn't find the ${dependency.name} file - are you sure the path is correct?")
+            }
+
+        }
+    }
 }

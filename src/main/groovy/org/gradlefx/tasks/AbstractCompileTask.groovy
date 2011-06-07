@@ -1,10 +1,9 @@
 package org.gradlefx.tasks
 
+import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ResolveException
-import org.gradle.api.internal.AbstractTask
 import org.gradlefx.FlexType
-import org.gradle.api.DefaultTask
 
 /*
  * Copyright (c) 2011 the original author or authors
@@ -46,8 +45,8 @@ class AbstractCompileTask extends DefaultTask {
     protected void addLibraries(Configuration configuration, String compilerArgument, List compilerArguments) {
         configuration.files.each { dependency ->
             //only add swc dependencies, no use in adding pom dependencies
-            if(dependency.name.endsWith(FlexType.swc.toString())) {
-                if(!dependency.exists()) {
+            if (dependency.name.endsWith(FlexType.swc.toString())) {
+                if (!dependency.exists()) {
                     String errorMessage = "Couldn't find the ${dependency.name} file - are you sure the path is correct? "
                     errorMessage += "Dependency path: " + dependency.path
                     throw new ResolveException(configuration, errorMessage)

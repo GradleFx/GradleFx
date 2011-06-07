@@ -24,12 +24,12 @@ class Publish extends DefaultTask {
         description = "Publish build artifacts to specified directory."
     }
 
-	@TaskAction
-	def publishFlex() {
+    @TaskAction
+    def publishFlex() {
         // copy what we built to the publish directory
         project.copy {
-            from    project.buildDir
-            into    project.publishDir
+            from project.buildDir
+            into project.publishDir
             include '**/*'
         }
         // copy non-project RSL dependencies to the publish directory
@@ -37,10 +37,10 @@ class Publish extends DefaultTask {
             libraries?.files.each { library ->
                 println "copying RSL dependency ${library.absolutePath} to publish directory ${project.publishDir}"
                 project.copy {
-                    from    library.absolutePath
-                    into    project.publishDir
+                    from library.absolutePath
+                    into project.publishDir
                 }
             }
         }
-	}
+    }
 }

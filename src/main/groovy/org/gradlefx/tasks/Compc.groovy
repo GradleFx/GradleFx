@@ -23,26 +23,26 @@ class Compc extends AbstractCompileTask {
         description = 'Compiles Flex component (*.swc) using the compc compiler'
     }
 
-	@TaskAction
-	def compileFlex() {
-         List compilerArguments = createCompilerArguments()
+    @TaskAction
+    def compileFlex() {
+        List compilerArguments = createCompilerArguments()
 
         ant.java(jar: project.flexHome + '/lib/compc.jar',
-             dir: project.flexHome + '/frameworks',
-             fork: true,
-             resultproperty: 'swcBuildResult',
-             errorProperty: 'errorString') {
+                dir: project.flexHome + '/frameworks',
+                fork: true,
+                resultproperty: 'swcBuildResult',
+                errorProperty: 'errorString') {
 
-             compilerArguments.each { compilerArgument ->
+            compilerArguments.each { compilerArgument ->
                 arg(value: compilerArgument)
             }
         }
 
         //handle failed compile
-        if(ant.properties.swcBuildResult != '0') {
-           throw new Exception("swc compilation failed: \n" + ant.properties.errorString);
+        if (ant.properties.swcBuildResult != '0') {
+            throw new Exception("swc compilation failed: \n" + ant.properties.errorString);
         }
-	}
+    }
 
     private List createCompilerArguments() {
         List compilerArguments = []

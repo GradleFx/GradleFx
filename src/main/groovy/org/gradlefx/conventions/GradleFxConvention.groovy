@@ -19,13 +19,13 @@ import org.gradlefx.FlexType
 
 class GradleFxConvention {
 
-	String output
-    
+    String output
+
     // the home directory of the Flex SDK
     def flexHome = System.getenv()['FLEX_HOME'] //default to FLEX_HOME environment variable
-    
+
     // which directories to look into for source code
-	def srcDirs = ['/src/main/actionscript']
+    def srcDirs = ['/src/main/actionscript']
 
     //test directories
     def testDirs = ['/src/test/actionscript']
@@ -35,7 +35,7 @@ class GradleFxConvention {
 
     //test resource directories
     def testResourceDirs = ['/src/test/resources']
-	
+
     // what type of Flex project are we?  either SWF or SWC
     FlexType type
 

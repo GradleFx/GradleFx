@@ -19,29 +19,27 @@ package org.gradlefx
 import org.gradle.api.DefaultTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.Task
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.api.artifacts.dsl.ArtifactHandler
 import org.gradle.api.internal.artifacts.publish.DefaultPublishArtifact
 import org.gradle.api.tasks.Delete
 import org.gradlefx.conventions.GradleFxConvention
-import org.gradlefx.tasks.Compc
 import org.gradlefx.tasks.CopyResources
-import org.gradlefx.tasks.Mxmlc
 import org.gradlefx.tasks.Publish
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.gradlefx.tasks.factory.CompileTaskClassFactory
 import org.gradlefx.tasks.factory.CompileTaskClassFactoryImpl
-import org.gradle.api.Task
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 class GradleFxPlugin implements Plugin<Project> {
 
-	public static final String COMPILE_TASK_NAME = 'compile'
+    public static final String COMPILE_TASK_NAME = 'compile'
     public static final String BUILD_TASK_NAME = 'build'
     public static final String PUBLISH_TASK_NAME = 'publish'
     public static final String COPY_RESOURCES_TASK_NAME = 'copyresources'
-	public static final String CLEAN_TASK_NAME = 'clean'
+    public static final String CLEAN_TASK_NAME = 'clean'
 
     // configurations
     public static final String DEFAULT_CONFIGURATION_NAME = 'default'
@@ -51,21 +49,21 @@ class GradleFxPlugin implements Plugin<Project> {
     public static final String RSL_CONFIGURATION_NAME = 'rsl'
     public static final String TEST_CONFIGURATION_NAME = 'test'
 
-	Logger log = LoggerFactory.getLogger('flex')
+    Logger log = LoggerFactory.getLogger('flex')
 
     private Project project
-	
-	public void apply(Project project) {
+
+    public void apply(Project project) {
         this.project = project
 
-		GradleFxConvention pluginConvention = new GradleFxConvention()
-		project.convention.plugins.flex = pluginConvention
+        GradleFxConvention pluginConvention = new GradleFxConvention()
+        project.convention.plugins.flex = pluginConvention
 
         addDefaultConfigurations()
 
-		addBuild()
+        addBuild()
         addCopyResources()
-		addClean()
+        addClean()
         addPublish()
 
         //do these tasks in the afterEvaluate phase because they need property access
@@ -74,7 +72,7 @@ class GradleFxPlugin implements Plugin<Project> {
             addDependsOnOtherProjects()
             addDefaultArtifact()
         }
-	}
+    }
 
     private void addDefaultConfigurations() {
         project.configurations.add(DEFAULT_CONFIGURATION_NAME)
@@ -84,14 +82,14 @@ class GradleFxPlugin implements Plugin<Project> {
         project.configurations.add(RSL_CONFIGURATION_NAME)
         project.configurations.add(TEST_CONFIGURATION_NAME)
     }
-	
-	private void addBuild() {
-		DefaultTask buildTask = project.tasks.add(BUILD_TASK_NAME, DefaultTask)
-		buildTask.setDescription("Assembles and tests this project.")
+
+    private void addBuild() {
+        DefaultTask buildTask = project.tasks.add(BUILD_TASK_NAME, DefaultTask)
+        buildTask.setDescription("Assembles and tests this project.")
         buildTask.dependsOn(COMPILE_TASK_NAME)
-	}
-	
-	private void addCompile(GradleFxConvention pluginConvention) {
+    }
+
+    private void addCompile(GradleFxConvention pluginConvention) {
         CompileTaskClassFactory compileTaskClassFactory = new CompileTaskClassFactoryImpl()
 
         Class<Task> compileClass = compileTaskClassFactory.createCompileTaskClass(project.type)
@@ -99,23 +97,23 @@ class GradleFxPlugin implements Plugin<Project> {
         compile.dependsOn(COPY_RESOURCES_TASK_NAME)
 
         pluginConvention.output = "${project.name}.${project.type}"
-	}
+    }
 
     private void addCopyResources() {
         project.tasks.add(COPY_RESOURCES_TASK_NAME, CopyResources)
     }
-	
-	private void addClean() {
-		Delete clean = project.tasks.add(CLEAN_TASK_NAME, Delete)
-		clean.description = "Deletes the build directory."
-		clean.delete { project.buildDir }
-	}
+
+    private void addClean() {
+        Delete clean = project.tasks.add(CLEAN_TASK_NAME, Delete)
+        clean.description = "Deletes the build directory."
+        clean.delete { project.buildDir }
+    }
 
     private void addPublish() {
         project.tasks.add(PUBLISH_TASK_NAME, Publish)
     }
-	
-	private void addDependsOnOtherProjects() {
+
+    private void addDependsOnOtherProjects() {
         // dependencies need to be added as a closure as we don't have the information at the moment to wire them up
         project.tasks.compile.dependsOn {
             Set dependentTasks = new HashSet()
@@ -129,18 +127,18 @@ class GradleFxPlugin implements Plugin<Project> {
             }
             dependentTasks
         }
-	}
+    }
 
     /**
      * If this is an implementation project (compiles a swc of swf), it adds an artifact
      * of the given project to the default configuration.
      * @param project
      */
-	private void addDefaultArtifact() {
-        if(isImplementationProject()) {
+    private void addDefaultArtifact() {
+        if (isImplementationProject()) {
             addProjectArtifactToDefaultConfiguration()
         }
-	}
+    }
 
     /**
      * This project is an implementation project when it compiles to a swc of swf file.
@@ -159,5 +157,5 @@ class GradleFxPlugin implements Plugin<Project> {
             artifactHandler."${DEFAULT_CONFIGURATION_NAME}" new DefaultPublishArtifact(project.name, project.type.toString(), project.type.toString(), null, new Date(), new File(project.buildDir.path + "/" + project.output))
         }
     }
-    
+
 }
