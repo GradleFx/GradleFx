@@ -29,3 +29,4 @@ h2. Upcoming features
 * FlexUnit testing
 * IDEA and Eclipse project generation support
 * HTML wrapper generation
+* AS3Doc generation
