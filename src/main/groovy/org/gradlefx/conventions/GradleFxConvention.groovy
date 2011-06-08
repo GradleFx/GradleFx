@@ -1,4 +1,3 @@
-package org.gradlefx.conventions
 /*
  * Copyright (c) 2011 the original author or authors
  *
@@ -14,6 +13,8 @@ package org.gradlefx.conventions
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package org.gradlefx.conventions
 
 import org.gradlefx.FlexType
 

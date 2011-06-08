@@ -1,8 +1,3 @@
-package org.gradlefx.tasks.factory
-
-import org.gradle.api.Task
-import org.gradlefx.FlexType
-
 /*
  * Copyright (c) 2011 the original author or authors
  *
@@ -18,6 +13,12 @@ import org.gradlefx.FlexType
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package org.gradlefx.tasks.factory
+
+import org.gradle.api.Task
+import org.gradlefx.FlexType
+
 public interface CompileTaskClassFactory {
 
     Class<Task> createCompileTaskClass(FlexType flexType);

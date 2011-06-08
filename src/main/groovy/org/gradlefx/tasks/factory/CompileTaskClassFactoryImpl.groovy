@@ -1,13 +1,3 @@
-package org.gradlefx.tasks.factory
-
-import org.gradle.api.Task
-import org.gradlefx.FlexType
-import org.gradlefx.tasks.Compc
-import org.gradlefx.tasks.Mxmlc
-import org.gradlefx.tasks.NullCompileTask
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-
 /*
  * Copyright (c) 2011 the original author or authors
  *
@@ -23,6 +13,17 @@ import org.slf4j.LoggerFactory
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package org.gradlefx.tasks.factory
+
+import org.gradle.api.Task
+import org.gradlefx.FlexType
+import org.gradlefx.tasks.Compc
+import org.gradlefx.tasks.Mxmlc
+import org.gradlefx.tasks.NullCompileTask
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+
 class CompileTaskClassFactoryImpl implements CompileTaskClassFactory {
 
     Logger log = LoggerFactory.getLogger('flex')
