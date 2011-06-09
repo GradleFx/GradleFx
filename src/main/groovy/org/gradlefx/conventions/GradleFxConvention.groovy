@@ -16,6 +16,7 @@
 
 package org.gradlefx.conventions
 
+import org.gradle.api.Project 
 import org.gradlefx.FlexType
 
 class GradleFxConvention {
@@ -48,4 +49,26 @@ class GradleFxConvention {
 
     //array of additional compiler options as defined by the compc or mxmlc compiler
     def additionalCompilerOptions = []
+
+    // player version
+    def playerVersion = '10.0'
+    
+    // HTML wrapper options
+    def htmlWrapper
+
+    def GradleFxConvention(Project project) {
+        htmlWrapper = [
+            title:               project.description,
+            file:                "${project.name}.html",
+            height:              '100%',
+            width:               '100%',
+            application:         project.name,
+            swf:                 project.name,
+            history:             'true',
+            'express-install':   'true',
+            'version-detection': 'true',
+            output:              project.buildDir
+        ]
+    }
 }
+

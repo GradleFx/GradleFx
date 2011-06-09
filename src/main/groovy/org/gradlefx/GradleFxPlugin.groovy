@@ -19,19 +19,23 @@ package org.gradlefx
 import org.gradle.api.DefaultTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.Task
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.api.artifacts.dsl.ArtifactHandler
 import org.gradle.api.internal.artifacts.publish.DefaultPublishArtifact
 import org.gradle.api.tasks.Delete
 import org.gradlefx.conventions.GradleFxConvention
+import org.gradlefx.FlexType
+import org.gradlefx.tasks.Compc
 import org.gradlefx.tasks.CopyResources
+import org.gradlefx.tasks.HtmlWrapper
+import org.gradlefx.tasks.Mxmlc
 import org.gradlefx.tasks.Publish
-import org.gradlefx.tasks.factory.CompileTaskClassFactory
-import org.gradlefx.tasks.factory.CompileTaskClassFactoryImpl
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.gradlefx.tasks.factory.CompileTaskClassFactory
+import org.gradlefx.tasks.factory.CompileTaskClassFactoryImpl
+import org.gradle.api.Task
 
 class GradleFxPlugin implements Plugin<Project> {
 
@@ -40,6 +44,7 @@ class GradleFxPlugin implements Plugin<Project> {
     public static final String PUBLISH_TASK_NAME = 'publish'
     public static final String COPY_RESOURCES_TASK_NAME = 'copyresources'
     public static final String CLEAN_TASK_NAME = 'clean'
+    public static final String CREATE_HTML_WRAPPER = 'createHtmlWrapper'
 
     // configurations
     public static final String DEFAULT_CONFIGURATION_NAME = 'default'
@@ -49,14 +54,14 @@ class GradleFxPlugin implements Plugin<Project> {
     public static final String RSL_CONFIGURATION_NAME = 'rsl'
     public static final String TEST_CONFIGURATION_NAME = 'test'
 
-    Logger log = LoggerFactory.getLogger('flex')
+	Logger log = LoggerFactory.getLogger('flex')
 
     private Project project
 
     public void apply(Project project) {
         this.project = project
 
-        GradleFxConvention pluginConvention = new GradleFxConvention()
+        GradleFxConvention pluginConvention = new GradleFxConvention(project)
         project.convention.plugins.flex = pluginConvention
 
         addDefaultConfigurations()
@@ -68,12 +73,30 @@ class GradleFxPlugin implements Plugin<Project> {
 
         //do these tasks in the afterEvaluate phase because they need property access
         project.afterEvaluate {
+            configureAnt()
             addCompile(pluginConvention)
+            addHtmlWrapper()
             addDependsOnOtherProjects()
             addDefaultArtifact()
         }
     }
 
+    private void configureAnt() {
+        project.ant.property(name: 'FLEX_HOME',       value: project.flexHome)
+        project.ant.property(name: 'FLEX_LIB',        value: '${FLEX_HOME}/frameworks/libs')
+        project.ant.property(name: 'FLEX_ANT',        value: '${FLEX_HOME}/ant')
+        project.ant.property(name: 'FLEX_ANTLIB',     value: '${FLEX_ANT}/lib')
+        project.ant.property(name: 'FLEX_PLAYER_LIB', value: "\${FLEX_LIB}/player/${project.playerVersion}")
+
+        project.ant.taskdef(resource: 'flexTasks.tasks') {
+            classpath {
+                fileset(dir: '${FLEX_ANTLIB}') {
+                    include(name: 'flexTasks.jar')
+                }
+            }
+        }
+    }
+    
     private void addDefaultConfigurations() {
         project.configurations.add(DEFAULT_CONFIGURATION_NAME)
         project.configurations.add(INTERNAL_CONFIGURATION_NAME)
@@ -97,6 +120,12 @@ class GradleFxPlugin implements Plugin<Project> {
         compile.dependsOn(COPY_RESOURCES_TASK_NAME)
 
         pluginConvention.output = "${project.name}.${project.type}"
+    }
+
+    private void addHtmlWrapper() {
+        if(project.type == FlexType.swf) {
+            project.tasks.add(CREATE_HTML_WRAPPER, HtmlWrapper)
+        }
     }
 
     private void addCopyResources() {
@@ -141,7 +170,7 @@ class GradleFxPlugin implements Plugin<Project> {
     }
 
     /**
-     * This project is an implementation project when it compiles to a swc of swf file.
+     * This project is an implementation project when it compiles to a swc or swf file.
      * @return
      */
     private Boolean isImplementationProject() {
