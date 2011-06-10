@@ -25,6 +25,10 @@ import org.gradle.api.DefaultTask
 
 class HtmlWrapper extends DefaultTask {
 
+    public HtmlWrapper() {
+        description = 'Creates an HTML wrapper for the generated swf'
+    }
+
 	@TaskAction
 	def generateHtmlWrapper() {
 		ant.'html-wrapper'(
