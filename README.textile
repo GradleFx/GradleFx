@@ -24,6 +24,7 @@ h2. Useful links
 * Examples: "https://github.com/GradleFx/GradleFx-Examples":https://github.com/GradleFx/GradleFx-Examples
 * Help & Support: "http://gradlefx.tenderapp.com/home":http://gradlefx.tenderapp.com/home
 * Bug Tracking: "https://github.com/GradleFx/GradleFx/issues":https://github.com/GradleFx/GradleFx/issues
+* Changelog: "https://github.com/GradleFx/GradleFx/blob/master/CHANGELOG.textile":https://github.com/GradleFx/GradleFx/blob/master/CHANGELOG.textile
 
 h2. Upcoming features
 * FlexUnit testing

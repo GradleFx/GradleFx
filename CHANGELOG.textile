@@ -1,0 +1,10 @@
+h2. GradleFx changelog
+
+h3. v0.2
+
+* Added HTML wrapper generation
+
+h3. v0.1
+
+* Initial version
+
