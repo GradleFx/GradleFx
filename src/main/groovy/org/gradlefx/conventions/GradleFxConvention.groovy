@@ -16,10 +16,12 @@
 
 package org.gradlefx.conventions
 
-import org.gradle.api.Project 
+import org.gradle.api.Project
 import org.gradlefx.FlexType
 
 class GradleFxConvention {
+
+    private Project project
 
     String output
 
@@ -52,23 +54,35 @@ class GradleFxConvention {
 
     // player version
     def playerVersion = '10.0'
-    
+
     // HTML wrapper options
     def htmlWrapper
 
     def GradleFxConvention(Project project) {
+        this.project = project
+
         htmlWrapper = [
-            title:               project.description,
-            file:                "${project.name}.html",
-            height:              '100%',
-            width:               '100%',
-            application:         project.name,
-            swf:                 project.name,
-            history:             'true',
-            'express-install':   'true',
-            'version-detection': 'true',
-            output:              project.buildDir
+                title: project.description,
+                file: "${project.name}.html",
+                height: '100%',
+                width: '100%',
+                application: project.name,
+                swf: project.name,
+                history: 'true',
+                'express-install': 'true',
+                'version-detection': 'true',
+                output: project.buildDir
         ]
+
+        project.afterEvaluate {
+            initializeEmptyProperties()
+        }
+    }
+
+    public def initializeEmptyProperties() {
+        if (output == null) {
+            output = "${project.name}.${project.type}"
+        }
     }
 }
 
