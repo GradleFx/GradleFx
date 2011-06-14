@@ -51,7 +51,7 @@ class Mxmlc extends AbstractCompileTask {
 
         //add every source directory
         project.srcDirs.each { sourcePath ->
-            compilerArguments.add("-source-path+=" + project.projectDir.path + sourcePath)
+            compilerArguments.add("-source-path+=" + project.file(sourcePath) )
         }
 
         //add dependencies
@@ -67,7 +67,14 @@ class Mxmlc extends AbstractCompileTask {
         compilerArguments.add("-output=" + project.buildDir.path + '/' + project.output)
 
         //add the target file
-        compilerArguments.add(project.projectDir.path + project.srcDirs.get(0) + '/' + project.mainClass)
+        for (def src : project.srcDirs) {
+            File srcDir = project.file( src )
+            File mcClazz = new File(srcDir, project.mainClass)
+            if (mcClazz.exists()) {
+                compilerArguments.add( mcClazz.absolutePath )
+                break;
+            }
+        }
 
         return compilerArguments
     }
