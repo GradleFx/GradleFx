@@ -81,6 +81,8 @@ class Mxmlc extends AbstractCompileTask {
                 return mainClassFile
             }
         }
+
+        throw new Exception("The main class file couldn't be found in any source directory")
     }
 
     def addRsls(List compilerArguments) {
