@@ -51,7 +51,7 @@ class Mxmlc extends AbstractCompileTask {
 
         //add every source directory
         project.srcDirs.each { sourcePath ->
-            compilerArguments.add("-source-path+=" + project.file(sourcePath) )
+            compilerArguments.add("-source-path+=" + project.file(sourcePath).path)
         }
 
         //add dependencies
@@ -67,16 +67,20 @@ class Mxmlc extends AbstractCompileTask {
         compilerArguments.add("-output=" + project.buildDir.path + '/' + project.output)
 
         //add the target file
-        for (def src : project.srcDirs) {
-            File srcDir = project.file( src )
-            File mcClazz = new File(srcDir, project.mainClass)
-            if (mcClazz.exists()) {
-                compilerArguments.add( mcClazz.absolutePath )
-                break;
-            }
-        }
+        File mainClassFile = getMainClassFile()
+        compilerArguments.add(mainClassFile.absolutePath)
 
         return compilerArguments
+    }
+
+    private File getMainClassFile() {
+        project.srcDirs.each { String sourceDir ->
+            File srcDir = project.file(sourceDir)
+            File mainClassFile = new File(srcDir, project.mainClass)
+            if (mainClassFile.exists()) {
+                return mainClassFile
+            }
+        }
     }
 
     def addRsls(List compilerArguments) {
