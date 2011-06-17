@@ -24,6 +24,10 @@ class Compc extends AbstractCompileTask {
         description = 'Compiles Flex component (*.swc) using the compc compiler'
     }
 
+    def includeSources
+
+    def includeClasses
+
     @TaskAction
     def compileFlex() {
         List compilerArguments = createCompilerArguments()
@@ -31,6 +35,7 @@ class Compc extends AbstractCompileTask {
         ant.java(jar: project.flexHome + '/lib/compc.jar',
                 dir: project.flexHome + '/frameworks',
                 fork: true,
+                outputproperty: 'compcOutput',
                 resultproperty: 'swcBuildResult',
                 errorProperty: 'errorString') {
 
@@ -43,6 +48,9 @@ class Compc extends AbstractCompileTask {
         if (ant.properties.swcBuildResult != '0') {
             throw new Exception("swc compilation failed: \n" + ant.properties.errorString);
         }
+
+        // The output property
+        //println ant.properties.compcOutput;
     }
 
     private List createCompilerArguments() {
@@ -51,13 +59,40 @@ class Compc extends AbstractCompileTask {
         //add every source directory
         project.srcDirs.each { sourcePath ->
             compilerArguments.add("-source-path+=" + project.file(sourcePath).path)
-            compilerArguments.add("-include-sources+=" + project.file(sourcePath).path)
+            if ((null == includeSources) && (null == includeClasses)) {
+                compilerArguments.add("-include-sources+=" + project.file(sourcePath).path)
+            }
         }
 
         //add dependencies
         addLibraries(project.configurations.internal, "-include-libraries", compilerArguments)
         addLibraries(project.configurations.external, "-external-library-path", compilerArguments)
         addLibraries(project.configurations.merged, "-library-path", compilerArguments)
+
+        if (null != includeClasses) {
+            if (includeClasses instanceof String) {
+                compilerArguments.add('-include-classes')
+                compilerArguments.add(includeClasses)
+            } else if (includeClasses instanceof List) {
+                compilerArguments.add('-include-classes')
+                includeClasses.each { clazz ->
+                    compilerArguments.add(clazz)
+                }
+            } else {
+                println "Error: compc.includeClasses is set to an unrecognized type: " + includeClasses.getClass().getName()
+            }
+        }
+        if (null != includeSources) {
+            if (includeSources instanceof String) {
+                compilerArguments.add('-include-sources+=' + project.file(includeSources).path)
+            } else if (includeSources instanceof List) {
+                includeSources.each { srcPath ->
+                    compilerArguments.add('-include-sources+=' + project.file(srcPath).path)
+                }
+            } else {
+                println "Error: compc.includeSources is set to an unrecognized type: " + includeSources.getClass().getName()
+            }
+        }
 
         //add all the other user specified compiler options
         project.additionalCompilerOptions.each { compilerOption ->
