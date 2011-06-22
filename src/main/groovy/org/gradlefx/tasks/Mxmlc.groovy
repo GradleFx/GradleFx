@@ -74,7 +74,7 @@ class Mxmlc extends AbstractCompileTask {
     }
 
     private File getMainClassFile() {
-        project.srcDirs.each { String sourceDir ->
+        for (String sourceDir : project.srcDirs) {
             File srcDir = project.file(sourceDir)
             File mainClassFile = new File(srcDir, project.mainClass)
             if (mainClassFile.exists()) {
