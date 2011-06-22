@@ -1,5 +1,9 @@
 h2. GradleFx changelog
 
+h3. v0.2.2
+
+* Fixed a critical issue where the mainClass could never be found
+
 h3. v0.2.1
 
 * Fixed an issue where overriding the 'output' property didn't work

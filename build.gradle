@@ -19,7 +19,7 @@ apply plugin: 'groovy'
 apply plugin: 'maven'
 
 group = 'org.gradlefx'
-version = '0.2.1'
+version = '0.2.2'
 
 repositories {
     mavenCentral()
