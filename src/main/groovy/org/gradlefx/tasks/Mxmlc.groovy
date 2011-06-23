@@ -64,7 +64,7 @@ class Mxmlc extends AbstractCompileTask {
             compilerArguments.add(compilerOption)
         }
 
-        compilerArguments.add("-output=" + project.buildDir.path + '/' + project.output)
+        compilerArguments.add("-output=${project.buildDir.path}/${project.output}.swf" )
 
         //add the target file
         File mainClassFile = getMainClassFile()

@@ -64,7 +64,7 @@ class Compc extends AbstractCompileTask {
             compilerArguments.add(compilerOption)
         }
 
-        compilerArguments.add("-output=" + project.buildDir.path + '/' + project.output)
+        compilerArguments.add("-output=${project.buildDir.path}/${project.output}.swc")
         return compilerArguments
     }
 

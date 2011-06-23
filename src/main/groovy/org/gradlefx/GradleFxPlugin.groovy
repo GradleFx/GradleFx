@@ -178,7 +178,9 @@ class GradleFxPlugin implements Plugin<Project> {
      */
     private void addProjectArtifactToDefaultConfiguration() {
         project.artifacts { ArtifactHandler artifactHandler ->
-            artifactHandler."${DEFAULT_CONFIGURATION_NAME}" new DefaultPublishArtifact(project.name, project.type.toString(), project.type.toString(), null, new Date(), new File(project.buildDir.path + "/" + project.output))
+            File artifactFile = new File(project.buildDir.path + "/" + project.output + "." + project.type)
+            def artifact = new DefaultPublishArtifact(project.name, project.type.toString(), project.type.toString(), null, new Date(), artifactFile)
+            artifactHandler."${DEFAULT_CONFIGURATION_NAME}" artifact
         }
     }
 

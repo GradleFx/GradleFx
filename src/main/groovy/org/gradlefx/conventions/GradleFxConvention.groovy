@@ -81,7 +81,7 @@ class GradleFxConvention {
 
     public def initializeEmptyProperties() {
         if (output == null) {
-            output = "${project.name}.${project.type}"
+            output = project.name
         }
     }
 }
