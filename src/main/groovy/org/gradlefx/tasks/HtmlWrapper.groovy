@@ -31,6 +31,8 @@ class HtmlWrapper extends DefaultTask {
 
 	@TaskAction
 	def generateHtmlWrapper() {
+        createOutputDirectoryIfNotExists()
+
 		ant.'html-wrapper'(
 			title:               project.htmlWrapper.title,
 			file:                project.htmlWrapper.file,
@@ -44,6 +46,12 @@ class HtmlWrapper extends DefaultTask {
 			output:              project.htmlWrapper.output
 		)
 	}
+
+    private def createOutputDirectoryIfNotExists() {
+        if(!project.htmlWrapper.output.exists()) {
+            project.htmlWrapper.output.mkdir()
+        }
+    }
 }
 
 
