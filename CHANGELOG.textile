@@ -3,6 +3,8 @@ h2. GradleFx changelog
 h3. v0.2.2
 
 * Fixed a critical issue where the mainClass could never be found
+* Changed the convention for the output property from "${project.name}.${project.type}" to project.name
+* The output directory for the htmlWrapper task is now created when it doesn't exist yet
 
 h3. v0.2.1
 
