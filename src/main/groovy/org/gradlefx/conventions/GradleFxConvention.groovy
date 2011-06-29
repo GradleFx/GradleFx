@@ -40,6 +40,12 @@ class GradleFxConvention {
     //test resource directories
     def testResourceDirs = ['/src/test/resources']
 
+    //equivalent of the include-classes compiler option
+    List includeClasses;
+
+    //equivalent of the include-sources compiler option
+    List includeSources;
+
     // what type of Flex project are we?  either SWF or SWC
     FlexType type
 

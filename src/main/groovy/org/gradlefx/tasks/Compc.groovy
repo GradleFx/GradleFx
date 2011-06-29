@@ -48,11 +48,12 @@ class Compc extends AbstractCompileTask {
     private List createCompilerArguments() {
         List compilerArguments = []
 
-        //add every source directory
+        //add every source path
         project.srcDirs.each { sourcePath ->
             compilerArguments.add("-source-path+=" + project.file(sourcePath).path)
-            compilerArguments.add("-include-sources+=" + project.file(sourcePath).path)
         }
+
+        addSourceFilesAndDirectories(compilerArguments)
 
         //add dependencies
         addLibraries(project.configurations.internal, "-include-libraries", compilerArguments)
@@ -66,6 +67,27 @@ class Compc extends AbstractCompileTask {
 
         compilerArguments.add("-output=${project.buildDir.path}/${project.output}.swc")
         return compilerArguments
+    }
+
+    private def addSourceFilesAndDirectories(List compilerArguments) {
+        if (project.includeClasses == null && project.includeSources == null) {
+            project.srcDirs.each { sourcePath ->
+                compilerArguments.add("-include-sources+=" + project.file(sourcePath).path)
+            }
+        } else {
+            if (project.includeClasses != null) {
+                compilerArguments.add('-include-classes')
+                project.includeClasses.each { classToInclude ->
+                    compilerArguments.add(classToInclude)
+                }
+            }
+
+            if (project.includeSources != null) {
+                project.includeSources.each { classOrDirectoryToInclude ->
+                    compilerArguments.add('-include-sources+=' + project.file(classOrDirectoryToInclude).path)
+                }
+            }
+        }
     }
 
 }
