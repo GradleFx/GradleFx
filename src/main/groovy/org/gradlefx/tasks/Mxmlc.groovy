@@ -42,7 +42,7 @@ class Mxmlc extends AbstractCompileTask {
 
         //handle failed compile
         if (ant.properties.swcBuildResult != '0') {
-            throw new Exception("swc compilation failed: \n" + ant.properties.errorString);
+            throw new Exception("swf compilation failed: \n" + ant.properties.errorString);
         }
     }
 
