@@ -56,6 +56,7 @@ class Mxmlc extends AbstractCompileTask {
 
         //add dependencies
         addLibraries(project.configurations.internal, "-include-libraries", compilerArguments)
+		addLibraries(project.configurations.external, '-external-library-path', compilerArguments)
         addLibraries(project.configurations.merged, "-library-path", compilerArguments)
         addRsls(compilerArguments)
 
