@@ -89,7 +89,7 @@ class Mxmlc extends AbstractCompileTask {
     def addRsls(List compilerArguments) {
         project.configurations.rsl.files.each { dependency ->
             if (dependency.exists()) {
-                compilerArguments.add("-runtime-shared-library-path" + "=" + dependency.path + "," + dependency.name[0..-2] + 'f')
+                compilerArguments.add("-runtime-shared-library-path+=${dependency.path},${dependency.name[0..-2]}f")
             }
             else {
                 throw new ResolveException("Couldn't find the ${dependency.name} file - are you sure the path is correct?")
