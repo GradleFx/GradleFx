@@ -21,7 +21,7 @@ import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ResolveException
 import org.gradlefx.FlexType
 
-class AbstractCompileTask extends DefaultTask {
+abstract class AbstractCompileTask extends DefaultTask {
 
     protected AbstractCompileTask() {
         initInputDirectory()
