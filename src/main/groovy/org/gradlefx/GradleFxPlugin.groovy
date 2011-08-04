@@ -29,6 +29,8 @@ import org.gradlefx.conventions.GradleFxConvention
 import org.gradlefx.tasks.CopyResources
 import org.gradlefx.tasks.HtmlWrapper
 import org.gradlefx.tasks.Publish
+import org.gradlefx.tasks.Test
+import org.gradlefx.tasks.TestCompile
 import org.gradlefx.tasks.factory.CompileTaskClassFactory
 import org.gradlefx.tasks.factory.CompileTaskClassFactoryImpl
 import org.slf4j.Logger
@@ -37,7 +39,9 @@ import org.slf4j.LoggerFactory
 class GradleFxPlugin implements Plugin<Project> {
 
     public static final String COMPILE_TASK_NAME = 'compile'
+	public static final String TEST_COMPILE_TASK_NAME = 'testCompile'
     public static final String BUILD_TASK_NAME = 'build'
+	public static final String TEST_TASK_NAME = 'test'
     public static final String PUBLISH_TASK_NAME = 'publish'
     public static final String COPY_RESOURCES_TASK_NAME = 'copyresources'
     public static final String CLEAN_TASK_NAME = 'clean'
@@ -67,10 +71,13 @@ class GradleFxPlugin implements Plugin<Project> {
         addCopyResources()
         addClean()
         addPublish()
+		addTestCompile()
+		addTest()
 
         //do these tasks in the afterEvaluate phase because they need property access
         project.afterEvaluate {
-            configureAnt()
+            configureAntWithFlex()
+			configureAntWithFlexUnit()
             addCompile(pluginConvention)
             addHtmlWrapper()
             addDependsOnOtherProjects()
@@ -78,7 +85,7 @@ class GradleFxPlugin implements Plugin<Project> {
         }
     }
 
-    private void configureAnt() {
+    private void configureAntWithFlex() {
         project.ant.property(name: 'FLEX_HOME', value: project.flexHome)
         project.ant.property(name: 'FLEX_LIB', value: '${FLEX_HOME}/frameworks/libs')
         project.ant.property(name: 'FLEX_ANT', value: '${FLEX_HOME}/ant')
@@ -94,6 +101,17 @@ class GradleFxPlugin implements Plugin<Project> {
         }
     }
 
+	private void configureAntWithFlexUnit() {
+		if (project.flexUnit.home == null) return
+		project.ant.taskdef(resource: 'flexUnitTasks.tasks') {
+			classpath {
+				fileset(dir: project.flexUnit.home) {
+					include(name: project.flexUnit.antTasksJar)
+				}
+			}
+		}
+	}
+	
     private void addDefaultConfigurations() {
         project.configurations.add(DEFAULT_CONFIGURATION_NAME)
         project.configurations.add(INTERNAL_CONFIGURATION_NAME)
@@ -106,7 +124,7 @@ class GradleFxPlugin implements Plugin<Project> {
     private void addBuild() {
         DefaultTask buildTask = project.tasks.add(BUILD_TASK_NAME, DefaultTask)
         buildTask.setDescription("Assembles and tests this project.")
-        buildTask.dependsOn(COMPILE_TASK_NAME)
+        buildTask.dependsOn(TEST_TASK_NAME)
     }
 
     private void addCompile(GradleFxConvention pluginConvention) {
@@ -116,6 +134,20 @@ class GradleFxPlugin implements Plugin<Project> {
         Task compile = project.tasks.add(COMPILE_TASK_NAME, compileClass)
         compile.dependsOn(COPY_RESOURCES_TASK_NAME)
     }
+	
+	private void addTestCompile() {
+		Task testCompile = project.tasks.add(TEST_COMPILE_TASK_NAME, TestCompile)
+		testCompile.description = 'Compile the test runner SWF.'
+		testCompile.dependsOn(COMPILE_TASK_NAME)
+		testCompile.onlyIf{project.testClass != null}
+	}
+	
+	private void addTest() {
+		Task test = project.tasks.add(TEST_TASK_NAME, Test)
+		test.description = 'Run the FlexUnit tests.'
+		test.dependsOn(TEST_COMPILE_TASK_NAME)
+		test.onlyIf{project.testClass != null}
+	}
 
     private void addHtmlWrapper() {
         if (project.type == FlexType.swf) {

@@ -20,7 +20,7 @@ apply plugin: 'groovy'
 apply plugin: 'maven'
 
 group = 'org.gradlefx'
-version = '0.2.4'
+version = '0.3.0'
 packaging = 'jar'
 
 repositories {
@@ -96,3 +96,4 @@ configure(install.repositories.mavenInstaller) {
         xml.append(newXml.toString())
     }
 }
+

@@ -57,4 +57,14 @@ abstract class AbstractCompileTask extends DefaultTask {
             }
         }
     }
+	
+	def handleBuildIfFailed(antResultProperty, antOutputProperty, taskName) {
+		if (ant.properties[antResultProperty] != '0') {
+			throw new Exception("${taskName} compilation failed: ${ant.properties[antOutputProperty]}\n")
+		}
+	}
+	
+	def showAntOutput(antOutput) {
+		println antOutput
+	}
 }

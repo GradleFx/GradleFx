@@ -18,8 +18,14 @@ package org.gradlefx.tasks
 
 import org.gradle.api.tasks.TaskAction
 
+/*
+ * Gradle task to execute Flex's Compc compiler.
+ */
 class Compc extends AbstractCompileTask {
 
+	private static final String ANT_RESULT_PROPERTY = 'compcCompileResult'
+	private static final String ANT_OUTPUT_PROPERTY = 'compcCompileOutput'
+	
     public Compc() {
         description = 'Compiles Flex component (*.swc) using the compc compiler'
     }
@@ -31,18 +37,17 @@ class Compc extends AbstractCompileTask {
         ant.java(jar: project.flexHome + '/lib/compc.jar',
                 dir: project.flexHome + '/frameworks',
                 fork: true,
-                resultproperty: 'swcBuildResult',
-                errorProperty: 'errorString') {
+                resultproperty: ANT_RESULT_PROPERTY,
+                outputproperty: ANT_OUTPUT_PROPERTY) {
 
             compilerArguments.each { compilerArgument ->
                 arg(value: compilerArgument)
             }
         }
 
-        //handle failed compile
-        if (ant.properties.swcBuildResult != '0') {
-            throw new Exception("swc compilation failed: \n" + ant.properties.errorString);
-        }
+        handleBuildIfFailed ANT_RESULT_PROPERTY, ANT_OUTPUT_PROPERTY, 'Compc'
+		
+		showAntOutput ant.properties[ANT_OUTPUT_PROPERTY]
     }
 
     private List createCompilerArguments() {

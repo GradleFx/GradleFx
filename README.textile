@@ -8,6 +8,9 @@ additionalCompilerOptions convention property.
 
 It adds the following tasks:
 * compile
+* compileTest
+* test
+* createHtmlWrapper
 * build
 * publish
 * clean
@@ -18,6 +21,7 @@ The plugin has support for the following dependency scopes:
 * external
 * merged
 * rsl
+* test
 
 h2. Useful links
 * Documentation: "https://github.com/GradleFx/GradleFx/wiki":https://github.com/GradleFx/GradleFx/wiki
@@ -27,7 +31,6 @@ h2. Useful links
 * Changelog: "https://github.com/GradleFx/GradleFx/blob/master/CHANGELOG.textile":https://github.com/GradleFx/GradleFx/blob/master/CHANGELOG.textile
 
 h2. Upcoming features
-* FlexUnit testing
 * IDEA and Eclipse project generation support
-* HTML wrapper generation
 * AS3Doc generation
+
