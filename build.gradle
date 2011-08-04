@@ -96,4 +96,3 @@ configure(install.repositories.mavenInstaller) {
         xml.append(newXml.toString())
     }
 }
-
