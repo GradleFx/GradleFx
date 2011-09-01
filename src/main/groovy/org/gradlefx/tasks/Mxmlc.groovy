@@ -33,7 +33,7 @@ class Mxmlc extends AbstractMxmlc {
 		super.compileFlex(ANT_RESULT_PROPERTY, ANT_OUTPUT_PROPERTY, 'Mxmlc', createCompilerArguments())
     }
 
-    private List createCompilerArguments() {
+    protected List createCompilerArguments() {
         List compilerArguments = []
 
         //add every source directory

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.gradlefx
+package org.gradlefx.tasks
 
-enum FlexType {
-    swf,
-    swc,
-    air
+import org.gradle.api.DefaultTask
+
+class AirPackage extends DefaultTask {
+
 }
