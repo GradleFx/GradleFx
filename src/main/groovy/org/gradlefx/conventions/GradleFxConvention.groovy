@@ -72,6 +72,10 @@ class GradleFxConvention {
 	// FlexUnit properties
 	def flexUnit
 
+    // AIR packaging properties
+    def air
+
+
     def GradleFxConvention(Project project) {
         this.project = project
 
@@ -106,6 +110,12 @@ class GradleFxConvention {
 			headless:        'false',
 			display:         '99'
 		]
+
+        air = [
+            keystore:               "${project.name}.p12",
+            storepass:              null,
+            applicationDescriptor:  "/src/main/actionscript/${project.name}.xml",
+        ]
 		
         project.afterEvaluate {
             initializeEmptyProperties()

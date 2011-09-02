@@ -21,7 +21,7 @@ apply plugin: 'maven'
 apply plugin: 'idea'
 
 group = 'org.gradlefx'
-version = '0.3.0'
+version = '0.3.0-SNAPSHOT'
 packaging = 'jar'
 
 repositories {

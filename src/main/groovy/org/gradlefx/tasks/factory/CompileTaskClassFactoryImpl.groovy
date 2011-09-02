@@ -23,6 +23,7 @@ import org.gradlefx.tasks.Mxmlc
 import org.gradlefx.tasks.NullCompileTask
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.gradlefx.tasks.Amxmlc
 
 class CompileTaskClassFactoryImpl implements CompileTaskClassFactory {
 
@@ -34,6 +35,8 @@ class CompileTaskClassFactoryImpl implements CompileTaskClassFactory {
                 return Compc.class
             case FlexType.swf:
                 return Mxmlc.class
+            case FlexType.air:
+                return Amxmlc.class
             default:
                 log.warn "Adding compile task using an empty implementation"
                 return NullCompileTask.class
