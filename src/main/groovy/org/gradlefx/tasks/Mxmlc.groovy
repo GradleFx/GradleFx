@@ -42,9 +42,9 @@ class Mxmlc extends AbstractMxmlc {
         }
 
         //add dependencies
-        addLibraries(project.configurations.internal, "-include-libraries", compilerArguments)
-		addLibraries(project.configurations.external, '-external-library-path', compilerArguments)
-        addLibraries(project.configurations.merged, "-library-path", compilerArguments)
+        addLibraries(project.configurations.internal.files, project.configurations.internal, "-include-libraries", compilerArguments)
+		addLibraries(project.configurations.external.files - project.configurations.internal.files - project.configurations.merged.files, project.configurations.external, '-external-library-path', compilerArguments)
+        addLibraries(project.configurations.merged.files, project.configurations.merged, "-library-path", compilerArguments)
         addRsls(compilerArguments)
 
         //add all the other user specified compiler options
