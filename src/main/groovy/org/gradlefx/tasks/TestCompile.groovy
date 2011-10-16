@@ -51,10 +51,10 @@ class TestCompile extends AbstractMxmlc {
 		}
 
 		// external and test dependencies will be merged in
-        addLibraries(project.configurations.internal, "-include-libraries", compilerArguments)
-		addLibraries(project.configurations.external, '-library-path', compilerArguments)
-        addLibraries(project.configurations.merged, "-library-path", compilerArguments)
-		addLibraries(project.configurations.test, "-library-path", compilerArguments)
+        addLibraries(project.configurations.internal.files, project.configurations.internal, "-include-libraries", compilerArguments)
+		addLibraries(project.configurations.external.files - project.configurations.internal.files - project.configurations.merged.files - project.configurations.test.files, project.configurations.external, '-library-path', compilerArguments)
+        addLibraries(project.configurations.merged.files, project.configurations.merged, "-library-path", compilerArguments)
+		addLibraries(project.configurations.test.files, project.configurations.test, "-library-path", compilerArguments)
         addRsls(compilerArguments)
 
         //add all the other user specified compiler options
