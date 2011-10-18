@@ -17,7 +17,6 @@
 package org.gradlefx.tasks
 
 import org.gradle.api.artifacts.ResolveException
-import org.gradle.api.tasks.TaskAction
 
 /*
  * Abstract base class capturing common functionality to execute Flex's MXMLC compiler. 
@@ -42,6 +41,10 @@ abstract class AbstractMxmlc extends AbstractCompileTask {
 			     fork:           true,
 			     resultproperty: antResultProperty,
 			     outputproperty: antOutputProperty) { javaTask ->
+
+            project.jvmArguments.each { jvmArgument ->
+                jvmarg(value: jvmArgument)
+            }
 
 			compilerArguments.each { compilerArgument ->
 				arg(value: compilerArgument)

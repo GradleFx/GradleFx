@@ -63,6 +63,8 @@ class GradleFxConvention {
     //array of additional compiler options as defined by the compc or mxmlc compiler
     def additionalCompilerOptions = []
 
+    def jvmArguments = []
+
     // player version
     def playerVersion = '10.0'
 

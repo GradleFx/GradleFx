@@ -40,6 +40,10 @@ class Compc extends AbstractCompileTask {
                 resultproperty: ANT_RESULT_PROPERTY,
                 outputproperty: ANT_OUTPUT_PROPERTY) {
 
+            project.jvmArguments.each { jvmArgument ->
+                jvmarg(value: jvmArgument)
+            }
+
             compilerArguments.each { compilerArgument ->
                 arg(value: compilerArgument)
             }
