@@ -14,7 +14,7 @@
 * limitations under the License.
 */
 
-import org.gradle.api.artifacts.maven.XmlProvider
+import org.gradle.api.XmlProvider
 
 apply plugin: 'groovy'
 apply plugin: 'maven'
