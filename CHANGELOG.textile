@@ -1,5 +1,14 @@
 h2. GradleFx changelog
 
+h3. v0.3.2
+
+ATTENTION: Gradle 1.0 milestone 5 is required from now on.
+
+* upgraded GradleFx to support Gradle 1.0 milestone 5
+* used the new signing task in Gradle to fully automate the build process of the GradleFx project
+* fixed some path issues with UNIX based operating systems
+* added a convention property called 'jvmArguments' which can be used to specify jvm arguments that will be used when running the compc and mxmlc compilers
+
 h3. v0.3.1
 
 * fixed an issue with external dependencies overwriting internal/merged dependencies causing corrupt swf files.
