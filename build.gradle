@@ -14,14 +14,20 @@
 * limitations under the License.
 */
 
-import org.gradle.api.artifacts.maven.XmlProvider
+import org.gradle.api.XmlProvider
+import org.gradle.api.artifacts.maven.MavenDeployment
 
 apply plugin: 'groovy'
 apply plugin: 'maven'
+apply plugin: 'signing'
 
 group = 'org.gradlefx'
-version = '0.3.1'
+version = '0.3.2'
 packaging = 'jar'
+
+configurations {
+    published.extendsFrom archives, signatures
+}
 
 repositories {
     mavenCentral()
@@ -48,51 +54,66 @@ artifacts {
     archives sourcesJar
 }
 
-configure(install.repositories.mavenInstaller) {
-    pom.project {
-        name 'GradleFx'
-        packaging 'jar'
-        description 'GradleFx is a Gradle plugin for building Flex and Actionscript applications'
-        url 'http://gradlefx.github.com/'
+//********* artifact signing *********
+signing {
+    sign configurations.archives
+}
 
-        scm {
-            url 'scm:git@github.com:GradleFx/GradleFx.git'
-            connection 'scm:git@github.com:GradleFx/GradleFx.git'
-            developerConnection 'scm:git@github.com:GradleFx/GradleFx.git'
-        }
+uploadPublished {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signPom(deployment) }
 
-        licenses {
-            license {
-                name 'The Apache Software License, Version 2.0'
-                url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                distribution 'repo'
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+              authentication(userName: sonatypeUsername, password: sonatypePassword)
             }
+
+            pom.project {
+               name 'GradleFx'
+               packaging 'jar'
+               description 'GradleFx is a Gradle plugin for building Flex and Actionscript applications'
+               url 'http://gradlefx.github.com/'
+
+               scm {
+                   url 'scm:git@github.com:GradleFx/GradleFx.git'
+                   connection 'scm:git@github.com:GradleFx/GradleFx.git'
+                   developerConnection 'scm:git@github.com:GradleFx/GradleFx.git'
+               }
+
+               licenses {
+                   license {
+                       name 'The Apache Software License, Version 2.0'
+                       url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                       distribution 'repo'
+                   }
+               }
+
+               developers {
+                   developer {
+                       id 'yennicktrevels'
+                       name 'Yennick Trevels'
+                   }
+                   developer {
+                       id 'stevendick'
+                       name 'Steven Dick'
+                   }
+               }
+           }
+
+           //mess with the generated pom to set the 'packaging' tag
+           pom.withXml { XmlProvider xmlProvider ->
+               def xml = xmlProvider.asString()
+               def pomXml = new XmlParser().parse(new ByteArrayInputStream(xml.toString().bytes))
+
+               pomXml.version[0] + { packaging('jar') }
+
+               def newXml = new StringWriter()
+               def printer = new XmlNodePrinter(new PrintWriter(newXml))
+               printer.preserveWhitespace = true
+               printer.print(pomXml)
+               xml.setLength(0)
+               xml.append(newXml.toString())
+           }
         }
-
-        developers {
-            developer {
-                id 'yennicktrevels'
-                name 'Yennick Trevels'
-            }
-            developer {
-                id 'stevendick'
-                name 'Steven Dick'
-            }
-        }
-    }
-
-    //mess with the generated pom to set the 'packaging' tag
-    pom.withXml { XmlProvider xmlProvider ->
-        def xml = xmlProvider.asString()
-        def pomXml = new XmlParser().parse(new ByteArrayInputStream(xml.toString().bytes))
-
-        pomXml.version[0] + { packaging('jar') }
-
-        def newXml = new StringWriter()
-        def printer = new XmlNodePrinter(new PrintWriter(newXml))
-        printer.preserveWhitespace = true
-        printer.print(pomXml)
-        xml.setLength(0)
-        xml.append(newXml.toString())
     }
 }

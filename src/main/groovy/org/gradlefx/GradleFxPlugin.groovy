@@ -174,7 +174,7 @@ class GradleFxPlugin implements Plugin<Project> {
         project.tasks.compile.dependsOn {
             Set dependentTasks = new HashSet()
             project.configurations.each { Configuration configuration ->
-                Set deps = project.configurations."${configuration.name}".getDependencies(ProjectDependency)
+                Set deps = project.configurations."${configuration.name}".getDependencies().withType(ProjectDependency)
                 deps.each { projectDependency ->
                     //def projectDependency = (ProjectDependency) dependency
                     println "path to dependency: ${projectDependency.dependencyProject.path}"
