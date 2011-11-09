@@ -1,5 +1,9 @@
 h2. GradleFx changelog
 
+h3. v0.3.1
+
+* fixed an issue with external dependencies overwriting internal/merged dependencies causing corrupt swf files.
+
 h3. v0.3.0
 
 * Added FlexUnit support for executing tests as part of the build. This is optional and any existing builds should continue to work
