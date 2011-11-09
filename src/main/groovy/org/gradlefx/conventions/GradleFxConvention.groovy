@@ -31,16 +31,16 @@ class GradleFxConvention {
     def flexHome = System.getenv()['FLEX_HOME'] //default to FLEX_HOME environment variable
 
     // which directories to look into for source code
-    def srcDirs = ['/src/main/actionscript']
+    def srcDirs = ['src/main/actionscript']
 
     //test directories
-    def testDirs = ['/src/test/actionscript']
+    def testDirs = ['src/test/actionscript']
 
     //resource directories
-    def resourceDirs = ['/src/main/resources']
+    def resourceDirs = ['src/main/resources']
 
     //test resource directories
-    def testResourceDirs = ['/src/test/resources']
+    def testResourceDirs = ['src/test/resources']
 
     //equivalent of the include-classes compiler option
     List includeClasses;
