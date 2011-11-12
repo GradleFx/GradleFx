@@ -40,6 +40,10 @@ class Compc extends AbstractCompileTask {
                 resultproperty: ANT_RESULT_PROPERTY,
                 outputproperty: ANT_OUTPUT_PROPERTY) {
 
+            project.jvmArguments.each { jvmArgument ->
+                jvmarg(value: jvmArgument)
+            }
+
             compilerArguments.each { compilerArgument ->
                 arg(value: compilerArgument)
             }
@@ -61,9 +65,9 @@ class Compc extends AbstractCompileTask {
         addSourceFilesAndDirectories(compilerArguments)
 
         //add dependencies
-        addLibraries(project.configurations.internal, "-include-libraries", compilerArguments)
-        addLibraries(project.configurations.external, "-external-library-path", compilerArguments)
-        addLibraries(project.configurations.merged, "-library-path", compilerArguments)
+        addLibraries(project.configurations.internal.files, project.configurations.internal, "-include-libraries", compilerArguments)
+        addLibraries(project.configurations.external.files, project.configurations.external, "-external-library-path", compilerArguments)
+        addLibraries(project.configurations.merged.files, project.configurations.merged, "-library-path", compilerArguments)
 
         //add all the other user specified compiler options
         project.additionalCompilerOptions.each { compilerOption ->

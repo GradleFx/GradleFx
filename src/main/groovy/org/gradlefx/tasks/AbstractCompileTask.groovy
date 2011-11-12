@@ -20,6 +20,8 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ResolveException
 import org.gradlefx.FlexType
+import org.slf4j.LoggerFactory
+import org.slf4j.Logger
 
 abstract class AbstractCompileTask extends DefaultTask {
 
@@ -43,8 +45,8 @@ abstract class AbstractCompileTask extends DefaultTask {
      * @param configuration
      * @param compilerArgument
      */
-    protected void addLibraries(Configuration configuration, String compilerArgument, List compilerArguments) {
-        configuration.files.each { dependency ->
+    protected void addLibraries(Set libraryFiles, Configuration configuration, String compilerArgument, List compilerArguments) {
+        libraryFiles.each { dependency ->
             //only add swc dependencies, no use in adding pom dependencies
             if (dependency.name.endsWith(FlexType.swc.toString())) {
                 if (!dependency.exists()) {
