@@ -14,37 +14,45 @@
  * limitations under the License.
  */
 
-package org.gradlefx.tasks
+package org.gradlefx.tasks.compile
 
-import org.gradle.api.artifacts.ResolveException
 import org.gradle.api.tasks.TaskAction
 
-class Mxmlc extends AbstractMxmlc {
+/*
+ * Gradle task to execute Flex's MXMLC compiler for compiling a test runner for the FlexUnit testing framework.
+ */
+class TestCompile extends AbstractMxmlc {
 
-	private static final String ANT_RESULT_PROPERTY = 'mxmlcCompileResult'
-	private static final String ANT_OUTPUT_PROPERTY = 'mxmlcCompileOutput'
+	private static final String ANT_RESULT_PROPERTY = 'testCompileResult'
+	private static final String ANT_OUTPUT_PROPERTY = 'testCompileOutput'
 	
-    public Mxmlc() {
-        description = 'Compiles Flex application/module (*.swf) using the mxmlc compiler'
+    public TestCompile() {
+        description = 'Compiles test runner SWF for executing FlexUnit tests.'
     }
 
     @TaskAction
-    def compileFlex() {
-		super.compileFlex(ANT_RESULT_PROPERTY, ANT_OUTPUT_PROPERTY, 'Mxmlc', createCompilerArguments())
+    def testCompile() {
+        super.compileFlex(ANT_RESULT_PROPERTY, ANT_OUTPUT_PROPERTY, 'TestCompile', createCompilerArguments()) 
     }
 
-    protected List createCompilerArguments() {
+    private List createCompilerArguments() {
         List compilerArguments = []
 
         //add every source directory
         project.srcDirs.each { sourcePath ->
             compilerArguments.add("-source-path+=" + project.file(sourcePath).path)
         }
+		
+		// additional directories for test code
+		project.testDirs.each { sourcePath ->
+			compilerArguments.add("-source-path+=" + project.file(sourcePath).path)
+		}
 
-        //add dependencies
+		// external and test dependencies will be merged in
         addLibraries(project.configurations.internal.files, project.configurations.internal, "-include-libraries", compilerArguments)
-		addLibraries(project.configurations.external.files - project.configurations.internal.files - project.configurations.merged.files, project.configurations.external, '-external-library-path', compilerArguments)
+		addLibraries(project.configurations.external.files - project.configurations.internal.files - project.configurations.merged.files - project.configurations.test.files, project.configurations.external, '-library-path', compilerArguments)
         addLibraries(project.configurations.merged.files, project.configurations.merged, "-library-path", compilerArguments)
+		addLibraries(project.configurations.test.files, project.configurations.test, "-library-path", compilerArguments)
         addRsls(compilerArguments)
 
         //add all the other user specified compiler options
@@ -52,13 +60,12 @@ class Mxmlc extends AbstractMxmlc {
             compilerArguments.add(compilerOption)
         }
 
-        compilerArguments.add("-output=${project.buildDir.path}/${project.output}.swf" )
+        compilerArguments.add("-output=${project.buildDir.path}/${project.testOutput}.swf" )
 
         //add the target file
-        File mainClassFile = findFile(project.srcDirs, project.mainClass)
-        compilerArguments.add(mainClassFile.absolutePath)
+        File testClassFile = findFile(project.testDirs, project.testClass)
+        compilerArguments.add(testClassFile.absolutePath)
 
         return compilerArguments
     }
-
 }
