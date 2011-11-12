@@ -20,9 +20,9 @@ import org.gradle.api.Project
 
 class FlexAntTasksConfigurator {
 
-    private Project project;
+    private Project project
 
-    public FlexAntTasksConfigurator(Project project) {
+    FlexAntTasksConfigurator(Project project) {
         this.project = project;
     }
 

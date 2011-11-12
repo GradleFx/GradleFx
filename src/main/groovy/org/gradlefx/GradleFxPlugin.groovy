@@ -30,32 +30,18 @@ import org.gradlefx.tasks.CopyResources
 import org.gradlefx.tasks.HtmlWrapper
 import org.gradlefx.tasks.Publish
 import org.gradlefx.tasks.Test
-import org.gradlefx.tasks.TestCompile
-import org.gradlefx.tasks.factory.CompileTaskClassFactory
-import org.gradlefx.tasks.factory.CompileTaskClassFactoryImpl
+import org.gradlefx.tasks.compile.TestCompile
+
+import org.gradlefx.tasks.compile.factory.CompileTaskClassFactoryImpl
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.gradlefx.tasks.AirPackage
+import org.gradlefx.configuration.FlexAntTasksConfigurator
+import org.gradlefx.configuration.FlexUnitAntTasksConfigurator
+import org.gradlefx.tasks.Tasks
+import org.gradlefx.configuration.Configurations
 
 class GradleFxPlugin implements Plugin<Project> {
-
-    public static final String COMPILE_TASK_NAME = 'compile'
-	public static final String TEST_COMPILE_TASK_NAME = 'testCompile'
-    public static final String BUILD_TASK_NAME = 'build'
-    public static final String PACKAGE_TASK_NAME = 'package'
-	public static final String TEST_TASK_NAME = 'test'
-    public static final String PUBLISH_TASK_NAME = 'publish'
-    public static final String COPY_RESOURCES_TASK_NAME = 'copyresources'
-    public static final String CLEAN_TASK_NAME = 'clean'
-    public static final String CREATE_HTML_WRAPPER = 'createHtmlWrapper'
-
-    // configurations
-    public static final String DEFAULT_CONFIGURATION_NAME = 'default'
-    public static final String INTERNAL_CONFIGURATION_NAME = 'internal'
-    public static final String EXTERNAL_CONFIGURATION_NAME = 'external'
-    public static final String MERGE_CONFIGURATION_NAME = 'merged'
-    public static final String RSL_CONFIGURATION_NAME = 'rsl'
-    public static final String TEST_CONFIGURATION_NAME = 'test'
 
     Logger log = LoggerFactory.getLogger('flex')
 
@@ -89,94 +75,73 @@ class GradleFxPlugin implements Plugin<Project> {
     }
 
     private void configureAntWithFlex() {
-        project.ant.property(name: 'FLEX_HOME', value: project.flexHome)
-        project.ant.property(name: 'FLEX_LIB', value: '${FLEX_HOME}/frameworks/libs')
-        project.ant.property(name: 'FLEX_ANT', value: '${FLEX_HOME}/ant')
-        project.ant.property(name: 'FLEX_ANTLIB', value: '${FLEX_ANT}/lib')
-        project.ant.property(name: 'FLEX_PLAYER_LIB', value: "\${FLEX_LIB}/player/${project.playerVersion}")
-
-        project.ant.taskdef(resource: 'flexTasks.tasks') {
-            classpath {
-                fileset(dir: '${FLEX_ANTLIB}') {
-                    include(name: 'flexTasks.jar')
-                }
-            }
-        }
+        new FlexAntTasksConfigurator(project).configure()
     }
 
 	private void configureAntWithFlexUnit() {
-		if (project.flexUnit.home == null) return
-		project.ant.taskdef(resource: 'flexUnitTasks.tasks') {
-			classpath {
-				fileset(dir: project.flexUnit.home) {
-					include(name: project.flexUnit.antTasksJar)
-				}
-			}
-		}
+        new FlexUnitAntTasksConfigurator(project).configure()
 	}
 	
     private void addDefaultConfigurations() {
-        project.configurations.add(DEFAULT_CONFIGURATION_NAME)
-        project.configurations.add(INTERNAL_CONFIGURATION_NAME)
-        project.configurations.add(EXTERNAL_CONFIGURATION_NAME)
-        project.configurations.add(MERGE_CONFIGURATION_NAME)
-        project.configurations.add(RSL_CONFIGURATION_NAME)
-        project.configurations.add(TEST_CONFIGURATION_NAME)
+        project.configurations.add(Configurations.DEFAULT_CONFIGURATION_NAME)
+        project.configurations.add(Configurations.INTERNAL_CONFIGURATION_NAME)
+        project.configurations.add(Configurations.EXTERNAL_CONFIGURATION_NAME)
+        project.configurations.add(Configurations.MERGE_CONFIGURATION_NAME)
+        project.configurations.add(Configurations.RSL_CONFIGURATION_NAME)
+        project.configurations.add(Configurations.TEST_CONFIGURATION_NAME)
     }
 
     private void addBuild() {
-        DefaultTask buildTask = project.tasks.add(BUILD_TASK_NAME, DefaultTask)
+        DefaultTask buildTask = project.tasks.add(Tasks.BUILD_TASK_NAME, DefaultTask)
         buildTask.setDescription("Assembles and tests this project.")
-        buildTask.dependsOn(TEST_TASK_NAME)
+        buildTask.dependsOn(Tasks.TEST_TASK_NAME)
     }
 
     private void addCompile(GradleFxConvention pluginConvention) {
-        CompileTaskClassFactory compileTaskClassFactory = new CompileTaskClassFactoryImpl()
-
-        Class<Task> compileClass = compileTaskClassFactory.createCompileTaskClass(project.type)
-        Task compile = project.tasks.add(COMPILE_TASK_NAME, compileClass)
-        compile.dependsOn(COPY_RESOURCES_TASK_NAME)
+        Class<Task> compileClass = new CompileTaskClassFactoryImpl().createCompileTaskClass(project.type)
+        Task compile = project.tasks.add(Tasks.COMPILE_TASK_NAME, compileClass)
+        compile.dependsOn(Tasks.COPY_RESOURCES_TASK_NAME)
     }
 
     private void addPackage(GradleFxConvention pluginConvention) {
         if(project.type == FlexType.air) {
-            Task packageTask = project.tasks.add(PACKAGE_TASK_NAME, AirPackage)
-            packageTask.dependsOn(COMPILE_TASK_NAME)
+            Task packageTask = project.tasks.add(Tasks.PACKAGE_TASK_NAME, AirPackage)
+            packageTask.dependsOn(Tasks.COMPILE_TASK_NAME)
         }
     }
 	
 	private void addTestCompile() {
-		Task testCompile = project.tasks.add(TEST_COMPILE_TASK_NAME, TestCompile)
+		Task testCompile = project.tasks.add(Tasks.TEST_COMPILE_TASK_NAME, TestCompile)
 		testCompile.description = 'Compile the test runner SWF.'
-		testCompile.dependsOn(COMPILE_TASK_NAME)
+		testCompile.dependsOn(Tasks.COMPILE_TASK_NAME)
 		testCompile.onlyIf{project.testClass != null}
 	}
 	
 	private void addTest() {
-		Task test = project.tasks.add(TEST_TASK_NAME, Test)
+		Task test = project.tasks.add(Tasks.TEST_TASK_NAME, Test)
 		test.description = 'Run the FlexUnit tests.'
-		test.dependsOn(TEST_COMPILE_TASK_NAME)
+		test.dependsOn(Tasks.TEST_COMPILE_TASK_NAME)
 		test.onlyIf{project.testClass != null}
 	}
 
     private void addHtmlWrapper() {
         if (project.type == FlexType.swf) {
-            project.tasks.add(CREATE_HTML_WRAPPER, HtmlWrapper)
+            project.tasks.add(Tasks.CREATE_HTML_WRAPPER, HtmlWrapper)
         }
     }
 
     private void addCopyResources() {
-        project.tasks.add(COPY_RESOURCES_TASK_NAME, CopyResources)
+        project.tasks.add(Tasks.COPY_RESOURCES_TASK_NAME, CopyResources)
     }
 
     private void addClean() {
-        Delete clean = project.tasks.add(CLEAN_TASK_NAME, Delete)
+        Delete clean = project.tasks.add(Tasks.CLEAN_TASK_NAME, Delete)
         clean.description = "Deletes the build directory."
         clean.delete { project.buildDir }
     }
 
     private void addPublish() {
-        project.tasks.add(PUBLISH_TASK_NAME, Publish)
+        project.tasks.add(Tasks.PUBLISH_TASK_NAME, Publish)
     }
 
     private void addDependsOnOtherProjects() {
@@ -207,7 +172,7 @@ class GradleFxPlugin implements Plugin<Project> {
     }
 
     /**
-     * This project is an implementation project when it compiles to a swc or swf file.
+     * This project is an implementation project when its type is filled in.
      * @return
      */
     private Boolean isImplementationProject() {
@@ -222,7 +187,7 @@ class GradleFxPlugin implements Plugin<Project> {
         project.artifacts { ArtifactHandler artifactHandler ->
             File artifactFile = new File(project.buildDir.path + "/" + project.output + "." + project.type)
             def artifact = new DefaultPublishArtifact(project.name, project.type.toString(), project.type.toString(), null, new Date(), artifactFile)
-            artifactHandler."${DEFAULT_CONFIGURATION_NAME}" artifact
+            artifactHandler."${Configurations.DEFAULT_CONFIGURATION_NAME}" artifact
         }
     }
 
