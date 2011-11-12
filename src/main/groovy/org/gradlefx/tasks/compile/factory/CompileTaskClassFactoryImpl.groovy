@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.gradlefx.tasks.factory
+package org.gradlefx.tasks.compile.factory
 
 import org.gradle.api.Task
 import org.gradlefx.FlexType

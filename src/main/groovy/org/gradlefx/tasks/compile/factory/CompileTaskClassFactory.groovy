@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package org.gradlefx.tasks
+package org.gradlefx.tasks.compile.factory
 
-class Amxmlc extends Mxmlc{
+import org.gradle.api.Task
+import org.gradlefx.FlexType
 
-     @Override
-     protected List createCompilerArguments() {
-         List arguments = super.createCompilerArguments()
-         arguments.add(0,"+configname=air")
-         return arguments
-     }
+public interface CompileTaskClassFactory {
+
+    Class<Task> createCompileTaskClass(FlexType flexType);
 }

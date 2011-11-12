@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.gradlefx.tasks
+package org.gradlefx.tasks.compile
 
 import org.gradle.api.tasks.TaskAction
 
