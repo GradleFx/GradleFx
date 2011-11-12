@@ -35,12 +35,14 @@ import org.gradlefx.tasks.factory.CompileTaskClassFactory
 import org.gradlefx.tasks.factory.CompileTaskClassFactoryImpl
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.gradlefx.tasks.AirPackage
 
 class GradleFxPlugin implements Plugin<Project> {
 
     public static final String COMPILE_TASK_NAME = 'compile'
 	public static final String TEST_COMPILE_TASK_NAME = 'testCompile'
     public static final String BUILD_TASK_NAME = 'build'
+    public static final String PACKAGE_TASK_NAME = 'package'
 	public static final String TEST_TASK_NAME = 'test'
     public static final String PUBLISH_TASK_NAME = 'publish'
     public static final String COPY_RESOURCES_TASK_NAME = 'copyresources'
@@ -79,6 +81,7 @@ class GradleFxPlugin implements Plugin<Project> {
             configureAntWithFlex()
 			configureAntWithFlexUnit()
             addCompile(pluginConvention)
+            addPackage()
             addHtmlWrapper()
             addDependsOnOtherProjects()
             addDefaultArtifact()
@@ -133,6 +136,13 @@ class GradleFxPlugin implements Plugin<Project> {
         Class<Task> compileClass = compileTaskClassFactory.createCompileTaskClass(project.type)
         Task compile = project.tasks.add(COMPILE_TASK_NAME, compileClass)
         compile.dependsOn(COPY_RESOURCES_TASK_NAME)
+    }
+
+    private void addPackage(GradleFxConvention pluginConvention) {
+        if(project.type == FlexType.air) {
+            Task packageTask = project.tasks.add(PACKAGE_TASK_NAME, AirPackage)
+            packageTask.dependsOn(COMPILE_TASK_NAME)
+        }
     }
 	
 	private void addTestCompile() {
