@@ -50,6 +50,8 @@ class GradleFxPlugin implements Plugin<Project> {
     public void apply(Project project) {
         this.project = project
 
+        project.apply(plugin: 'base')
+
         GradleFxConvention pluginConvention = new GradleFxConvention(project)
         project.convention.plugins.flex = pluginConvention
 
@@ -57,7 +59,6 @@ class GradleFxPlugin implements Plugin<Project> {
 
         addBuild()
         addCopyResources()
-        addClean()
         addPublish()
 		addTestCompile()
 		addTest()
@@ -83,7 +84,6 @@ class GradleFxPlugin implements Plugin<Project> {
 	}
 	
     private void addDefaultConfigurations() {
-        project.configurations.add(Configurations.DEFAULT_CONFIGURATION_NAME)
         project.configurations.add(Configurations.INTERNAL_CONFIGURATION_NAME)
         project.configurations.add(Configurations.EXTERNAL_CONFIGURATION_NAME)
         project.configurations.add(Configurations.MERGE_CONFIGURATION_NAME)
@@ -134,12 +134,6 @@ class GradleFxPlugin implements Plugin<Project> {
         project.tasks.add(Tasks.COPY_RESOURCES_TASK_NAME, CopyResources)
     }
 
-    private void addClean() {
-        Delete clean = project.tasks.add(Tasks.CLEAN_TASK_NAME, Delete)
-        clean.description = "Deletes the build directory."
-        clean.delete { project.buildDir }
-    }
-
     private void addPublish() {
         project.tasks.add(Tasks.PUBLISH_TASK_NAME, Publish)
     }
@@ -187,6 +181,7 @@ class GradleFxPlugin implements Plugin<Project> {
         project.artifacts { ArtifactHandler artifactHandler ->
             File artifactFile = new File(project.buildDir.path + "/" + project.output + "." + project.type)
             def artifact = new DefaultPublishArtifact(project.name, project.type.toString(), project.type.toString(), null, new Date(), artifactFile)
+            artifactHandler."${Configurations.ARCHIVES_CONFIGURATION_NAME}" artifact
             artifactHandler."${Configurations.DEFAULT_CONFIGURATION_NAME}" artifact
         }
     }
