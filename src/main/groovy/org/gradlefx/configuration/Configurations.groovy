@@ -18,6 +18,7 @@ package org.gradlefx.configuration
 
 class Configurations {
     public static final String DEFAULT_CONFIGURATION_NAME = 'default'
+    public static final String ARCHIVES_CONFIGURATION_NAME = 'archives'
     public static final String INTERNAL_CONFIGURATION_NAME = 'internal'
     public static final String EXTERNAL_CONFIGURATION_NAME = 'external'
     public static final String MERGE_CONFIGURATION_NAME = 'merged'
