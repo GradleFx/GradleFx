@@ -17,6 +17,7 @@
 package org.gradlefx.tasks.compile
 
 import org.gradle.api.tasks.TaskAction
+import org.gradlefx.tasks.Tasks
 
 class Mxmlc extends AbstractMxmlc {
 
@@ -25,6 +26,7 @@ class Mxmlc extends AbstractMxmlc {
 	
     public Mxmlc() {
         description = 'Compiles Flex application/module (*.swf) using the mxmlc compiler'
+        dependsOn(Tasks.COPY_RESOURCES_TASK_NAME)
     }
 
     @TaskAction

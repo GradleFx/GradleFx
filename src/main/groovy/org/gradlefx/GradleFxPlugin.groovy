@@ -99,8 +99,7 @@ class GradleFxPlugin implements Plugin<Project> {
 
     private void addCompile(GradleFxConvention pluginConvention) {
         Class<Task> compileClass = new CompileTaskClassFactoryImpl().createCompileTaskClass(project.type)
-        Task compile = project.tasks.add(Tasks.COMPILE_TASK_NAME, compileClass)
-        compile.dependsOn(Tasks.COPY_RESOURCES_TASK_NAME)
+        project.tasks.add(Tasks.COMPILE_TASK_NAME, compileClass)
     }
 
     private void addPackage(GradleFxConvention pluginConvention) {
