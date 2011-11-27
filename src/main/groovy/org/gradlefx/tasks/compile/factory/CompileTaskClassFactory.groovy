@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package org.gradlefx
+package org.gradlefx.tasks.compile.factory
 
-enum FlexType {
-    swf,
-    swc,
-    air
+import org.gradle.api.Task
+import org.gradlefx.FlexType
+
+public interface CompileTaskClassFactory {
+
+    Class<Task> createCompileTaskClass(FlexType flexType);
 }

@@ -74,6 +74,10 @@ class GradleFxConvention {
 	// FlexUnit properties
 	def flexUnit
 
+    // AIR packaging properties
+    def air
+
+
     def GradleFxConvention(Project project) {
         this.project = project
 
@@ -94,7 +98,7 @@ class GradleFxConvention {
 			home:            System.getenv()['FLEXUNIT_HOME'],
 			antTasksJar:     'flexUnitTasks-4.1.0-8.jar',
 			player:          'flash',
-			command:         null,
+			command:         System.getenv()['FLASH_PLAYER_EXE'],
 			swf:             "${project.buildDirName}/${testOutput}.swf",
 			toDir:           "${project.buildDirName}/reports",
 			workingDir:      project.path,
@@ -108,6 +112,12 @@ class GradleFxConvention {
 			headless:        'false',
 			display:         '99'
 		]
+
+        air = [
+            keystore:               "${project.name}.p12",
+            storepass:              null,
+            applicationDescriptor:  "/src/main/actionscript/${project.name}.xml",
+        ]
 		
         project.afterEvaluate {
             initializeEmptyProperties()
@@ -116,11 +126,6 @@ class GradleFxConvention {
 
     public def initializeEmptyProperties() {
 		output = output ?: project.name
-		
-		// cheap OS check for Windows platform
-		if(System.properties['file.separator'] == '\\') {
-			flexUnit.command = flexUnit.command ?: "${flexHome}/runtimes/player/10.1/win/FlashPlayerDebugger.exe"
-		}
     }
 }
 

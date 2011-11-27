@@ -14,10 +14,27 @@
  * limitations under the License.
  */
 
-package org.gradlefx
+package org.gradlefx.configuration
 
-enum FlexType {
-    swf,
-    swc,
-    air
+import org.gradle.api.Project
+
+class FlexUnitAntTasksConfigurator {
+
+    private Project project
+
+    FlexUnitAntTasksConfigurator(Project project) {
+        this.project = project;
+    }
+
+    public void configure() {
+        if (project.flexUnit.home == null) return
+
+        project.ant.taskdef(resource: 'flexUnitTasks.tasks') {
+            classpath {
+                fileset(dir: project.flexUnit.home) {
+                    include(name: project.flexUnit.antTasksJar)
+                }
+            }
+        }
+    }
 }

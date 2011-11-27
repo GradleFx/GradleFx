@@ -1,5 +1,13 @@
 h2. GradleFx changelog
 
+h3. v0.4
+
+* added support for AIR projects
+* the copyresources task is now only available in non-swc type projects
+* resources in the directories specified with the resourceDirs property are now included in the swc file
+* put everything in place to make GradleFx compatible with the Maven plugin (there's still an outstanding bug in the Gradle bugtracker, see http://issues.gradle.org/browse/GRADLE-1963)
+* fixed some FlexUnit support related issues
+
 h3. v0.3.2
 
 ATTENTION: Gradle 1.0 milestone 5 is required from now on.

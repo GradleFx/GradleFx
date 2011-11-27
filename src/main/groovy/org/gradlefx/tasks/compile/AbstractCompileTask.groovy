@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.gradlefx.tasks
+package org.gradlefx.tasks.compile
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.Configuration
@@ -52,7 +52,7 @@ abstract class AbstractCompileTask extends DefaultTask {
                 if (!dependency.exists()) {
                     String errorMessage = "Couldn't find the ${dependency.name} file - are you sure the path is correct? "
                     errorMessage += "Dependency path: " + dependency.path
-                    throw new ResolveException(configuration, errorMessage)
+                    throw new ResolveException(configuration, new Throwable(errorMessage))
                 }
 
                 compilerArguments.add(compilerArgument + "+=" + dependency.path);

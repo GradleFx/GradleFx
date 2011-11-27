@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.gradlefx.tasks
+package org.gradlefx.tasks.compile
 
-import org.gradle.api.artifacts.ResolveException
 import org.gradle.api.tasks.TaskAction
+import org.gradlefx.tasks.Tasks
 
 class Mxmlc extends AbstractMxmlc {
 
@@ -26,6 +26,7 @@ class Mxmlc extends AbstractMxmlc {
 	
     public Mxmlc() {
         description = 'Compiles Flex application/module (*.swf) using the mxmlc compiler'
+        dependsOn(Tasks.COPY_RESOURCES_TASK_NAME)
     }
 
     @TaskAction
@@ -33,7 +34,7 @@ class Mxmlc extends AbstractMxmlc {
 		super.compileFlex(ANT_RESULT_PROPERTY, ANT_OUTPUT_PROPERTY, 'Mxmlc', createCompilerArguments())
     }
 
-    private List createCompilerArguments() {
+    protected List createCompilerArguments() {
         List compilerArguments = []
 
         //add every source directory

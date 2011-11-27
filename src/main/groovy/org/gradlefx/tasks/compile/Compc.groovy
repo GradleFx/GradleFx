@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package org.gradlefx.tasks
+package org.gradlefx.tasks.compile
 
 import org.gradle.api.tasks.TaskAction
+import groovy.io.FileType
+import org.gradle.api.internal.file.BaseDirFileResolver
 
 /*
  * Gradle task to execute Flex's Compc compiler.
@@ -58,11 +60,9 @@ class Compc extends AbstractCompileTask {
         List compilerArguments = []
 
         //add every source path
-        project.srcDirs.each { sourcePath ->
-            compilerArguments.add("-source-path+=" + project.file(sourcePath).path)
-        }
-
+        addSourcePaths(compilerArguments)
         addSourceFilesAndDirectories(compilerArguments)
+        addResources(compilerArguments)
 
         //add dependencies
         addLibraries(project.configurations.internal.files, project.configurations.internal, "-include-libraries", compilerArguments)
@@ -78,10 +78,39 @@ class Compc extends AbstractCompileTask {
         return compilerArguments
     }
 
+    private def addResources(List compilerArguments) {
+        project.resourceDirs.each { String resourceDirString ->
+            File resourceDir = project.file(resourceDirString)
+
+            if(resourceDir.exists()) {
+                resourceDir.traverse(type: FileType.FILES) {
+                    compilerArguments.add("-include-file")
+                    compilerArguments.add("/" + new BaseDirFileResolver(resourceDir).resolveAsRelativePath(it.path).replace('\\', '/'))
+                    compilerArguments.add(it.path)
+                }
+            }
+
+        }
+    }
+
+    private def addSourcePaths(List compilerArguments) {
+        project.srcDirs.each { sourcePath ->
+            File sourcePathDir = project.file(sourcePath)
+
+            if(sourcePathDir.exists()) {
+                compilerArguments.add("-source-path+=" + project.file(sourcePath).path)
+            }
+        }
+    }
+
     private def addSourceFilesAndDirectories(List compilerArguments) {
         if (project.includeClasses == null && project.includeSources == null) {
             project.srcDirs.each { sourcePath ->
-                compilerArguments.add("-include-sources+=" + project.file(sourcePath).path)
+                File sourceDir = project.file(sourcePath)
+
+                if(sourceDir.exists()) {
+                    compilerArguments.add("-include-sources+=" + sourceDir.path)
+                }
             }
         } else {
             if (project.includeClasses != null) {

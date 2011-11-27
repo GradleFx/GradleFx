@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-package org.gradlefx.tasks
+package org.gradlefx.tasks.compile
 
-import org.gradle.api.artifacts.ResolveException
-import org.gradle.api.logging.LogLevel
 import org.gradle.api.tasks.TaskAction
 
 /*

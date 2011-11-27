@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package org.gradlefx.tasks.factory
+package org.gradlefx.tasks.compile.factory
 
 import org.gradle.api.Task
 import org.gradlefx.FlexType
-import org.gradlefx.tasks.Compc
-import org.gradlefx.tasks.Mxmlc
-import org.gradlefx.tasks.NullCompileTask
+import org.gradlefx.tasks.compile.Compc
+import org.gradlefx.tasks.compile.Mxmlc
+import org.gradlefx.tasks.compile.NullCompileTask
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.gradlefx.tasks.compile.Amxmlc
 
 class CompileTaskClassFactoryImpl implements CompileTaskClassFactory {
 
@@ -34,6 +35,8 @@ class CompileTaskClassFactoryImpl implements CompileTaskClassFactory {
                 return Compc.class
             case FlexType.swf:
                 return Mxmlc.class
+            case FlexType.air:
+                return Amxmlc.class
             default:
                 log.warn "Adding compile task using an empty implementation"
                 return NullCompileTask.class

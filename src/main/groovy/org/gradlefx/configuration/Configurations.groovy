@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-package org.gradlefx.tasks.factory
+package org.gradlefx.configuration
 
-import org.gradle.api.Task
-import org.gradlefx.FlexType
-
-public interface CompileTaskClassFactory {
-
-    Class<Task> createCompileTaskClass(FlexType flexType);
+class Configurations {
+    public static final String DEFAULT_CONFIGURATION_NAME = 'default'
+    public static final String ARCHIVES_CONFIGURATION_NAME = 'archives'
+    public static final String INTERNAL_CONFIGURATION_NAME = 'internal'
+    public static final String EXTERNAL_CONFIGURATION_NAME = 'external'
+    public static final String MERGE_CONFIGURATION_NAME = 'merged'
+    public static final String RSL_CONFIGURATION_NAME = 'rsl'
+    public static final String TEST_CONFIGURATION_NAME = 'test'
 }

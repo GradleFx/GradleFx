@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
-package org.gradlefx
+package org.gradlefx.tasks.compile
 
-enum FlexType {
-    swf,
-    swc,
-    air
+class Amxmlc extends Mxmlc{
+
+     @Override
+     protected List createCompilerArguments() {
+         List arguments = super.createCompilerArguments()
+         arguments.add(0,"+configname=air")
+         return arguments
+     }
 }
