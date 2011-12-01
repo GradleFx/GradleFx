@@ -1,7 +1,7 @@
 h2. GradleFx: A Gradle plugin for building Flex projects
 
 GradleFx is a Gradle plugin which adds some common targets used in almost every Flex/Actionscript project.
-It can create both SWC and SWF files. The plugin uses the compc and mxmlc java tasks under the hood.
+It can create both SWC,SWF and AIR files. The plugin uses the compc and mxmlc java tasks under the hood.
 All compiler arguments are supported. Some are automatically filled in by the plugin (like source directory,
 dependencies) and other more specific arguments can be provided to the plugin by adding them on the
 additionalCompilerOptions convention property.
