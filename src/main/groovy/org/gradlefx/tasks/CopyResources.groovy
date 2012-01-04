@@ -28,7 +28,7 @@ class CopyResources extends DefaultTask {
     @TaskAction
     def copyResources() {
         project.resourceDirs.each { resourceDir ->
-            def fromLocation = project.projectDir.path + resourceDir
+            def fromLocation = project.file(resourceDir).path
             def toLocation = project.buildDir.path
 
             logger.info('from ' + fromLocation + ' to ' + toLocation)
