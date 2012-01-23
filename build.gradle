@@ -22,12 +22,8 @@ apply plugin: 'maven'
 apply plugin: 'signing'
 
 group = 'org.gradlefx'
-version = '0.4'
+version = '0.4.1'
 packaging = 'jar'
-
-configurations {
-    published.extendsFrom archives, signatures
-}
 
 repositories {
     mavenCentral()
@@ -59,7 +55,7 @@ signing {
     sign configurations.archives
 }
 
-uploadPublished {
+uploadArchives {
     repositories {
         mavenDeployer {
             beforeDeployment { MavenDeployment deployment -> signPom(deployment) }
