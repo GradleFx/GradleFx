@@ -9,6 +9,7 @@ additionalCompilerOptions convention property.
 It adds the following tasks:
 * compile
 * compileTest
+* package
 * test
 * createHtmlWrapper
 * build
