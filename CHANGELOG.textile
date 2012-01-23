@@ -1,5 +1,9 @@
 h2. GradleFx changelog
 
+h3. v0.4.1
+
+* fixed the copyresources task
+
 h3. v0.4
 
 * added support for AIR projects
