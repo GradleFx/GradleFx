@@ -95,11 +95,7 @@ class Compc extends AbstractCompileTask {
 
     private def addSourcePaths(List compilerArguments) {
         project.srcDirs.each { sourcePath ->
-            File sourcePathDir = project.file(sourcePath)
-
-            if(sourcePathDir.exists()) {
-                compilerArguments.add("-source-path+=" + project.file(sourcePath).path)
-            }
+            compilerArguments.add("-source-path+=" + project.file(sourcePath).path)
         }
     }
 
@@ -108,9 +104,7 @@ class Compc extends AbstractCompileTask {
             project.srcDirs.each { sourcePath ->
                 File sourceDir = project.file(sourcePath)
 
-                if(sourceDir.exists()) {
-                    compilerArguments.add("-include-sources+=" + sourceDir.path)
-                }
+                compilerArguments.add("-include-sources+=" + sourceDir.path)
             }
         } else {
             if (project.includeClasses != null) {
