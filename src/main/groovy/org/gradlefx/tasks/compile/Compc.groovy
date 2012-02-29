@@ -19,6 +19,7 @@ package org.gradlefx.tasks.compile
 import org.gradle.api.tasks.TaskAction
 import groovy.io.FileType
 import org.gradle.api.internal.file.BaseDirFileResolver
+import org.gradle.internal.nativeplatform.GenericFileSystem
 
 /*
  * Gradle task to execute Flex's Compc compiler.
@@ -85,7 +86,7 @@ class Compc extends AbstractCompileTask {
             if(resourceDir.exists()) {
                 resourceDir.traverse(type: FileType.FILES) {
                     compilerArguments.add("-include-file")
-                    compilerArguments.add("/" + new BaseDirFileResolver(resourceDir).resolveAsRelativePath(it.path).replace('\\', '/'))
+                    compilerArguments.add("/" + new BaseDirFileResolver(new GenericFileSystem(), resourceDir).resolveAsRelativePath(it.path).replace('\\', '/'))
                     compilerArguments.add(it.path)
                 }
             }
