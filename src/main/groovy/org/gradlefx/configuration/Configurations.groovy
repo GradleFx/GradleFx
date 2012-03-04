@@ -24,4 +24,5 @@ class Configurations {
     public static final String MERGE_CONFIGURATION_NAME = 'merged'
     public static final String RSL_CONFIGURATION_NAME = 'rsl'
     public static final String TEST_CONFIGURATION_NAME = 'test'
+    public static final String THEME_CONFIGURATION_NAME = 'theme'
 }

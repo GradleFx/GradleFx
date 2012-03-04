@@ -89,6 +89,7 @@ class GradleFxPlugin implements Plugin<Project> {
         project.configurations.add(Configurations.MERGE_CONFIGURATION_NAME)
         project.configurations.add(Configurations.RSL_CONFIGURATION_NAME)
         project.configurations.add(Configurations.TEST_CONFIGURATION_NAME)
+        project.configurations.add(Configurations.THEME_CONFIGURATION_NAME)
     }
 
     private void addBuild() {
