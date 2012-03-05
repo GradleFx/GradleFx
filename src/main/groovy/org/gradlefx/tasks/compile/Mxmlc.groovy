@@ -38,9 +38,8 @@ class Mxmlc extends AbstractMxmlc {
         List compilerArguments = []
 
         //add every source directory
-        project.srcDirs.each { sourcePath ->
-            compilerArguments.add("-source-path+=" + project.file(sourcePath).path)
-        }
+        addSourcePaths(compilerArguments)
+        addLocales(compilerArguments)
 
         //add dependencies
         addLibraries(project.configurations.internal.files, project.configurations.internal, "-include-libraries", compilerArguments)
