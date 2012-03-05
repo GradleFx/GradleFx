@@ -73,7 +73,7 @@ abstract class AbstractCompileTask extends DefaultTask {
     protected void addLibraries(Set libraryFiles, Configuration configuration, String compilerArgument, List compilerArguments) {
         libraryFiles.each { dependency ->
             //only add swc dependencies, no use in adding pom dependencies
-            if (dependency.name.endsWith(FlexType.swc.toString())) {
+            if (dependency.name.endsWith(FlexType.swc.toString()) || dependency.isDirectory()) {
                 if (!dependency.exists()) {
                     String errorMessage = "Couldn't find the ${dependency.name} file - are you sure the path is correct? "
                     errorMessage += "Dependency path: " + dependency.path
