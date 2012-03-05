@@ -20,8 +20,6 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ResolveException
 import org.gradlefx.FlexType
-import org.slf4j.LoggerFactory
-import org.slf4j.Logger
 
 abstract class AbstractCompileTask extends DefaultTask {
 
@@ -39,6 +37,33 @@ abstract class AbstractCompileTask extends DefaultTask {
     private def initOutputDirectory() {
         outputs.dir project.buildDir
     }
+    
+    /**
+     * Adds all the source paths (project.srcDirs) including the locale path (project.localeDir) as compile arguments
+     * @param compilerArguments
+     */
+    protected void addSourcePaths(List compilerArguments) {
+        //add locale path to source paths if any locales are defined
+        if (project.locales && project.locales.size()) {
+            project.srcDirs.add project.localeDir
+        }
+        
+        project.srcDirs.each { sourcePath ->
+            File sourcePathDir = project.file(sourcePath)
+            String path = project.file(sourcePath).path
+            if (sourcePath == project.localeDir) path += '/{locale}'
+
+            if (sourcePathDir.exists() || sourcePath.contains('{')) {
+                compilerArguments.add("-source-path+=" + path)
+            }
+        }
+    }
+    
+    protected void addLocales(List compilerArguments) {
+        if (project.locales && project.locales.size()) {
+            compilerArguments.add("-locale=" + project.locales.join(','))
+        }
+    }
 
     /**
      * Adds all the dependencies for the given configuration as compile arguments
@@ -48,7 +73,7 @@ abstract class AbstractCompileTask extends DefaultTask {
     protected void addLibraries(Set libraryFiles, Configuration configuration, String compilerArgument, List compilerArguments) {
         libraryFiles.each { dependency ->
             //only add swc dependencies, no use in adding pom dependencies
-            if (dependency.name.endsWith(FlexType.swc.toString()) || dependency.isDirectory()) {
+            if (dependency.name.endsWith(FlexType.swc.toString())) {
                 if (!dependency.exists()) {
                     String errorMessage = "Couldn't find the ${dependency.name} file - are you sure the path is correct? "
                     errorMessage += "Dependency path: " + dependency.path
