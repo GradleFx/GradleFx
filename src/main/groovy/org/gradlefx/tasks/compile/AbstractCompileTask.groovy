@@ -20,8 +20,6 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ResolveException
 import org.gradlefx.FlexType
-import org.slf4j.LoggerFactory
-import org.slf4j.Logger
 
 abstract class AbstractCompileTask extends DefaultTask {
 
@@ -38,6 +36,33 @@ abstract class AbstractCompileTask extends DefaultTask {
 
     private def initOutputDirectory() {
         outputs.dir project.buildDir
+    }
+    
+    /**
+     * Adds all the source paths (project.srcDirs) including the locale path (project.localeDir) as compile arguments
+     * @param compilerArguments
+     */
+    protected void addSourcePaths(List compilerArguments) {
+        //add locale path to source paths if any locales are defined
+        if (project.locales && project.locales.size()) {
+            project.srcDirs.add project.localeDir
+        }
+        
+        project.srcDirs.each { sourcePath ->
+            File sourcePathDir = project.file(sourcePath)
+            String path = project.file(sourcePath).path
+            if (sourcePath == project.localeDir) path += '/{locale}'
+
+            if (sourcePathDir.exists() || sourcePath.contains('{')) {
+                compilerArguments.add("-source-path+=" + path)
+            }
+        }
+    }
+    
+    protected void addLocales(List compilerArguments) {
+        if (project.locales && project.locales.size()) {
+            compilerArguments.add("-locale=" + project.locales.join(','))
+        }
     }
 
     /**

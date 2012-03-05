@@ -64,6 +64,7 @@ class Compc extends AbstractCompileTask {
         addSourcePaths(compilerArguments)
         addSourceFilesAndDirectories(compilerArguments)
         addResources(compilerArguments)
+        addLocales(compilerArguments)
 
         //add dependencies
         addLibraries(project.configurations.internal.files, project.configurations.internal, "-include-libraries", compilerArguments)
@@ -91,16 +92,6 @@ class Compc extends AbstractCompileTask {
                 }
             }
 
-        }
-    }
-
-    private def addSourcePaths(List compilerArguments) {
-        project.srcDirs.each { sourcePath ->
-            File sourcePathDir = project.file(sourcePath)
-            //don't allow non existing source paths unless they contain a token (e.g. {locale})
-            if(sourcePathDir.exists() || sourcePath.contains('{')) {
-                compilerArguments.add("-source-path+=" + project.file(sourcePath).path)
-            }
         }
     }
 
