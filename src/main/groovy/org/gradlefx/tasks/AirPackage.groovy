@@ -17,11 +17,13 @@
 package org.gradlefx.tasks
 
 import org.gradle.api.DefaultTask
+import org.gradle.api.file.ConfigurableFileTree
+import org.gradle.api.file.FileTreeElement
 import org.gradle.api.tasks.TaskAction
 import org.gradlefx.FlexType
 
 class AirPackage extends DefaultTask {
-
+    
     private static final String ANT_RESULT_PROPERTY = 'airPackageResult'
     private static final String ANT_OUTPUT_PROPERTY = 'airPackageOutput'
 
@@ -50,18 +52,43 @@ class AirPackage extends DefaultTask {
     }
 
     private List createCompilerArguments() {
-        return [
-            "-package",
-            "-storetype",
-            "pkcs12",
-            "-keystore",
-            project.air.keystore,
-            "-storepass",
-            project.air.storepass,
-            new File(project.buildDir.absolutePath, project.output + ".air").absolutePath,
+        List airOptions = ["-package"]
+
+        addAirSigningOptions(airOptions)
+
+        airOptions.addAll([
+            new File(project.buildDir.absolutePath, project.output).absolutePath,
             project.relativePath(project.air.applicationDescriptor),
             project.relativePath("${project.buildDirName}/${project.output}.${FlexType.swf}")
-        ]
+        ])
+
+        addFiles(airOptions)
+
+        return airOptions
+    }
+
+    private void addFiles(List compilerOptions) {
+        project.air.includeFileTrees.each { ConfigurableFileTree fileTree ->
+            compilerOptions.add("-C")
+            compilerOptions.add(fileTree.dir.absolutePath)
+
+            fileTree.visit { FileTreeElement file ->
+                if(!file.isDirectory()) {
+                    compilerOptions.add(file.relativePath)
+                }
+            }
+        }
+    }
+
+    private void addAirSigningOptions(List compilerOptions) {
+        compilerOptions.addAll([
+                "-storetype",
+                "pkcs12",
+                "-keystore",
+                project.air.keystore,
+                "-storepass",
+                project.air.storepass
+        ])
     }
 
     def handlePackageIfFailed(antResultProperty, antOutputProperty) {

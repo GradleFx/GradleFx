@@ -123,6 +123,7 @@ class GradleFxConvention {
             keystore:               "${project.name}.p12",
             storepass:              null,
             applicationDescriptor:  "/src/main/actionscript/${project.name}.xml",
+            includeFileTrees:       null
         ]
 		
         project.afterEvaluate {
