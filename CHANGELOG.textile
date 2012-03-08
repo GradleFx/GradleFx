@@ -1,5 +1,17 @@
 h2. GradleFx changelog
 
+h3. v0.4.2
+
+ATTENTION: Gradle 1.0 milestone 8 is required from now on.
+
+* issue 30: Added a localization convention property
+* issue 28: Fixed incompatibility between compc and mxmlc compiler arguments when unit testing a library
+* issue 24: Added an 'air.includeFileTrees' property which can be used to include file into an AIR package
+* issue 23: Added 'theme' dependency scope which makes it easier to add themes
+* issue 22: Fixed compatibility with Gradle 1.0 milestone 8
+* issue 18: Added support for adding folders as file-based dependencies
+* issue 19: Tokens are now allowed in srcDirs parameters (e.g. 'src/resources/{locale}'
+
 h3. v0.4.1
 
 * fixed the copyresources task

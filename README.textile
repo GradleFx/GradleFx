@@ -23,6 +23,7 @@ The plugin has support for the following dependency scopes:
 * merged
 * rsl
 * test
+* theme
 
 h2. Useful links
 * Documentation: "https://github.com/GradleFx/GradleFx/wiki":https://github.com/GradleFx/GradleFx/wiki
@@ -34,4 +35,5 @@ h2. Useful links
 h2. Upcoming features
 * IDEA and Eclipse project generation support
 * AS3Doc generation
+* Mobile support
 
