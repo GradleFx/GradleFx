@@ -22,7 +22,7 @@ apply plugin: 'maven'
 apply plugin: 'signing'
 
 group = 'org.gradlefx'
-version = '0.4.1'
+version = '0.4.2'
 packaging = 'jar'
 
 repositories {
@@ -31,7 +31,7 @@ repositories {
 
 dependencies {
     compile gradleApi()
-    groovy group: 'org.codehaus.groovy', name: 'groovy', version: '1.7.10'
+    groovy group: 'org.codehaus.groovy', name: 'groovy', version: '1.8.6'
 }
 
 task groovydocJar(type: Jar, dependsOn: groovydoc) {
@@ -50,6 +50,14 @@ artifacts {
     archives sourcesJar
 }
 
+task wrapper(type: Wrapper) {
+    group = 'Buildmaster'
+    description = 'Generates gradlew and gradlew.bat bootstrap scripts'
+    gradleVersion = '1.0-milestone-8'
+    // place jar file and properties into a subdirectory to avoid root dir clutter
+    jarFile = 'buildSrc/wrapper/gradle.jar'
+}
+
 //********* artifact signing *********
 signing {
     sign configurations.archives
@@ -58,7 +66,7 @@ signing {
 uploadArchives {
     repositories {
         mavenDeployer {
-            beforeDeployment { MavenDeployment deployment -> signPom(deployment) }
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
             repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
               authentication(userName: sonatypeUsername, password: sonatypePassword)
@@ -94,21 +102,6 @@ uploadArchives {
                        name 'Steven Dick'
                    }
                }
-           }
-
-           //mess with the generated pom to set the 'packaging' tag
-           pom.withXml { XmlProvider xmlProvider ->
-               def xml = xmlProvider.asString()
-               def pomXml = new XmlParser().parse(new ByteArrayInputStream(xml.toString().bytes))
-
-               pomXml.version[0] + { packaging('jar') }
-
-               def newXml = new StringWriter()
-               def printer = new XmlNodePrinter(new PrintWriter(newXml))
-               printer.preserveWhitespace = true
-               printer.print(pomXml)
-               xml.setLength(0)
-               xml.append(newXml.toString())
            }
         }
     }

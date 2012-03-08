@@ -17,6 +17,7 @@
 package org.gradlefx.tasks.compile
 
 import org.gradle.api.tasks.TaskAction
+import org.slf4j.LoggerFactory
 
 /*
  * Gradle task to execute Flex's MXMLC compiler for compiling a test runner for the FlexUnit testing framework.
@@ -25,6 +26,9 @@ class TestCompile extends AbstractMxmlc {
 
 	private static final String ANT_RESULT_PROPERTY = 'testCompileResult'
 	private static final String ANT_OUTPUT_PROPERTY = 'testCompileOutput'
+
+    private static final List<String> COMPC_COMPILER_OPTIONS = ['-compute-digest', '-directory', '-include-classes',
+            '-include-file', '-include-lookup-only', '-include-namespaces', '-include-sources', '-include-stylesheet']
 	
     public TestCompile() {
         description = 'Compiles test runner SWF for executing FlexUnit tests.'
@@ -57,7 +61,9 @@ class TestCompile extends AbstractMxmlc {
 
         //add all the other user specified compiler options
         project.additionalCompilerOptions.each { compilerOption ->
-            compilerArguments.add(compilerOption)
+            if(!isCompcOption(compilerOption)) {
+                compilerArguments.add(compilerOption)
+            }
         }
 
         compilerArguments.add("-output=${project.buildDir.path}/${project.testOutput}.swf" )
@@ -67,5 +73,9 @@ class TestCompile extends AbstractMxmlc {
         compilerArguments.add(testClassFile.absolutePath)
 
         return compilerArguments
+    }
+
+    boolean isCompcOption(String compilerOption) {
+        return COMPC_COMPILER_OPTIONS.contains(compilerOption.split(" |=")[0])
     }
 }

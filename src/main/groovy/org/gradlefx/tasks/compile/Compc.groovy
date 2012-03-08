@@ -19,6 +19,7 @@ package org.gradlefx.tasks.compile
 import org.gradle.api.tasks.TaskAction
 import groovy.io.FileType
 import org.gradle.api.internal.file.BaseDirFileResolver
+import org.gradle.internal.nativeplatform.GenericFileSystem
 
 /*
  * Gradle task to execute Flex's Compc compiler.
@@ -63,6 +64,7 @@ class Compc extends AbstractCompileTask {
         addSourcePaths(compilerArguments)
         addSourceFilesAndDirectories(compilerArguments)
         addResources(compilerArguments)
+        addLocales(compilerArguments)
 
         //add dependencies
         addLibraries(project.configurations.internal.files, project.configurations.internal, "-include-libraries", compilerArguments)
@@ -85,21 +87,11 @@ class Compc extends AbstractCompileTask {
             if(resourceDir.exists()) {
                 resourceDir.traverse(type: FileType.FILES) {
                     compilerArguments.add("-include-file")
-                    compilerArguments.add("/" + new BaseDirFileResolver(resourceDir).resolveAsRelativePath(it.path).replace('\\', '/'))
+                    compilerArguments.add("/" + new BaseDirFileResolver(new GenericFileSystem(), resourceDir).resolveAsRelativePath(it.path).replace('\\', '/'))
                     compilerArguments.add(it.path)
                 }
             }
 
-        }
-    }
-
-    private def addSourcePaths(List compilerArguments) {
-        project.srcDirs.each { sourcePath ->
-            File sourcePathDir = project.file(sourcePath)
-
-            if(sourcePathDir.exists()) {
-                compilerArguments.add("-source-path+=" + project.file(sourcePath).path)
-            }
         }
     }
 
@@ -108,7 +100,8 @@ class Compc extends AbstractCompileTask {
             project.srcDirs.each { sourcePath ->
                 File sourceDir = project.file(sourcePath)
 
-                if(sourceDir.exists()) {
+                //don't allow non existing source paths unless they contain a token (e.g. {locale})
+                if(sourceDir.exists() || sourcePath.contains('{')) {
                     compilerArguments.add("-include-sources+=" + sourceDir.path)
                 }
             }

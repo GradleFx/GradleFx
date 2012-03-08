@@ -41,6 +41,12 @@ class GradleFxConvention {
 
     //test resource directories
     def testResourceDirs = ['src/test/resources']
+    
+    //locale root directory
+    def localeDir = 'src/main/locale'
+    
+    //array of locales; maps to the locale compiler option
+    def locales = []
 
     //equivalent of the include-classes compiler option
     List includeClasses;
@@ -117,6 +123,7 @@ class GradleFxConvention {
             keystore:               "${project.name}.p12",
             storepass:              null,
             applicationDescriptor:  "/src/main/actionscript/${project.name}.xml",
+            includeFileTrees:       null
         ]
 		
         project.afterEvaluate {
