@@ -59,7 +59,7 @@ class AirPackage extends DefaultTask {
         airOptions.addAll([
             new File(project.buildDir.absolutePath, project.output).absolutePath,
             project.relativePath(project.air.applicationDescriptor),
-            project.relativePath("${project.buildDirName}/${project.output}.${FlexType.swf}")
+            project.relativePath("${project.buildDir}/${project.output}.${FlexType.swf}")
         ])
 
         addFiles(airOptions)
