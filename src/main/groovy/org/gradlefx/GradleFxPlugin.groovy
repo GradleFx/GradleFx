@@ -60,7 +60,6 @@ class GradleFxPlugin implements Plugin<Project> {
         addBuild()
         addCopyResources()
         addPublish()
-		addTestCompile()
 		addTest()
 
         //do these tasks in the afterEvaluate phase because they need property access
@@ -110,18 +109,9 @@ class GradleFxPlugin implements Plugin<Project> {
         }
     }
 	
-	private void addTestCompile() {
-		Task testCompile = project.tasks.add(Tasks.TEST_COMPILE_TASK_NAME, TestCompile)
-		testCompile.description = 'Compile the test runner SWF.'
-		testCompile.dependsOn(Tasks.COMPILE_TASK_NAME)
-		testCompile.onlyIf{project.testClass != null}
-	}
-	
 	private void addTest() {
 		Task test = project.tasks.add(Tasks.TEST_TASK_NAME, Test)
 		test.description = 'Run the FlexUnit tests.'
-		test.dependsOn(Tasks.TEST_COMPILE_TASK_NAME)
-		test.onlyIf{project.testClass != null}
 	}
 
     private void addHtmlWrapper() {

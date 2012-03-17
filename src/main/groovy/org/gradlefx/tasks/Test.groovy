@@ -19,6 +19,8 @@ package org.gradlefx.tasks
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.logging.LogLevel
+import org.gradle.api.file.FileTree
+import org.gradle.api.file.FileTreeElement
 
 /*
  * A Gradle task to execute FlexUnit tests.
@@ -27,7 +29,7 @@ import org.gradle.api.logging.LogLevel
 class Test extends DefaultTask {
 
     public Test() {
-        description = "Run the FlexUnit unit tests."
+        description = "Run the FlexUnit tests."
         logging.setLevel(LogLevel.INFO)
     }
 
@@ -37,13 +39,16 @@ class Test extends DefaultTask {
 
 		// you can't write to a directory that doesn't exist
 		if(!reportDir.exists()) reportDir.mkdirs()
-		
-		project.flexUnit.swf = project.flexUnit.swf ?: project.testOutput 
+        
+        Set<File> libraries = project.configurations.internal.files +
+                project.configurations.external.files +
+                project.configurations.merged.files +
+                project.configurations.test.files
+
 		
 		ant.flexunit(
 			player:          project.flexUnit.player, 
 			command:         project.flexUnit.command,
-			swf:             project.flexUnit.swf,
 			toDir:           project.flexUnit.toDir,
 			workingDir:      project.flexUnit.workingDir,
 			haltonfailure:   project.flexUnit.haltOnFailure,
@@ -54,7 +59,31 @@ class Test extends DefaultTask {
 			timeout:         project.flexUnit.timeout,
 			failureproperty: project.flexUnit.failureproperty,
 			headless:        project.flexUnit.headless,
-			display:         project.flexUnit.display)
+			display:         project.flexUnit.display) {
+
+            project.srcDirs.each { String srcDir ->
+                source(dir: project.file(srcDir).path)
+            }
+
+            project.testDirs.each { String testDir ->
+                FileTree fileTree = project.fileTree(testDir)
+                fileTree.includes = project.flexUnit.includes
+                fileTree.excludes = project.flexUnit.excludes
+
+                fileTree.visit { FileTreeElement includedFile ->
+                    testSource(dir: project.file(testDir).path) {
+                        include(name: includedFile.relativePath)
+                    }
+                }
+            }
+            
+            libraries.each { File libraryFile ->
+                library(dir: libraryFile.parent) {
+                    include(name: libraryFile.name)
+                }
+            }
+
+        }
 
         if(ant.properties[project.flexUnit.failureproperty] == "true") {
             throw new Exception("Tests failed");

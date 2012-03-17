@@ -62,9 +62,6 @@ class GradleFxConvention {
 
     //the root class which is used by the mxmlc compiler to create a swf
     def mainClass = 'Main.mxml'
-	
-	//the root class for unit testing
-	def testClass = null
 
     //array of additional compiler options as defined by the compc or mxmlc compiler
     def additionalCompilerOptions = []
@@ -105,9 +102,8 @@ class GradleFxConvention {
 			antTasksJar:     'flexUnitTasks-4.1.0-8.jar',
 			player:          'flash',
 			command:         System.getenv()['FLASH_PLAYER_EXE'],
-			swf:             "${project.buildDir}/${testOutput}.swf",
 			toDir:           "${project.buildDir}/reports",
-			workingDir:      project.path,
+			workingDir:      project.buildDir,
 			haltonfailure:   'false',
 			verbose:         'false',
 			localTrusted:    'true',
@@ -116,7 +112,9 @@ class GradleFxConvention {
 			timeout:         '60000', //60 seconds
 			failureproperty: 'flexUnitFailed',
 			headless:        'false',
-			display:         '99'
+			display:         '99',
+            includes:         ['**/*Test.as'],
+            excludes:         []
 		]
 
         air = [
