@@ -55,5 +55,9 @@ class Test extends DefaultTask {
 			failureproperty: project.flexUnit.failureproperty,
 			headless:        project.flexUnit.headless,
 			display:         project.flexUnit.display)
+
+        if(ant.properties[project.flexUnit.failureproperty] == "true") {
+            throw new Exception("Tests failed");
+        }
     }
 }
