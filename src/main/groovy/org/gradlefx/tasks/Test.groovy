@@ -18,6 +18,7 @@ package org.gradlefx.tasks
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
+import org.gradle.api.logging.LogLevel
 
 /*
  * A Gradle task to execute FlexUnit tests.
@@ -27,6 +28,7 @@ class Test extends DefaultTask {
 
     public Test() {
         description = "Run the FlexUnit unit tests."
+        logging.setLevel(LogLevel.INFO)
     }
 
     @TaskAction
@@ -50,7 +52,7 @@ class Test extends DefaultTask {
 			port:            project.flexUnit.port,
 			buffer:          project.flexUnit.buffer,
 			timeout:         project.flexUnit.timeout,
-			failureproperty: project.flexUnit.failureProperty,
+			failureproperty: project.flexUnit.failureproperty,
 			headless:        project.flexUnit.headless,
 			display:         project.flexUnit.display)
     }

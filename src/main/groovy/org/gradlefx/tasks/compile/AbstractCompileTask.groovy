@@ -20,10 +20,13 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ResolveException
 import org.gradlefx.FlexType
+import org.gradle.api.logging.LogLevel
 
 abstract class AbstractCompileTask extends DefaultTask {
 
     protected AbstractCompileTask() {
+        logging.setLevel(LogLevel.INFO)
+
         initInputDirectory()
         initOutputDirectory()
     }
