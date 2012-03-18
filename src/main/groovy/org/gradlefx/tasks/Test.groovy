@@ -21,12 +21,16 @@ import org.gradle.api.tasks.TaskAction
 import org.gradle.api.logging.LogLevel
 import org.gradle.api.file.FileTree
 import org.gradle.api.file.FileTreeElement
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 /*
  * A Gradle task to execute FlexUnit tests.
  */
 
 class Test extends DefaultTask {
+
+    private static final Logger log = LoggerFactory.getLogger(Test)
 
     public Test() {
         description = "Run the FlexUnit tests."
@@ -35,31 +39,54 @@ class Test extends DefaultTask {
 
     @TaskAction
     def runFlexUnit() {
-		def reportDir = project.file(project.flexUnit.toDir)
+		if(hasTests()) {
+            runTests()
+        } else {
+            log.info("Skipping tests since no tests exist")
+        }
+    }
 
-		// you can't write to a directory that doesn't exist
-		if(!reportDir.exists()) reportDir.mkdirs()
-        
+    private boolean hasTests() {
+        String nonEmptyTestDir = project.testDirs.find { String testDir ->
+            if(project.file(testDir).exists()) {
+                FileTree fileTree = project.fileTree(testDir)
+                fileTree.includes = project.flexUnit.includes
+                fileTree.excludes = project.flexUnit.excludes
+
+                return !fileTree.empty
+            } else {
+                return false
+            }
+        }
+
+        return nonEmptyTestDir != null
+    }
+
+    private void runTests() {
+        def reportDir = project.file(project.flexUnit.toDir)
+
+        // you can't write to a directory that doesn't exist
+        if(!reportDir.exists()) reportDir.mkdirs()
+
         Set<File> libraries = project.configurations.internal.files +
                 project.configurations.external.files +
                 project.configurations.merged.files +
                 project.configurations.test.files
 
-		
-		ant.flexunit(
-			player:          project.flexUnit.player, 
-			command:         project.flexUnit.command,
-			toDir:           project.flexUnit.toDir,
-			workingDir:      project.flexUnit.workingDir,
-			haltonfailure:   project.flexUnit.haltOnFailure,
-			verbose:         project.flexUnit.verbose,
-			localTrusted:    project.flexUnit.localTrusted,
-			port:            project.flexUnit.port,
-			buffer:          project.flexUnit.buffer,
-			timeout:         project.flexUnit.timeout,
-			failureproperty: project.flexUnit.failureproperty,
-			headless:        project.flexUnit.headless,
-			display:         project.flexUnit.display) {
+        ant.flexunit(
+            player:          project.flexUnit.player,
+            command:         project.flexUnit.command,
+            toDir:           project.flexUnit.toDir,
+            workingDir:      project.flexUnit.workingDir,
+            haltonfailure:   project.flexUnit.haltOnFailure,
+            verbose:         project.flexUnit.verbose,
+            localTrusted:    project.flexUnit.localTrusted,
+            port:            project.flexUnit.port,
+            buffer:          project.flexUnit.buffer,
+            timeout:         project.flexUnit.timeout,
+            failureproperty: project.flexUnit.failureproperty,
+            headless:        project.flexUnit.headless,
+            display:         project.flexUnit.display) {
 
             project.srcDirs.each { String srcDir ->
                 source(dir: project.file(srcDir).path)
@@ -76,7 +103,7 @@ class Test extends DefaultTask {
                     }
                 }
             }
-            
+
             libraries.each { File libraryFile ->
                 library(dir: libraryFile.parent) {
                     include(name: libraryFile.name)
