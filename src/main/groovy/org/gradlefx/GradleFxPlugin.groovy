@@ -30,7 +30,6 @@ import org.gradlefx.tasks.CopyResources
 import org.gradlefx.tasks.HtmlWrapper
 import org.gradlefx.tasks.Publish
 import org.gradlefx.tasks.Test
-import org.gradlefx.tasks.compile.TestCompile
 
 import org.gradlefx.tasks.compile.factory.CompileTaskClassFactoryImpl
 import org.slf4j.Logger
