@@ -40,9 +40,8 @@ class Test extends DefaultTask {
 
     @TaskAction
     def runFlexUnit() {
-        configureAntWithFlexUnit()
-
-		if(hasTests()) {
+        if(hasTests()) {
+            configureAntWithFlexUnit()
             runTests()
         } else {
             log.info("Skipping tests since no tests exist")
