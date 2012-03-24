@@ -30,7 +30,6 @@ import org.gradlefx.tasks.CopyResources
 import org.gradlefx.tasks.HtmlWrapper
 import org.gradlefx.tasks.Publish
 import org.gradlefx.tasks.Test
-import org.gradlefx.tasks.compile.TestCompile
 
 import org.gradlefx.tasks.compile.factory.CompileTaskClassFactoryImpl
 import org.slf4j.Logger
@@ -65,7 +64,6 @@ class GradleFxPlugin implements Plugin<Project> {
         //do these tasks in the afterEvaluate phase because they need property access
         project.afterEvaluate {
             configureAntWithFlex()
-			configureAntWithFlexUnit()
             addCompile(pluginConvention)
             addPackage()
             addHtmlWrapper()
@@ -77,10 +75,6 @@ class GradleFxPlugin implements Plugin<Project> {
     private void configureAntWithFlex() {
         new FlexAntTasksConfigurator(project).configure()
     }
-
-	private void configureAntWithFlexUnit() {
-        new FlexUnitAntTasksConfigurator(project).configure()
-	}
 	
     private void addDefaultConfigurations() {
         project.configurations.add(Configurations.INTERNAL_CONFIGURATION_NAME)
