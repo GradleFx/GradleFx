@@ -23,6 +23,7 @@ import org.gradle.api.file.FileTree
 import org.gradle.api.file.FileTreeElement
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.gradlefx.configuration.FlexUnitAntTasksConfigurator
 
 /*
  * A Gradle task to execute FlexUnit tests.
@@ -39,6 +40,8 @@ class Test extends DefaultTask {
 
     @TaskAction
     def runFlexUnit() {
+        configureAntWithFlexUnit()
+
 		if(hasTests()) {
             runTests()
         } else {
@@ -92,6 +95,12 @@ class Test extends DefaultTask {
                 source(dir: project.file(srcDir).path)
             }
 
+            project.testResourceDirs.each { String testResourceDir ->
+                if(project.file(testResourceDir).exists()) {
+                    source(dir: project.file(testResourceDir).path)
+                }
+            }
+
             project.testDirs.each { String testDir ->
                 FileTree fileTree = project.fileTree(testDir)
                 fileTree.includes = project.flexUnit.includes
@@ -115,5 +124,9 @@ class Test extends DefaultTask {
         if(ant.properties[project.flexUnit.failureproperty] == "true") {
             throw new Exception("Tests failed");
         }
+    }
+
+    private void configureAntWithFlexUnit() {
+        new FlexUnitAntTasksConfigurator(project).configure()
     }
 }

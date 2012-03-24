@@ -24,8 +24,6 @@ class GradleFxConvention {
     private Project project
 
     String output
-	
-	def testOutput = 'TestRunner' 
 
     // the home directory of the Flex SDK
     def flexHome = System.getenv()['FLEX_HOME'] //default to FLEX_HOME environment variable
@@ -98,8 +96,6 @@ class GradleFxConvention {
         ]
 
 		flexUnit = [
-			home:            System.getenv()['FLEXUNIT_HOME'],
-			antTasksJar:     'flexUnitTasks-4.1.0-8.jar',
 			player:          'flash',
 			command:         System.getenv()['FLASH_PLAYER_EXE'],
 			toDir:           "${project.buildDir}/reports",
