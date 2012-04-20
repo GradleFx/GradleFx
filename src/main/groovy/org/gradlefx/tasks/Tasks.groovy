@@ -18,6 +18,7 @@ package org.gradlefx.tasks
 
 class Tasks {
     public static final String COMPILE_TASK_NAME = 'compile'
+    public static final String ASDOC_TASK_NAME = 'asdoc'
     public static final String TEST_COMPILE_TASK_NAME = 'testCompile'
     public static final String BUILD_TASK_NAME = 'build'
     public static final String PACKAGE_TASK_NAME = 'package'

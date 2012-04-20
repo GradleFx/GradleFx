@@ -39,6 +39,7 @@ import org.gradlefx.configuration.FlexAntTasksConfigurator
 import org.gradlefx.configuration.FlexUnitAntTasksConfigurator
 import org.gradlefx.tasks.Tasks
 import org.gradlefx.configuration.Configurations
+import org.gradlefx.tasks.ASDoc
 
 class GradleFxPlugin implements Plugin<Project> {
 
@@ -64,7 +65,8 @@ class GradleFxPlugin implements Plugin<Project> {
         //do these tasks in the afterEvaluate phase because they need property access
         project.afterEvaluate {
             configureAntWithFlex()
-            addCompile(pluginConvention)
+            addCompile()
+            addASDoc()
             addPackage()
             addHtmlWrapper()
             addDependsOnOtherProjects()
@@ -91,12 +93,17 @@ class GradleFxPlugin implements Plugin<Project> {
         buildTask.dependsOn(Tasks.TEST_TASK_NAME)
     }
 
-    private void addCompile(GradleFxConvention pluginConvention) {
+    private void addCompile() {
         Class<Task> compileClass = new CompileTaskClassFactoryImpl().createCompileTaskClass(project.type)
         project.tasks.add(Tasks.COMPILE_TASK_NAME, compileClass)
     }
 
-    private void addPackage(GradleFxConvention pluginConvention) {
+    private void addASDoc() {
+        Task asDocTask = project.tasks.add(Tasks.ASDOC_TASK_NAME, ASDoc)
+        asDocTask.dependsOn(Tasks.COMPILE_TASK_NAME)
+    }
+
+    private void addPackage() {
         if(project.type == FlexType.air) {
             Task packageTask = project.tasks.add(Tasks.PACKAGE_TASK_NAME, AirPackage)
             packageTask.dependsOn(Tasks.COMPILE_TASK_NAME)

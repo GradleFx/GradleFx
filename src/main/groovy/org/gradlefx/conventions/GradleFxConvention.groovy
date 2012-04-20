@@ -78,6 +78,9 @@ class GradleFxConvention {
     // AIR packaging properties
     def air
 
+    // ASDoc properties
+    def asdoc
+
 
     def GradleFxConvention(Project project) {
         this.project = project
@@ -118,6 +121,10 @@ class GradleFxConvention {
             storepass:              null,
             applicationDescriptor:  "/src/main/actionscript/${project.name}.xml",
             includeFileTrees:       null
+        ]
+
+        asdoc = [
+            outputDir:              'doc'
         ]
 		
         project.afterEvaluate {
