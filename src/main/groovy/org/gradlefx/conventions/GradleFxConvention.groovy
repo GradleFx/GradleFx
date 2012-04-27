@@ -124,7 +124,8 @@ class GradleFxConvention {
         ]
 
         asdoc = [
-            outputDir:              'doc'
+            outputDir:              'doc',
+            fatSwc:                 false
         ]
 		
         project.afterEvaluate {

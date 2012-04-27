@@ -16,8 +16,8 @@
 
 package org.gradlefx.tasks
 
-import org.gradlefx.tasks.compile.AbstractMxmlc
 import org.gradle.api.tasks.TaskAction
+import org.gradlefx.tasks.compile.AbstractMxmlc
 
 class ASDoc extends AbstractMxmlc {
 
@@ -26,12 +26,17 @@ class ASDoc extends AbstractMxmlc {
 
     ASDoc() {
         description = 'Generates ASDoc documentation'
+        dependsOn(Tasks.COMPILE_TASK_NAME)
     }
 
     @TaskAction
     def compileFlex() {
         if(hasDocSources()) {
             super.compileFlex(ANT_RESULT_PROPERTY, ANT_OUTPUT_PROPERTY, 'asdoc', createCompilerArguments())
+
+            if(project.asdoc.fatSwc == true) {
+                addDocsToSwc()
+            }
         }
     }
 
@@ -73,6 +78,9 @@ class ASDoc extends AbstractMxmlc {
             compilerArguments.add(compilerOption)
         }
 
+        compilerArguments.add("-keep-xml=true")
+        compilerArguments.add("-skip-xsl=true")
+
         compilerArguments.add("-output=${project.file(project.asdoc.outputDir).path}" )
 
         return compilerArguments
@@ -95,6 +103,16 @@ class ASDoc extends AbstractMxmlc {
     private boolean hasDocSources() {
         return project.srcDirs.any { sourcePath ->
             return project.file(sourcePath).exists()
+        }
+    }
+
+    private void addDocsToSwc() {
+        ant.zip(destfile: new File(project.buildDir.absolutePath, "${project.output}.${project.type}"),
+                update: true) {
+            zipfileset(dir: project.file(project.asdoc.outputDir + "/tempdita"), prefix: 'docs') {
+                exclude(name: 'ASDoc_Config.xml')
+                exclude(name: 'overviews.xml')
+            }
         }
     }
 }
