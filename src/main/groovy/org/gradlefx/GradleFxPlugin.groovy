@@ -90,7 +90,9 @@ class GradleFxPlugin implements Plugin<Project> {
     }
 
     private void addASDoc() {
-        project.tasks.add(Tasks.ASDOC_TASK_NAME, ASDoc)
+        if(project.type == FlexType.swc) {
+            project.tasks.add(Tasks.ASDOC_TASK_NAME, ASDoc)
+        }
     }
 
     private void addPackage() {
