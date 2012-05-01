@@ -21,6 +21,7 @@ import org.gradle.api.file.ConfigurableFileTree
 import org.gradle.api.file.FileTreeElement
 import org.gradle.api.tasks.TaskAction
 import org.gradlefx.FlexType
+import org.gradlefx.validators.actions.ValidateAirPackageTaskPropertiesAction
 
 class AirPackage extends DefaultTask {
     
@@ -33,6 +34,8 @@ class AirPackage extends DefaultTask {
 
     @TaskAction
     def packageAir() {
+        new ValidateAirPackageTaskPropertiesAction().execute(this)
+
         List compilerArguments = createCompilerArguments()
 
         ant.java(jar: project.flexHome + '/lib/adt.jar',

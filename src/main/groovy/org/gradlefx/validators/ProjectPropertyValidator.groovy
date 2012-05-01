@@ -1,3 +1,7 @@
+package org.gradlefx.validators
+
+import org.gradle.api.Project
+
 /*
  * Copyright (c) 2011 the original author or authors
  *
@@ -13,15 +17,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+public interface ProjectPropertyValidator {
 
-package org.gradlefx.tasks.compile
+    void setProject(Project project)
 
-class Amxmlc extends Mxmlc {
+    void execute()
 
-     @Override
-     protected List createCompilerArguments() {
-         List arguments = super.createCompilerArguments()
-         arguments.add(0,"+configname=air")
-         return arguments
-     }
+    boolean hasErrors()
+
+    boolean hasWarnings()
+
+    List<String> getErrorMessages()
+
+    List<String> getWarningMessages()
+
 }

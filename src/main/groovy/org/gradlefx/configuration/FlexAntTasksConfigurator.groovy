@@ -17,6 +17,8 @@
 package org.gradlefx.configuration
 
 import org.gradle.api.Project
+import org.gradlefx.validators.runner.FailOnErrorValidatorRunner
+import org.gradlefx.validators.FlexSDKSpecifiedValidator
 
 class FlexAntTasksConfigurator {
 
@@ -27,6 +29,10 @@ class FlexAntTasksConfigurator {
     }
 
     public void configure() {
+        new FailOnErrorValidatorRunner(project)
+            .add(new FlexSDKSpecifiedValidator())
+            .run()
+
         project.ant.property(name: 'FLEX_HOME', value: project.flexHome)
             project.ant.property(name: 'FLEX_LIB', value: '${FLEX_HOME}/frameworks/libs')
             project.ant.property(name: 'FLEX_ANT', value: '${FLEX_HOME}/ant')

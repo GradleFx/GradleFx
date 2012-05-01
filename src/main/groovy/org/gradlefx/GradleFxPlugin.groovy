@@ -24,21 +24,13 @@ import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.api.artifacts.dsl.ArtifactHandler
 import org.gradle.api.internal.artifacts.publish.DefaultPublishArtifact
-import org.gradle.api.tasks.Delete
+import org.gradlefx.configuration.Configurations
+import org.gradlefx.configuration.FlexAntTasksConfigurator
 import org.gradlefx.conventions.GradleFxConvention
-import org.gradlefx.tasks.CopyResources
-import org.gradlefx.tasks.HtmlWrapper
-import org.gradlefx.tasks.Publish
-import org.gradlefx.tasks.Test
-
 import org.gradlefx.tasks.compile.factory.CompileTaskClassFactoryImpl
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.gradlefx.tasks.AirPackage
-import org.gradlefx.configuration.FlexAntTasksConfigurator
-import org.gradlefx.configuration.FlexUnitAntTasksConfigurator
-import org.gradlefx.tasks.Tasks
-import org.gradlefx.configuration.Configurations
+import org.gradlefx.tasks.*
 
 class GradleFxPlugin implements Plugin<Project> {
 

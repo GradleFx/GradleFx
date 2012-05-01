@@ -14,14 +14,20 @@
  * limitations under the License.
  */
 
-package org.gradlefx.tasks.compile
+package org.gradlefx.validators.actions
 
-class Amxmlc extends Mxmlc {
+import org.gradle.api.Action
+import org.gradlefx.tasks.compile.Compc
+import org.gradlefx.validators.CompcAdditionalPropertiesValidator
+import org.gradlefx.validators.FlexSDKSpecifiedValidator
+import org.gradlefx.validators.runner.FailOnErrorValidatorRunner
 
-     @Override
-     protected List createCompilerArguments() {
-         List arguments = super.createCompilerArguments()
-         arguments.add(0,"+configname=air")
-         return arguments
-     }
+class ValidateCompcTaskPropertiesAction implements Action<Compc> {
+
+    void execute(Compc task) {
+        new FailOnErrorValidatorRunner(task.project)
+                .add(new FlexSDKSpecifiedValidator())
+                .add(new CompcAdditionalPropertiesValidator())
+                .run()
+    }
 }

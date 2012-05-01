@@ -17,6 +17,7 @@
 package org.gradlefx.tasks.compile
 
 import org.gradle.api.artifacts.ResolveException
+import org.gradlefx.options.CompilerOption
 
 /*
  * Abstract base class capturing common functionality to execute Flex's MXMLC compiler. 
@@ -65,7 +66,7 @@ abstract class AbstractMxmlc extends AbstractCompileTask {
             if (!dependency.exists()) {
 				throw new ResolveException("Couldn't find the ${dependency.name} file - are you sure the path is correct?")
             }
-			compilerArguments.add("-runtime-shared-library-path+=${dependency.path},${dependency.name[0..-2]}f")
+			compilerArguments.add("${CompilerOption.RUNTIME_SHARED_LIBRARY_PATH}+=${dependency.path},${dependency.name[0..-2]}f")
         }
     }
 }
