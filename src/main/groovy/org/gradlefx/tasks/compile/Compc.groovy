@@ -21,6 +21,9 @@ import groovy.io.FileType
 import org.gradle.api.internal.file.BaseDirFileResolver
 import org.gradle.internal.nativeplatform.GenericFileSystem
 
+import org.gradlefx.options.CompilerOption
+import org.gradlefx.validators.actions.ValidateCompcTaskPropertiesAction
+
 /*
  * Gradle task to execute Flex's Compc compiler.
  */
@@ -35,6 +38,8 @@ class Compc extends AbstractCompileTask {
 
     @TaskAction
     def compileFlex() {
+        new ValidateCompcTaskPropertiesAction().execute(this)
+
         List compilerArguments = createCompilerArguments()
 
         ant.java(jar: project.flexHome + '/lib/compc.jar',
@@ -86,7 +91,7 @@ class Compc extends AbstractCompileTask {
 
             if(resourceDir.exists()) {
                 resourceDir.traverse(type: FileType.FILES) {
-                    compilerArguments.add("-include-file")
+                    compilerArguments.add(CompilerOption.INCLUDE_FILE)
                     compilerArguments.add("/" + new BaseDirFileResolver(new GenericFileSystem(), resourceDir).resolveAsRelativePath(it.path).replace('\\', '/'))
                     compilerArguments.add(it.path)
                 }
@@ -102,12 +107,12 @@ class Compc extends AbstractCompileTask {
 
                 //don't allow non existing source paths unless they contain a token (e.g. {locale})
                 if(sourceDir.exists() || sourcePath.contains('{')) {
-                    compilerArguments.add("-include-sources+=" + sourceDir.path)
+                    compilerArguments.add("${CompilerOption.INCLUDE_SOURCES}+=${sourceDir.path}")
                 }
             }
         } else {
             if (project.includeClasses != null) {
-                compilerArguments.add('-include-classes')
+                compilerArguments.add(CompilerOption.INCLUDE_CLASSES)
                 project.includeClasses.each { classToInclude ->
                     compilerArguments.add(classToInclude)
                 }
@@ -115,7 +120,7 @@ class Compc extends AbstractCompileTask {
 
             if (project.includeSources != null) {
                 project.includeSources.each { classOrDirectoryToInclude ->
-                    compilerArguments.add('-include-sources+=' + project.file(classOrDirectoryToInclude).path)
+                    compilerArguments.add("${CompilerOption.INCLUDE_SOURCES}+=${project.file(classOrDirectoryToInclude).path}")
                 }
             }
         }

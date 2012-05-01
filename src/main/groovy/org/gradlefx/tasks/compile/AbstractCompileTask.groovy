@@ -21,6 +21,7 @@ import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ResolveException
 import org.gradlefx.FlexType
 import org.gradle.api.logging.LogLevel
+import org.gradlefx.options.CompilerOption
 
 abstract class AbstractCompileTask extends DefaultTask {
 
@@ -57,14 +58,14 @@ abstract class AbstractCompileTask extends DefaultTask {
             if (sourcePath == project.localeDir) path += '/{locale}'
 
             if (sourcePathDir.exists() || sourcePath.contains('{')) {
-                compilerArguments.add("-source-path+=" + path)
+                compilerArguments.add("${CompilerOption.SOURCE_PATH}+=" + path)
             }
         }
     }
     
     protected void addLocales(List compilerArguments) {
         if (project.locales && project.locales.size()) {
-            compilerArguments.add("-locale=" + project.locales.join(','))
+            compilerArguments.add("${CompilerOption.LOCALE}=" + project.locales.join(','))
         }
     }
 

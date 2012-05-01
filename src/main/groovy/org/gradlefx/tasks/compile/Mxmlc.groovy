@@ -18,6 +18,8 @@ package org.gradlefx.tasks.compile
 
 import org.gradle.api.tasks.TaskAction
 import org.gradlefx.tasks.Tasks
+import org.gradlefx.validators.actions.ValidateMxmlcTaskPropertiesAction
+import org.gradlefx.options.CompilerOption
 
 class Mxmlc extends AbstractMxmlc {
 
@@ -31,6 +33,8 @@ class Mxmlc extends AbstractMxmlc {
 
     @TaskAction
     def compileFlex() {
+        new ValidateMxmlcTaskPropertiesAction().execute(this)
+
 		super.compileFlex(ANT_RESULT_PROPERTY, ANT_OUTPUT_PROPERTY, 'Mxmlc', createCompilerArguments())
     }
 
@@ -42,10 +46,10 @@ class Mxmlc extends AbstractMxmlc {
         addLocales(compilerArguments)
 
         //add dependencies
-        addLibraries(project.configurations.internal.files, project.configurations.internal, "-include-libraries", compilerArguments)
-		addLibraries(project.configurations.external.files - project.configurations.internal.files - project.configurations.merged.files, project.configurations.external, '-external-library-path', compilerArguments)
-        addLibraries(project.configurations.merged.files, project.configurations.merged, "-library-path", compilerArguments)
-        addLibraries(project.configurations.theme.files, project.configurations.theme, "-theme", compilerArguments)
+        addLibraries(project.configurations.internal.files, project.configurations.internal, CompilerOption.INCLUDE_LIBRARIES.optionName, compilerArguments)
+		addLibraries(project.configurations.external.files - project.configurations.internal.files - project.configurations.merged.files, project.configurations.external, CompilerOption.EXTERNAL_LIBRARY_PATH.optionName, compilerArguments)
+        addLibraries(project.configurations.merged.files, project.configurations.merged, CompilerOption.LIBRARY_PATH.optionName, compilerArguments)
+        addLibraries(project.configurations.theme.files, project.configurations.theme, CompilerOption.THEME.optionName, compilerArguments)
         addRsls(compilerArguments)
 
         //add all the other user specified compiler options
@@ -53,7 +57,7 @@ class Mxmlc extends AbstractMxmlc {
             compilerArguments.add(compilerOption)
         }
 
-        compilerArguments.add("-output=${project.buildDir.path}/${project.output}.swf" )
+        compilerArguments.add("${CompilerOption.OUTPUT}=${project.buildDir.path}/${project.output}.swf" )
 
         //add the target file
         File mainClassFile = findFile(project.srcDirs, project.mainClass)
