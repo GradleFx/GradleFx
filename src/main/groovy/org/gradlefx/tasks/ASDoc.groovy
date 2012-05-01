@@ -27,6 +27,19 @@ class ASDoc extends AbstractMxmlc {
     ASDoc() {
         description = 'Generates ASDoc documentation'
         dependsOn(Tasks.COMPILE_TASK_NAME)
+
+        initInputDirectory()
+        initOutputDirectory()
+    }
+
+    private def initInputDirectory() {
+        project.srcDirs.each { sourceDirectory ->
+            inputs.dir sourceDirectory
+        }
+    }
+
+    private def initOutputDirectory() {
+        outputs.dir project.buildDir
     }
 
     @TaskAction
@@ -78,8 +91,14 @@ class ASDoc extends AbstractMxmlc {
             compilerArguments.add(compilerOption)
         }
 
-        compilerArguments.add("-keep-xml=true")
-        compilerArguments.add("-skip-xsl=true")
+        project.asdoc.additionalASDocOptions.each { asdocOption ->
+            compilerArguments.add(asdocOption)
+        }
+
+        if(project.asdoc.fatSwc == true) {
+            compilerArguments.add("-keep-xml=true")
+            compilerArguments.add("-skip-xsl=true")
+        }
 
         compilerArguments.add("-output=${project.file(project.asdoc.outputDir).path}" )
 
