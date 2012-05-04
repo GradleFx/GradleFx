@@ -20,6 +20,7 @@ import org.gradle.api.artifacts.maven.MavenDeployment
 apply plugin: 'groovy'
 apply plugin: 'maven'
 apply plugin: 'signing'
+apply plugin: 'idea'
 
 group = 'org.gradlefx'
 version = '0.4.2'
@@ -32,6 +33,7 @@ repositories {
 dependencies {
     compile gradleApi()
     compile group: 'commons-lang', name: 'commons-lang', version: '2.6'
+    testCompile "org.spockframework:spock-core:0.6-groovy-1.8"
     groovy group: 'org.codehaus.groovy', name: 'groovy', version: '1.8.6'
 }
 
