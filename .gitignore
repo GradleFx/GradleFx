@@ -2,6 +2,9 @@
 .idea
 build
 GradleFx.iml
+gradlefx.ipr
+gradlefx.iws
+/target
 .orig
 /.project
 gradle.properties
