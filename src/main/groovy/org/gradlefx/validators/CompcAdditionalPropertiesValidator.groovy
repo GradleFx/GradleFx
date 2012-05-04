@@ -22,32 +22,32 @@ class CompcAdditionalPropertiesValidator extends AbstractCompilerPropertiesValid
 
     void execute() {
         if (usesCompilerOptionInAdditionalProperties(CompilerOption.INCLUDE_LIBRARIES)) {
-            logCompilerOptionWarning(CompilerOption.INCLUDE_LIBRARIES, "specify the library as an 'internal' Gradle dependendency")
+            addCompilerOptionWarning(CompilerOption.INCLUDE_LIBRARIES, "specify the library as an 'internal' Gradle dependendency")
         }
 
         if (usesCompilerOptionInAdditionalProperties(CompilerOption.EXTERNAL_LIBRARY_PATH)) {
-            logCompilerOptionWarning(CompilerOption.EXTERNAL_LIBRARY_PATH, "specify the library as an 'external' Gradle dependendency")
+            addCompilerOptionWarning(CompilerOption.EXTERNAL_LIBRARY_PATH, "specify the library as an 'external' Gradle dependendency")
         }
 
         if (usesCompilerOptionInAdditionalProperties(CompilerOption.LIBRARY_PATH)) {
-            logCompilerOptionWarning(CompilerOption.LIBRARY_PATH, "specify the library as a 'merged' Gradle dependendency")
+            addCompilerOptionWarning(CompilerOption.LIBRARY_PATH, "specify the library as a 'merged' Gradle dependendency")
         }
 
         if (usesCompilerOptionInAdditionalProperties(CompilerOption.OUTPUT)) {
-            logCompilerOptionWarning(CompilerOption.OUTPUT, "specify the name of the output file in the 'output' convention property")
+            addCompilerOptionWarning(CompilerOption.OUTPUT, "specify the name of the output file in the 'output' convention property")
         }
 
         if (usesCompilerOptionInAdditionalProperties(CompilerOption.INCLUDE_FILE)) {
-            logCompilerOptionWarning(CompilerOption.INCLUDE_FILE, "put the resource files in the directories specified in the 'resourceDirs' convention property")
+            addCompilerOptionWarning(CompilerOption.INCLUDE_FILE, "put the resource files in the directories specified in the 'resourceDirs' convention property")
         }
 
         if (usesCompilerOptionInAdditionalProperties(CompilerOption.SOURCE_PATH)) {
-            logCompilerOptionWarning(CompilerOption.SOURCE_PATH, """specify the source directory as an entry in the 'srcDirs'
+            addCompilerOptionWarning(CompilerOption.SOURCE_PATH, """specify the source directory as an entry in the 'srcDirs'
                                                                         convention property. e.g. srcDirs.add('src/main/flex')""")
         }
 
         if (usesCompilerOptionInAdditionalProperties(CompilerOption.LOCALE)) {
-            logCompilerOptionWarning(CompilerOption.LOCALE, "add the locale to the 'locales' convention property. e.g. locales.add('EN_US')")
+            addCompilerOptionWarning(CompilerOption.LOCALE, "add the locale to the 'locales' convention property. e.g. locales.add('EN_US')")
         }
     }
 

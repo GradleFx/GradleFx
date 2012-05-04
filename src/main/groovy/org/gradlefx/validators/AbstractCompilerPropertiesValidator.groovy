@@ -17,16 +17,20 @@
 package org.gradlefx.validators
 
 import org.gradlefx.options.CompilerOption
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 abstract class AbstractCompilerPropertiesValidator extends AbstractProjectPropertyValidator {
 
+    private static final Logger LOG = LoggerFactory.getLogger('gradlefx')
+
     protected boolean usesCompilerOptionInAdditionalProperties(CompilerOption compilerOption) {
         return project.additionalCompilerOptions.any { String usedOption ->
-            return usedOption.contains(compilerOption.optionName);
+            usedOption.startsWith(compilerOption.optionName)
         }
     }
 
-    protected void logCompilerOptionWarning(CompilerOption compilerOption, String alternativeSolution) {
-        LOG.warn("WARNING: The ${compilerOption.optionName} option is being used internally by GradleFx. Alternative: ${alternativeSolution}")
+    protected void addCompilerOptionWarning(CompilerOption compilerOption, String alternativeSolution) {
+        addWarning("WARNING: The ${compilerOption.optionName} option is being used internally by GradleFx. Alternative: ${alternativeSolution}")
     }
 }
