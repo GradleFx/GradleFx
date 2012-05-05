@@ -16,11 +16,8 @@
 
 package org.gradlefx.tasks.compile
 
-import org.gradle.api.tasks.TaskAction
 import groovy.io.FileType
-import org.gradle.api.internal.file.BaseDirFileResolver
-import org.gradle.internal.nativeplatform.GenericFileSystem
-
+import org.gradle.api.tasks.TaskAction
 import org.gradlefx.options.CompilerOption
 import org.gradlefx.validators.actions.ValidateCompcTaskPropertiesAction
 
@@ -91,8 +88,12 @@ class Compc extends AbstractCompileTask {
 
             if(resourceDir.exists()) {
                 resourceDir.traverse(type: FileType.FILES) {
+                    String relativePath = resourceDir.toURI().relativize(it.toURI()).getPath();
+
+                    println "relative resource path: " + relativePath
+
                     compilerArguments.add(CompilerOption.INCLUDE_FILE)
-                    compilerArguments.add("/" + new BaseDirFileResolver(new GenericFileSystem(), resourceDir).resolveAsRelativePath(it.path).replace('\\', '/'))
+                    compilerArguments.add(relativePath)
                     compilerArguments.add(it.path)
                 }
             }
