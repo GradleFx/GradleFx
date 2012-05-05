@@ -62,8 +62,14 @@ task wrapper(type: Wrapper) {
 }
 
 //********* artifact signing *********
-signing {
-    sign configurations.archives
+if(gradle.startParameter.taskNames.contains("uploadArchives")) {
+    signing {
+        sign configurations.archives
+    }
+} else {
+    task signArchives {
+        // do nothing
+    }
 }
 
 uploadArchives {
