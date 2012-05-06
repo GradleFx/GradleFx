@@ -17,16 +17,19 @@
 package org.gradlefx.validators
 
 import org.gradle.api.Project
+import org.gradlefx.conventions.GradleFxConvention
 
 abstract class AbstractProjectPropertyValidator implements ProjectPropertyValidator {
 
     protected Project project
+    protected GradleFxConvention flexConvention
     
     private List<String> validationErrors = []
     private List<String> validationWarnings = []
 
     void setProject(Project project) {
         this.project = project
+        flexConvention = project.convention.plugins.flex
     }
 
     boolean hasErrors() {

@@ -25,16 +25,16 @@ class FlexSDKSpecifiedValidator extends AbstractProjectPropertyValidator {
             addError("The Flex home location isn't specified. You can solve this by defining the FLEX_HOME" +
                 " environment variable or by specifying the flexHome property in your build script")
         } else if(isFlexSDKHomeInvalid()) {
-            addError("The path to the Flex home directory isn't valid (" + project.flexHome + ")")
+            addError("The path to the Flex home directory isn't valid (" + flexConvention.flexHome + ")")
         }
     }
 
     private boolean isFlexSDKHomeEmpty() {
-        return StringUtils.isBlank(project.flexHome)
+        return StringUtils.isBlank(flexConvention.flexHome)
     }
 
     private boolean isFlexSDKHomeInvalid() {
-        return !new File(project.flexHome).exists()
+        return !new File(flexConvention.flexHome).exists()
     }
 
 }

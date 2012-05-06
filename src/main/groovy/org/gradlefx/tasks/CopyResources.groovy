@@ -18,16 +18,21 @@ package org.gradlefx.tasks
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
+import org.gradlefx.conventions.GradleFxConvention
 
 class CopyResources extends DefaultTask {
 
+    GradleFxConvention flexConvention;
+
     public CopyResources() {
         description = 'copies the resources to the build directory'
+
+        flexConvention = project.convention.plugins.flex
     }
 
     @TaskAction
     def copyResources() {
-        project.resourceDirs.each { resourceDir ->
+        flexConvention.resourceDirs.each { resourceDir ->
             def fromLocation = project.file(resourceDir).path
             def toLocation = project.buildDir.path
 

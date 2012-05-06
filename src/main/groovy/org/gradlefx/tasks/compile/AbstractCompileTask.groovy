@@ -22,18 +22,23 @@ import org.gradle.api.artifacts.ResolveException
 import org.gradlefx.FlexType
 import org.gradle.api.logging.LogLevel
 import org.gradlefx.options.CompilerOption
+import org.gradlefx.conventions.GradleFxConvention
 
 abstract class AbstractCompileTask extends DefaultTask {
 
+    GradleFxConvention flexConvention;
+
     protected AbstractCompileTask() {
         logging.setLevel(LogLevel.INFO)
+
+        flexConvention = project.convention.plugins.flex
 
         initInputDirectory()
         initOutputDirectory()
     }
 
     private def initInputDirectory() {
-        project.srcDirs.each { sourceDirectory ->
+        flexConvention.srcDirs.each { sourceDirectory ->
             inputs.dir sourceDirectory
         }
     }
@@ -48,14 +53,14 @@ abstract class AbstractCompileTask extends DefaultTask {
      */
     protected void addSourcePaths(List compilerArguments) {
         //add locale path to source paths if any locales are defined
-        if (project.locales && project.locales.size()) {
-            project.srcDirs.add project.localeDir
+        if (flexConvention.locales && flexConvention.locales.size()) {
+            flexConvention.srcDirs.add flexConvention.localeDir
         }
         
-        project.srcDirs.each { sourcePath ->
+        flexConvention.srcDirs.each { sourcePath ->
             File sourcePathDir = project.file(sourcePath)
             String path = project.file(sourcePath).path
-            if (sourcePath == project.localeDir) path += '/{locale}'
+            if (sourcePath == flexConvention.localeDir) path += '/{locale}'
 
             if (sourcePathDir.exists() || sourcePath.contains('{')) {
                 compilerArguments.add("${CompilerOption.SOURCE_PATH}+=" + path)
@@ -64,8 +69,8 @@ abstract class AbstractCompileTask extends DefaultTask {
     }
     
     protected void addLocales(List compilerArguments) {
-        if (project.locales && project.locales.size()) {
-            compilerArguments.add("${CompilerOption.LOCALE}=" + project.locales.join(','))
+        if (flexConvention.locales && flexConvention.locales.size()) {
+            compilerArguments.add("${CompilerOption.LOCALE}=" + flexConvention.locales.join(','))
         }
     }
 

@@ -39,13 +39,13 @@ class Compc extends AbstractCompileTask {
 
         List compilerArguments = createCompilerArguments()
 
-        ant.java(jar: project.flexHome + '/lib/compc.jar',
-                dir: project.flexHome + '/frameworks',
+        ant.java(jar: flexConvention.flexHome + '/lib/compc.jar',
+                dir: flexConvention.flexHome + '/frameworks',
                 fork: true,
                 resultproperty: ANT_RESULT_PROPERTY,
                 outputproperty: ANT_OUTPUT_PROPERTY) {
 
-            project.jvmArguments.each { jvmArgument ->
+            flexConvention.jvmArguments.each { jvmArgument ->
                 jvmarg(value: jvmArgument)
             }
 
@@ -74,7 +74,7 @@ class Compc extends AbstractCompileTask {
         addLibraries(project.configurations.merged.files, project.configurations.merged, "-library-path", compilerArguments)
 
         //add all the other user specified compiler options
-        project.additionalCompilerOptions.each { compilerOption ->
+        flexConvention.additionalCompilerOptions.each { compilerOption ->
             compilerArguments.add(compilerOption)
         }
 
@@ -83,7 +83,7 @@ class Compc extends AbstractCompileTask {
     }
 
     private def addResources(List compilerArguments) {
-        project.resourceDirs.each { String resourceDirString ->
+        flexConvention.resourceDirs.each { String resourceDirString ->
             File resourceDir = project.file(resourceDirString)
 
             if(resourceDir.exists()) {
@@ -102,8 +102,8 @@ class Compc extends AbstractCompileTask {
     }
 
     private def addSourceFilesAndDirectories(List compilerArguments) {
-        if (project.includeClasses == null && project.includeSources == null) {
-            project.srcDirs.each { sourcePath ->
+        if (flexConvention.includeClasses == null && flexConvention.includeSources == null) {
+            flexConvention.srcDirs.each { sourcePath ->
                 File sourceDir = project.file(sourcePath)
 
                 //don't allow non existing source paths unless they contain a token (e.g. {locale})
@@ -112,15 +112,15 @@ class Compc extends AbstractCompileTask {
                 }
             }
         } else {
-            if (project.includeClasses != null) {
+            if (flexConvention.includeClasses != null) {
                 compilerArguments.add(CompilerOption.INCLUDE_CLASSES)
-                project.includeClasses.each { classToInclude ->
+                flexConvention.includeClasses.each { classToInclude ->
                     compilerArguments.add(classToInclude)
                 }
             }
 
-            if (project.includeSources != null) {
-                project.includeSources.each { classOrDirectoryToInclude ->
+            if (flexConvention.includeSources != null) {
+                flexConvention.includeSources.each { classOrDirectoryToInclude ->
                     compilerArguments.add("${CompilerOption.INCLUDE_SOURCES}+=${project.file(classOrDirectoryToInclude).path}")
                 }
             }
