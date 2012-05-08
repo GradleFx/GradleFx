@@ -16,7 +16,6 @@
 
 package org.gradlefx.tasks.compile
 
-import groovy.io.FileType
 import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ResolveException
@@ -115,10 +114,6 @@ abstract class AbstractCompileTask extends DefaultTask {
                 compilerArguments.add("${linkage.getCompilerOption()}+=${project.flexHome}/frameworks/${it}")
             }
         }
-    }
-    
-    protected boolean canLinkLibrary(String libPath) {
-        return !libPath.matches(/^.*(\/|\\)(air|player)(\/|\\).*$/)
     }
 	
 	def handleBuildIfFailed(antResultProperty, antOutputProperty, taskName) {
