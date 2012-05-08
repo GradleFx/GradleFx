@@ -18,6 +18,8 @@ package org.gradlefx.conventions
 
 import org.gradle.api.Project
 import org.gradlefx.FlexType
+import org.gradlefx.FrameworkLinkage
+
 
 class GradleFxConvention {
 
@@ -54,6 +56,10 @@ class GradleFxConvention {
 
     // what type of Flex project are we?  either SWF or SWC
     FlexType type
+    
+    //how the Flex framework will be linked in the project: external, RSL, merged or none
+    //default: RSL for swf, external for swc
+    FrameworkLinkage frameworkLinkage
 
     // the directory where we should publish the build artifacts
     String publishDir = 'publish'
@@ -127,6 +133,27 @@ class GradleFxConvention {
 
     public def initializeEmptyProperties() {
 		output = output ?: project.name
+        frameworkLinkage = getFrameworkLinkage()
     }
+    
+    /**
+     * The framework linkage defaults to 'RSL' for application projects ('air' or 'swf' {@link FlexType}) 
+     * and 'external' for library projects ('swc' {@link FlexType}). 
+     * 
+     * @return The project's framework linkage
+     */
+    private FrameworkLinkage getFrameworkLinkage() {
+        FrameworkLinkage defaultLinkage;
+        
+        switch (type) {
+            case FlexType.air:
+            case FlexType.swf: defaultLinkage = FrameworkLinkage.rsl; break
+            case FlexType.swc: defaultLinkage = FrameworkLinkage.external; break
+            default: defaultLinkage = FrameworkLinkage.none; break
+        }
+        
+        return frameworkLinkage ? frameworkLinkage : defaultLinkage
+    }
+    
 }
 

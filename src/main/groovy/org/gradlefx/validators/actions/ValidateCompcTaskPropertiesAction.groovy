@@ -20,6 +20,7 @@ import org.gradle.api.Action
 import org.gradlefx.tasks.compile.Compc
 import org.gradlefx.validators.CompcAdditionalPropertiesValidator
 import org.gradlefx.validators.FlexSDKSpecifiedValidator
+import org.gradlefx.validators.FrameworkLinkageValidator
 import org.gradlefx.validators.runner.FailOnErrorValidatorRunner
 
 class ValidateCompcTaskPropertiesAction implements Action<Compc> {
@@ -27,6 +28,7 @@ class ValidateCompcTaskPropertiesAction implements Action<Compc> {
     void execute(Compc task) {
         new FailOnErrorValidatorRunner(task.project)
                 .add(new FlexSDKSpecifiedValidator())
+                .add(new FrameworkLinkageValidator())
                 .add(new CompcAdditionalPropertiesValidator())
                 .run()
     }

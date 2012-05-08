@@ -20,6 +20,7 @@ import org.gradle.api.Action
 import org.gradlefx.tasks.AirPackage
 import org.gradlefx.validators.AirPackagePropertiesValidator
 import org.gradlefx.validators.FlexSDKSpecifiedValidator
+import org.gradlefx.validators.FrameworkLinkageValidator
 import org.gradlefx.validators.runner.FailOnErrorValidatorRunner
 
 class ValidateAirPackageTaskPropertiesAction implements Action<AirPackage> {
@@ -27,6 +28,7 @@ class ValidateAirPackageTaskPropertiesAction implements Action<AirPackage> {
     void execute(AirPackage task) {
         new FailOnErrorValidatorRunner(task.project)
                 .add(new FlexSDKSpecifiedValidator())
+                .add(new FrameworkLinkageValidator())
                 .add(new AirPackagePropertiesValidator())
                 .run()
     }
