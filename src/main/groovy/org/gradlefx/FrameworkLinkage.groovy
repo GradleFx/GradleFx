@@ -14,24 +14,26 @@
  * limitations under the License.
  */
 
-package org.gradlefx.tasks.compile
+package org.gradlefx
 
-import java.util.List;
-import org.gradlefx.options.CompilerOption
+import org.gradlefx.options.CompilerOption;
 
-class Amxmlc extends Mxmlc {
-
-     @Override
-     protected List createCompilerArguments() {
-         List arguments = super.createCompilerArguments()
-         arguments.add(0,"+configname=air")
-         return arguments
-     }
-     
-     @Override
-     protected void addPlayerLibrary(List compilerArguments) {
-         String libPath = "${project.flexHome}/frameworks/libs/air/airglobal.swc"
-         compilerArguments.add("${CompilerOption.EXTERNAL_LIBRARY_PATH}+=${libPath}");
-     }
-     
+public enum FrameworkLinkage {
+    external(CompilerOption.EXTERNAL_LIBRARY_PATH),
+    rsl(CompilerOption.RUNTIME_SHARED_LIBRARY_PATH),
+    merged(CompilerOption.LIBRARY_PATH),
+    none;
+    
+    private CompilerOption compilerOption;
+    
+    private FrameworkLinkage() {}
+    
+    private FrameworkLinkage(CompilerOption compilerOption) {
+        this.compilerOption = compilerOption;
+    }
+    
+    public CompilerOption getCompilerOption() {
+        return compilerOption
+    }
+    
 }

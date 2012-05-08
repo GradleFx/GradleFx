@@ -16,16 +16,31 @@
 
 package org.gradlefx.validators
 
+import groovy.io.FileType
 import org.apache.commons.lang.StringUtils
 
 class FlexSDKSpecifiedValidator extends AbstractProjectPropertyValidator {
+    
+    private String flexConfigPath = "/frameworks/flex-config.xml"
+    private String flexLibPath = "/frameworks/libs"
     
     void execute() {
         if(isFlexSDKHomeEmpty()) {
             addError("The Flex home location isn't specified. You can solve this by defining the FLEX_HOME" +
                 " environment variable or by specifying the flexHome property in your build script")
         } else if(isFlexSDKHomeInvalid()) {
-            addError("The path to the Flex home directory isn't valid (" + project.flexHome + ")")
+            addError("The path to the Flex home directory isn't valid (${project.flexHome}): " +
+                "the directory doesn't exist")
+        }
+        else {
+            if (hasNoFlexSDKlibs()) {
+                addError("The path to the Flex home directory isn't valid (${project.flexHome}): " +
+                    "can't find the Flex libraries in '${flexLibPath}'")
+            }
+            if (hasNoFlexConfigFile()) {
+                addError("The path to the Flex home directory isn't valid (${project.flexHome}): " +
+                    "can't find 'flex-config.xml' at '${flexConfigPath}'")
+            }
         }
     }
 
@@ -35,6 +50,22 @@ class FlexSDKSpecifiedValidator extends AbstractProjectPropertyValidator {
 
     private boolean isFlexSDKHomeInvalid() {
         return !new File(project.flexHome).exists()
+    }
+    
+    private boolean hasNoFlexSDKlibs() {
+        File flexLibDir = new File(project.flexHome + flexLibPath)
+        if (!flexLibDir.exists()) return true
+        
+        boolean hasSwc = false
+        flexLibDir.traverse(type: FileType.FILES, nameFilter: ~/.*\.swc/) {
+            hasSwc = true
+        }
+        return !hasSwc
+    }
+    
+    private boolean hasNoFlexConfigFile() {
+        File flexConfigFile = new File(project.flexHome + flexConfigPath)
+        return !flexConfigFile.exists()
     }
 
 }
