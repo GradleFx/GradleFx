@@ -21,6 +21,7 @@ import org.apache.commons.lang.StringUtils
 
 class FlexSDKSpecifiedValidator extends AbstractProjectPropertyValidator {
     
+    private String flexConfigPath = "/frameworks/flex-config.xml"
     private String flexLibPath = "/frameworks/libs"
     
     void execute() {
@@ -31,9 +32,15 @@ class FlexSDKSpecifiedValidator extends AbstractProjectPropertyValidator {
             addError("The path to the Flex home directory isn't valid (${project.flexHome}): " +
                 "the directory doesn't exist")
         }
-        else if (hasNoFlexSDKlibs()) {
-            addError("The path to the Flex home directory isn't valid (${project.flexHome}): " +
-                "can't find the Flex libraries in '${flexLibPath}'")
+        else {
+            if (hasNoFlexSDKlibs()) {
+                addError("The path to the Flex home directory isn't valid (${project.flexHome}): " +
+                    "can't find the Flex libraries in '${flexLibPath}'")
+            }
+            if (hasNoFlexConfigFile()) {
+                addError("The path to the Flex home directory isn't valid (${project.flexHome}): " +
+                    "can't find 'flex-config.xml' at '${flexConfigPath}'")
+            }
         }
     }
 
@@ -54,6 +61,11 @@ class FlexSDKSpecifiedValidator extends AbstractProjectPropertyValidator {
             hasSwc = true
         }
         return !hasSwc
+    }
+    
+    private boolean hasNoFlexConfigFile() {
+        File flexConfigFile = new File(project.flexHome + flexConfigPath)
+        return !flexConfigFile.exists()
     }
 
 }
