@@ -18,6 +18,7 @@ package org.gradlefx.tasks.compile
 
 import groovy.io.FileType
 import org.gradle.api.tasks.TaskAction
+import org.gradlefx.FrameworkLinkage
 import org.gradlefx.options.CompilerOption
 import org.gradlefx.validators.actions.ValidateCompcTaskPropertiesAction
 
@@ -61,6 +62,10 @@ class Compc extends AbstractCompileTask {
 
     private List createCompilerArguments() {
         List compilerArguments = []
+        
+        //add framework
+        addPlayerLibrary(compilerArguments)
+        addFramework(compilerArguments)
 
         //add every source path
         addSourcePaths(compilerArguments)
@@ -69,10 +74,10 @@ class Compc extends AbstractCompileTask {
         addLocales(compilerArguments)
 
         //add dependencies
-        addLibraries(project.configurations.internal.files, project.configurations.internal, "-include-libraries", compilerArguments)
-        addLibraries(project.configurations.external.files, project.configurations.external, "-external-library-path", compilerArguments)
-        addLibraries(project.configurations.merged.files, project.configurations.merged, "-library-path", compilerArguments)
-
+        addLibraries(project.configurations.internal.files, project.configurations.internal, CompilerOption.INCLUDE_LIBRARIES, compilerArguments)
+        addLibraries(project.configurations.external.files, project.configurations.external, CompilerOption.EXTERNAL_LIBRARY_PATH, compilerArguments)
+        addLibraries(project.configurations.merged.files, project.configurations.merged, CompilerOption.LIBRARY_PATH, compilerArguments)
+        
         //add all the other user specified compiler options
         project.additionalCompilerOptions.each { compilerOption ->
             compilerArguments.add(compilerOption)
@@ -80,6 +85,10 @@ class Compc extends AbstractCompileTask {
 
         compilerArguments.add("-output=${project.buildDir.path}/${project.output}.swc")
         return compilerArguments
+    }
+    
+    protected FrameworkLinkage getDefaultFrameworkLinkage() {
+        return FrameworkLinkage.merged
     }
 
     private def addResources(List compilerArguments) {
@@ -90,14 +99,11 @@ class Compc extends AbstractCompileTask {
                 resourceDir.traverse(type: FileType.FILES) {
                     String relativePath = resourceDir.toURI().relativize(it.toURI()).getPath();
 
-                    println "relative resource path: " + relativePath
-
                     compilerArguments.add(CompilerOption.INCLUDE_FILE)
                     compilerArguments.add(relativePath)
                     compilerArguments.add(it.path)
                 }
             }
-
         }
     }
 

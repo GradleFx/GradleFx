@@ -16,17 +16,19 @@
 
 package org.gradlefx.validators.actions
 
-import org.gradlefx.tasks.compile.Mxmlc
 import org.gradle.api.Action
-import org.gradlefx.validators.runner.FailOnErrorValidatorRunner
+import org.gradlefx.tasks.compile.Mxmlc
 import org.gradlefx.validators.FlexSDKSpecifiedValidator
+import org.gradlefx.validators.FrameworkLinkageValidator
 import org.gradlefx.validators.MxmlcAdditionalPropertiesValidator
+import org.gradlefx.validators.runner.FailOnErrorValidatorRunner
 
 class ValidateMxmlcTaskPropertiesAction implements Action<Mxmlc> {
 
     void execute(Mxmlc task) {
         new FailOnErrorValidatorRunner(task.project)
             .add(new FlexSDKSpecifiedValidator())
+            .add(new FrameworkLinkageValidator())
             .add(new MxmlcAdditionalPropertiesValidator())
             .run()
     }

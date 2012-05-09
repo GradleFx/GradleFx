@@ -19,8 +19,9 @@ package org.gradlefx.tasks.compile
 import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ResolveException
-import org.gradlefx.FlexType
 import org.gradle.api.logging.LogLevel
+import org.gradlefx.FlexType
+import org.gradlefx.FrameworkLinkage;
 import org.gradlefx.options.CompilerOption
 
 abstract class AbstractCompileTask extends DefaultTask {
@@ -74,7 +75,7 @@ abstract class AbstractCompileTask extends DefaultTask {
      * @param configuration
      * @param compilerArgument
      */
-    protected void addLibraries(Set libraryFiles, Configuration configuration, String compilerArgument, List compilerArguments) {
+    protected void addLibraries(Set libraryFiles, Configuration configuration, CompilerOption compilerOption, List compilerArguments) {
         libraryFiles.each { dependency ->
             //only add swc dependencies, no use in adding pom dependencies
             if (dependency.name.endsWith(FlexType.swc.toString()) || dependency.isDirectory()) {
@@ -84,7 +85,33 @@ abstract class AbstractCompileTask extends DefaultTask {
                     throw new ResolveException(configuration, new Throwable(errorMessage))
                 }
 
-                compilerArguments.add(compilerArgument + "+=" + dependency.path);
+                compilerArguments.add("${compilerOption}+=${dependency.path}");
+            }
+        }
+    }
+    
+    protected void addPlayerLibrary(List compilerArguments) {
+        String libPath = "${project.flexHome}/frameworks/libs/player/{targetPlayerMajorVersion}.{targetPlayerMinorVersion}/playerglobal.swc"
+        compilerArguments.add("${CompilerOption.EXTERNAL_LIBRARY_PATH}+=${libPath}");
+    }
+    
+    abstract protected FrameworkLinkage getDefaultFrameworkLinkage()
+    
+    protected void addFramework(List compilerArguments) {
+        FrameworkLinkage linkage = project.frameworkLinkage
+        
+        //if FrameworkLinkage is 'none', we don't want to load the Flex configuration
+        if (linkage == FrameworkLinkage.none)
+            compilerArguments.add("-load-config=")
+        //when FrameworkLinkage is the default for this compiler, we don't have to do anything
+        else if (linkage != getDefaultFrameworkLinkage()) {
+            //remove RSL's defined in config.xml
+            compilerArguments.add("${CompilerOption.RUNTIME_SHARED_LIBRARY_PATH}=")
+            
+            //set the RSL's defined in config.xml on the library path
+            def flexConfig = new XmlSlurper().parse("${project.flexHome}/frameworks/flex-config.xml")
+            flexConfig['runtime-shared-library-path']['path-element'].each {
+                compilerArguments.add("${linkage.getCompilerOption()}+=${project.flexHome}/frameworks/${it}")
             }
         }
     }
