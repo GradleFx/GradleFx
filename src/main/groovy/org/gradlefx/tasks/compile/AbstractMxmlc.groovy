@@ -37,13 +37,13 @@ abstract class AbstractMxmlc extends AbstractCompileTask {
 	}
 
 	def compile(antResultProperty, antOutputProperty, compilerArguments) {
-		ant.java(jar:            project.flexHome + '/lib/mxmlc.jar',
-			     dir:            project.flexHome + '/frameworks',
+		ant.java(jar:            flexConvention.flexHome + '/lib/mxmlc.jar',
+			     dir:            flexConvention.flexHome + '/frameworks',
 			     fork:           true,
 			     resultproperty: antResultProperty,
 			     outputproperty: antOutputProperty) { javaTask ->
 
-            project.jvmArguments.each { jvmArgument ->
+            flexConvention.jvmArguments.each { jvmArgument ->
                 jvmarg(value: jvmArgument)
             }
 

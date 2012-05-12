@@ -59,14 +59,14 @@ class Mxmlc extends AbstractMxmlc {
         addRsls(compilerArguments)
 
         //add all the other user specified compiler options
-        project.additionalCompilerOptions.each { compilerOption ->
+        flexConvention.additionalCompilerOptions.each { compilerOption ->
             compilerArguments.add(compilerOption)
         }
 
-        compilerArguments.add("${CompilerOption.OUTPUT}=${project.buildDir.path}/${project.output}.swf" )
+        compilerArguments.add("${CompilerOption.OUTPUT}=${project.buildDir.path}/${flexConvention.output}.swf" )
 
         //add the target file
-        File mainClassFile = findFile(project.srcDirs, project.mainClass)
+        File mainClassFile = findFile(flexConvention.srcDirs, flexConvention.mainClass)
         compilerArguments.add(mainClassFile.absolutePath)
 
         return compilerArguments

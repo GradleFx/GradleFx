@@ -23,13 +23,13 @@ class AirPackagePropertiesValidator extends AbstractProjectPropertyValidator {
     }
 
     private void validateApplicationDescriptorSpecified() {
-        if(project.air.applicationDescriptor == null || !project.file(project.air.applicationDescriptor).exists()) {
+        if(flexConvention.air.applicationDescriptor == null || !project.file(flexConvention.air.applicationDescriptor).exists()) {
             addError("No Application descriptor has been specified. This can be done as follows -> air.applicationDescriptor: '/src/main/flex/airdescriptor.xml'")
         }
     }
 
     private void validateRequiredSigningOptionsSpecified() {
-        if(project.air.keystore == null) {
+        if(flexConvention.air.keystore == null) {
             addError("A certificate needs to be specified. This can be done as follows -> air.keystore: 'certificate.p12'")
         }
     }

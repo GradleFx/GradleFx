@@ -46,16 +46,16 @@ class MxmlcAdditionalPropertiesValidator extends AbstractCompilerPropertiesValid
         }
 
         if(usesCompilerOptionInAdditionalProperties(CompilerOption.OUTPUT)) {
-            addCompilerOptionWarning(CompilerOption.OUTPUT, "specify the name of the output file in the 'output' convention property")
+            addCompilerOptionWarning(CompilerOption.OUTPUT, "specify the name of the output file in the 'output' flexConvention property")
         }
 
         if(usesCompilerOptionInAdditionalProperties(CompilerOption.SOURCE_PATH)) {
             addCompilerOptionWarning(CompilerOption.SOURCE_PATH, """specify the source directory as an entry in the 'srcDirs'
-                                                                convention property. e.g. srcDirs.add('src/main/flex')""")
+                                                                flexConvention property. e.g. srcDirs.add('src/main/flex')""")
         }
 
         if(usesCompilerOptionInAdditionalProperties(CompilerOption.LOCALE)) {
-            addCompilerOptionWarning(CompilerOption.LOCALE, "add the locale to the 'locales' convention property. e.g. locales.add('EN_US')")
+            addCompilerOptionWarning(CompilerOption.LOCALE, "add the locale to the 'locales' flexConvention property. e.g. locales.add('EN_US')")
         }
     }
 }

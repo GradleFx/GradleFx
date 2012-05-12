@@ -18,11 +18,16 @@ package org.gradlefx.tasks
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
+import org.gradlefx.conventions.GradleFxConvention
 
 class Publish extends DefaultTask {
 
+    GradleFxConvention flexConvention;
+
     public Publish() {
         description = "Publish build artifacts to specified directory."
+
+        flexConvention = project.convention.plugins.flex
     }
 
     @TaskAction
@@ -30,16 +35,16 @@ class Publish extends DefaultTask {
         // copy what we built to the publish directory
         project.copy {
             from project.buildDir
-            into project.publishDir
+            into flexConvention.publishDir
             include '**/*'
         }
         // copy non-project RSL dependencies to the publish directory
         project.files(project.configurations.rsl) { libraries ->
             libraries?.files.each { library ->
-                println "copying RSL dependency ${library.absolutePath} to publish directory ${project.publishDir}"
+                println "copying RSL dependency ${library.absolutePath} to publish directory ${flexConvention.publishDir}"
                 project.copy {
                     from library.absolutePath
-                    into project.publishDir
+                    into flexConvention.publishDir
                 }
             }
         }

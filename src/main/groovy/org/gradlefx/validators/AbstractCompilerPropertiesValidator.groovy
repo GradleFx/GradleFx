@@ -25,7 +25,7 @@ abstract class AbstractCompilerPropertiesValidator extends AbstractProjectProper
     private static final Logger LOG = LoggerFactory.getLogger('gradlefx')
 
     protected boolean usesCompilerOptionInAdditionalProperties(CompilerOption compilerOption) {
-        return project.additionalCompilerOptions.any { String usedOption ->
+        return flexConvention.additionalCompilerOptions.any { String usedOption ->
             usedOption.startsWith(compilerOption.optionName)
         }
     }

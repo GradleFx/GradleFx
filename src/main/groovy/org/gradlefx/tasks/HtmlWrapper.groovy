@@ -22,11 +22,16 @@ import org.gradle.api.internal.AbstractTask
 import org.gradle.api.tasks.TaskAction
 import org.gradlefx.FlexType
 import org.gradle.api.DefaultTask
+import org.gradlefx.conventions.GradleFxConvention
 
 class HtmlWrapper extends DefaultTask {
 
+    GradleFxConvention flexConvention;
+
     public HtmlWrapper() {
         description = 'Creates an HTML wrapper for the generated swf'
+
+        flexConvention = project.convention.plugins.flex
     }
 
 	@TaskAction
@@ -34,22 +39,22 @@ class HtmlWrapper extends DefaultTask {
         createOutputDirectoryIfNotExists()
 
 		ant.'html-wrapper'(
-			title:               project.htmlWrapper.title,
-			file:                project.htmlWrapper.file,
-			height:              project.htmlWrapper.height,
-			width:               project.htmlWrapper.width,
-			application:         project.htmlWrapper.application,
-			swf:                 project.htmlWrapper.swf,
-			history:             project.htmlWrapper.history,
-			'express-install':   project.htmlWrapper.'express-install',
-			'version-detection': project.htmlWrapper.'version-detection',
-			output:              project.htmlWrapper.output
+			title:               flexConvention.htmlWrapper.title,
+			file:                flexConvention.htmlWrapper.file,
+			height:              flexConvention.htmlWrapper.height,
+			width:               flexConvention.htmlWrapper.width,
+			application:         flexConvention.htmlWrapper.application,
+			swf:                 flexConvention.htmlWrapper.swf,
+			history:             flexConvention.htmlWrapper.history,
+			'express-install':   flexConvention.htmlWrapper.'express-install',
+			'version-detection': flexConvention.htmlWrapper.'version-detection',
+			output:              flexConvention.htmlWrapper.output
 		)
 	}
 
     private def createOutputDirectoryIfNotExists() {
-        if(!project.htmlWrapper.output.exists()) {
-            project.htmlWrapper.output.mkdir()
+        if(!flexConvention.htmlWrapper.output.exists()) {
+            flexConvention.htmlWrapper.output.mkdir()
         }
     }
 }
