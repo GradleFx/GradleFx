@@ -90,12 +90,12 @@ class Mxmlc extends AbstractMxmlc {
         AntBuilder ant = new AntBuilder()
         ant.project.getBuildListeners()[0].setMessageOutputLevel(0)
         
-        def flexConfig = new XmlSlurper().parse("${project.flexHome}/frameworks/flex-config.xml")
+        def flexConfig = new XmlSlurper().parse("${flexConvention.flexHome}/frameworks/flex-config.xml")
         
         flexConfig['runtime-shared-library-path'].each {
             String swcName = it['path-element'].text()
             String libName = it['rsl-url'][1].text()[0..-2] + 'f'
-            File swc = new File("${project.flexHome}/frameworks/${swcName}")
+            File swc = new File("${flexConvention.flexHome}/frameworks/${swcName}")
             
             if (swc.exists()) {
                 ant.unzip(src: swc.path, dest: swc.parent) {

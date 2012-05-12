@@ -96,14 +96,14 @@ abstract class AbstractCompileTask extends DefaultTask {
     }
     
     protected void addPlayerLibrary(List compilerArguments) {
-        String libPath = "${project.flexHome}/frameworks/libs/player/{targetPlayerMajorVersion}.{targetPlayerMinorVersion}/playerglobal.swc"
+        String libPath = "${flexConvention.flexHome}/frameworks/libs/player/{targetPlayerMajorVersion}.{targetPlayerMinorVersion}/playerglobal.swc"
         compilerArguments.add("${CompilerOption.EXTERNAL_LIBRARY_PATH}+=${libPath}");
     }
     
     abstract protected FrameworkLinkage getDefaultFrameworkLinkage()
     
     protected void addFramework(List compilerArguments) {
-        FrameworkLinkage linkage = project.frameworkLinkage
+        FrameworkLinkage linkage = flexConvention.frameworkLinkage
         
         //if FrameworkLinkage is 'none', we don't want to load the Flex configuration
         if (linkage == FrameworkLinkage.none)
@@ -114,9 +114,9 @@ abstract class AbstractCompileTask extends DefaultTask {
             compilerArguments.add("${CompilerOption.RUNTIME_SHARED_LIBRARY_PATH}=")
             
             //set the RSL's defined in config.xml on the library path
-            def flexConfig = new XmlSlurper().parse("${project.flexHome}/frameworks/flex-config.xml")
+            def flexConfig = new XmlSlurper().parse("${flexConvention.flexHome}/frameworks/flex-config.xml")
             flexConfig['runtime-shared-library-path']['path-element'].each {
-                compilerArguments.add("${linkage.getCompilerOption()}+=${project.flexHome}/frameworks/${it}")
+                compilerArguments.add("${linkage.getCompilerOption()}+=${flexConvention.flexHome}/frameworks/${it}")
             }
         }
     }
