@@ -16,7 +16,10 @@
 
 package org.gradlefx.tasks.compile
 
-class Amxmlc extends Mxmlc{
+import java.util.List;
+import org.gradlefx.options.CompilerOption
+
+class Amxmlc extends Mxmlc {
 
      @Override
      protected List createCompilerArguments() {
@@ -24,4 +27,11 @@ class Amxmlc extends Mxmlc{
          arguments.add(0,"+configname=air")
          return arguments
      }
+     
+     @Override
+     protected void addPlayerLibrary(List compilerArguments) {
+         String libPath = "${flexConvention.flexHome}/frameworks/libs/air/airglobal.swc"
+         compilerArguments.add("${CompilerOption.EXTERNAL_LIBRARY_PATH}+=${libPath}");
+     }
+     
 }

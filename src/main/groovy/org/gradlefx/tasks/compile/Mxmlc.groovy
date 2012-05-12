@@ -16,8 +16,12 @@
 
 package org.gradlefx.tasks.compile
 
+import java.util.List
 import org.gradle.api.tasks.TaskAction
+import org.gradlefx.FrameworkLinkage
+import org.gradlefx.options.CompilerOption
 import org.gradlefx.tasks.Tasks
+import org.gradlefx.validators.actions.ValidateMxmlcTaskPropertiesAction
 
 class Mxmlc extends AbstractMxmlc {
 
@@ -31,35 +35,78 @@ class Mxmlc extends AbstractMxmlc {
 
     @TaskAction
     def compileFlex() {
+        new ValidateMxmlcTaskPropertiesAction().execute(this)
+
 		super.compileFlex(ANT_RESULT_PROPERTY, ANT_OUTPUT_PROPERTY, 'Mxmlc', createCompilerArguments())
     }
 
     protected List createCompilerArguments() {
         List compilerArguments = []
+        
+        //add framework
+        addPlayerLibrary(compilerArguments)
+        addFramework(compilerArguments)
 
         //add every source directory
         addSourcePaths(compilerArguments)
         addLocales(compilerArguments)
 
         //add dependencies
-        addLibraries(project.configurations.internal.files, project.configurations.internal, "-include-libraries", compilerArguments)
-		addLibraries(project.configurations.external.files - project.configurations.internal.files - project.configurations.merged.files, project.configurations.external, '-external-library-path', compilerArguments)
-        addLibraries(project.configurations.merged.files, project.configurations.merged, "-library-path", compilerArguments)
-        addLibraries(project.configurations.theme.files, project.configurations.theme, "-theme", compilerArguments)
+        addLibraries(project.configurations.internal.files, project.configurations.internal, CompilerOption.INCLUDE_LIBRARIES, compilerArguments)
+		addLibraries(project.configurations.external.files - project.configurations.internal.files - project.configurations.merged.files, project.configurations.external, CompilerOption.EXTERNAL_LIBRARY_PATH, compilerArguments)
+        addLibraries(project.configurations.merged.files, project.configurations.merged, CompilerOption.LIBRARY_PATH, compilerArguments)
+        addLibraries(project.configurations.theme.files, project.configurations.theme, CompilerOption.THEME, compilerArguments)
         addRsls(compilerArguments)
 
         //add all the other user specified compiler options
-        project.additionalCompilerOptions.each { compilerOption ->
+        flexConvention.additionalCompilerOptions.each { compilerOption ->
             compilerArguments.add(compilerOption)
         }
 
-        compilerArguments.add("-output=${project.buildDir.path}/${project.output}.swf" )
+        compilerArguments.add("${CompilerOption.OUTPUT}=${project.buildDir.path}/${flexConvention.output}.swf" )
 
         //add the target file
-        File mainClassFile = findFile(project.srcDirs, project.mainClass)
+        File mainClassFile = findFile(flexConvention.srcDirs, flexConvention.mainClass)
         compilerArguments.add(mainClassFile.absolutePath)
 
         return compilerArguments
+    }
+    
+    protected FrameworkLinkage getDefaultFrameworkLinkage() {
+        return FrameworkLinkage.rsl
+    }
+    
+    @Override
+    protected void addFramework(List compilerArguments) {
+        super.addFramework(compilerArguments)
+        if (project.frameworkLinkage == getDefaultFrameworkLinkage()) copyFrameworkRSLs()
+    }
+    
+    /**
+     * Extracts the library swf's from the swc's and moves them to the build directory 
+     * in the location defined as failover RSL url.
+     */
+    private void copyFrameworkRSLs() {
+        AntBuilder ant = new AntBuilder()
+        ant.project.getBuildListeners()[0].setMessageOutputLevel(0)
+        
+        def flexConfig = new XmlSlurper().parse("${flexConvention.flexHome}/frameworks/flex-config.xml")
+        
+        flexConfig['runtime-shared-library-path'].each {
+            String swcName = it['path-element'].text()
+            String libName = it['rsl-url'][1].text()[0..-2] + 'f'
+            File swc = new File("${flexConvention.flexHome}/frameworks/${swcName}")
+            
+            if (swc.exists()) {
+                ant.unzip(src: swc.path, dest: swc.parent) {
+                    patternset(includes: 'library.swf')
+                }
+                ant.move(
+                    file: "${swc.parent}/library.swf", 
+                    tofile:"${project.buildDir}/${libName}"
+                )
+            }
+        }
     }
 
 }

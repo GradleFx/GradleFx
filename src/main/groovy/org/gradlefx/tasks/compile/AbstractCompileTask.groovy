@@ -19,20 +19,27 @@ package org.gradlefx.tasks.compile
 import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ResolveException
-import org.gradlefx.FlexType
 import org.gradle.api.logging.LogLevel
+import org.gradlefx.FlexType
+import org.gradlefx.FrameworkLinkage;
+import org.gradlefx.options.CompilerOption
+import org.gradlefx.conventions.GradleFxConvention
 
 abstract class AbstractCompileTask extends DefaultTask {
 
+    GradleFxConvention flexConvention;
+
     protected AbstractCompileTask() {
         logging.setLevel(LogLevel.INFO)
+
+        flexConvention = project.convention.plugins.flex
 
         initInputDirectory()
         initOutputDirectory()
     }
 
     private def initInputDirectory() {
-        project.srcDirs.each { sourceDirectory ->
+        flexConvention.srcDirs.each { sourceDirectory ->
             inputs.dir sourceDirectory
         }
     }
@@ -47,24 +54,24 @@ abstract class AbstractCompileTask extends DefaultTask {
      */
     protected void addSourcePaths(List compilerArguments) {
         //add locale path to source paths if any locales are defined
-        if (project.locales && project.locales.size()) {
-            project.srcDirs.add project.localeDir
+        if (flexConvention.locales && flexConvention.locales.size()) {
+            flexConvention.srcDirs.add flexConvention.localeDir
         }
         
-        project.srcDirs.each { sourcePath ->
+        flexConvention.srcDirs.each { sourcePath ->
             File sourcePathDir = project.file(sourcePath)
             String path = project.file(sourcePath).path
-            if (sourcePath == project.localeDir) path += '/{locale}'
+            if (sourcePath == flexConvention.localeDir) path += '/{locale}'
 
             if (sourcePathDir.exists() || sourcePath.contains('{')) {
-                compilerArguments.add("-source-path+=" + path)
+                compilerArguments.add("${CompilerOption.SOURCE_PATH}+=" + path)
             }
         }
     }
     
     protected void addLocales(List compilerArguments) {
-        if (project.locales && project.locales.size()) {
-            compilerArguments.add("-locale=" + project.locales.join(','))
+        if (flexConvention.locales && flexConvention.locales.size()) {
+            compilerArguments.add("${CompilerOption.LOCALE}=" + flexConvention.locales.join(','))
         }
     }
 
@@ -73,7 +80,7 @@ abstract class AbstractCompileTask extends DefaultTask {
      * @param configuration
      * @param compilerArgument
      */
-    protected void addLibraries(Set libraryFiles, Configuration configuration, String compilerArgument, List compilerArguments) {
+    protected void addLibraries(Set libraryFiles, Configuration configuration, CompilerOption compilerOption, List compilerArguments) {
         libraryFiles.each { dependency ->
             //only add swc dependencies, no use in adding pom dependencies
             if (dependency.name.endsWith(FlexType.swc.toString()) || dependency.isDirectory()) {
@@ -83,7 +90,33 @@ abstract class AbstractCompileTask extends DefaultTask {
                     throw new ResolveException(configuration, new Throwable(errorMessage))
                 }
 
-                compilerArguments.add(compilerArgument + "+=" + dependency.path);
+                compilerArguments.add("${compilerOption}+=${dependency.path}");
+            }
+        }
+    }
+    
+    protected void addPlayerLibrary(List compilerArguments) {
+        String libPath = "${flexConvention.flexHome}/frameworks/libs/player/{targetPlayerMajorVersion}.{targetPlayerMinorVersion}/playerglobal.swc"
+        compilerArguments.add("${CompilerOption.EXTERNAL_LIBRARY_PATH}+=${libPath}");
+    }
+    
+    abstract protected FrameworkLinkage getDefaultFrameworkLinkage()
+    
+    protected void addFramework(List compilerArguments) {
+        FrameworkLinkage linkage = flexConvention.frameworkLinkage
+        
+        //if FrameworkLinkage is 'none', we don't want to load the Flex configuration
+        if (linkage == FrameworkLinkage.none)
+            compilerArguments.add("-load-config=")
+        //when FrameworkLinkage is the default for this compiler, we don't have to do anything
+        else if (linkage != getDefaultFrameworkLinkage()) {
+            //remove RSL's defined in config.xml
+            compilerArguments.add("${CompilerOption.RUNTIME_SHARED_LIBRARY_PATH}=")
+            
+            //set the RSL's defined in config.xml on the library path
+            def flexConfig = new XmlSlurper().parse("${flexConvention.flexHome}/frameworks/flex-config.xml")
+            flexConfig['runtime-shared-library-path']['path-element'].each {
+                compilerArguments.add("${linkage.getCompilerOption()}+=${flexConvention.flexHome}/frameworks/${it}")
             }
         }
     }

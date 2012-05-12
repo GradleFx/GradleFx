@@ -20,10 +20,11 @@ import org.gradle.api.artifacts.maven.MavenDeployment
 apply plugin: 'groovy'
 apply plugin: 'maven'
 apply plugin: 'signing'
+apply plugin: 'idea'
 
 group = 'org.gradlefx'
 version = '0.4.2'
-packaging = 'jar'
+ext.packaging = 'jar'
 
 repositories {
     mavenCentral()
@@ -31,6 +32,8 @@ repositories {
 
 dependencies {
     compile gradleApi()
+    compile group: 'commons-lang', name: 'commons-lang', version: '2.6'
+    testCompile "org.spockframework:spock-core:0.6-groovy-1.8"
     groovy group: 'org.codehaus.groovy', name: 'groovy', version: '1.8.6'
 }
 
@@ -53,14 +56,20 @@ artifacts {
 task wrapper(type: Wrapper) {
     group = 'Buildmaster'
     description = 'Generates gradlew and gradlew.bat bootstrap scripts'
-    gradleVersion = '1.0-milestone-8'
+    gradleVersion = '1.0-rc-3'
     // place jar file and properties into a subdirectory to avoid root dir clutter
     jarFile = 'buildSrc/wrapper/gradle.jar'
 }
 
 //********* artifact signing *********
-signing {
-    sign configurations.archives
+if(gradle.startParameter.taskNames.contains("uploadArchives")) {
+    signing {
+        sign configurations.archives
+    }
+} else {
+    task signArchives {
+        // do nothing
+    }
 }
 
 uploadArchives {

@@ -16,10 +16,11 @@
 
 package org.gradlefx.tasks.compile
 
-import org.gradle.api.tasks.TaskAction
 import groovy.io.FileType
-import org.gradle.api.internal.file.BaseDirFileResolver
-import org.gradle.internal.nativeplatform.GenericFileSystem
+import org.gradle.api.tasks.TaskAction
+import org.gradlefx.FrameworkLinkage
+import org.gradlefx.options.CompilerOption
+import org.gradlefx.validators.actions.ValidateCompcTaskPropertiesAction
 
 /*
  * Gradle task to execute Flex's Compc compiler.
@@ -35,15 +36,17 @@ class Compc extends AbstractCompileTask {
 
     @TaskAction
     def compileFlex() {
+        new ValidateCompcTaskPropertiesAction().execute(this)
+
         List compilerArguments = createCompilerArguments()
 
-        ant.java(jar: project.flexHome + '/lib/compc.jar',
-                dir: project.flexHome + '/frameworks',
+        ant.java(jar: flexConvention.flexHome + '/lib/compc.jar',
+                dir: flexConvention.flexHome + '/frameworks',
                 fork: true,
                 resultproperty: ANT_RESULT_PROPERTY,
                 outputproperty: ANT_OUTPUT_PROPERTY) {
 
-            project.jvmArguments.each { jvmArgument ->
+            flexConvention.jvmArguments.each { jvmArgument ->
                 jvmarg(value: jvmArgument)
             }
 
@@ -59,6 +62,10 @@ class Compc extends AbstractCompileTask {
 
     private List createCompilerArguments() {
         List compilerArguments = []
+        
+        //add framework
+        addPlayerLibrary(compilerArguments)
+        addFramework(compilerArguments)
 
         //add every source path
         addSourcePaths(compilerArguments)
@@ -67,55 +74,60 @@ class Compc extends AbstractCompileTask {
         addLocales(compilerArguments)
 
         //add dependencies
-        addLibraries(project.configurations.internal.files, project.configurations.internal, "-include-libraries", compilerArguments)
-        addLibraries(project.configurations.external.files, project.configurations.external, "-external-library-path", compilerArguments)
-        addLibraries(project.configurations.merged.files, project.configurations.merged, "-library-path", compilerArguments)
-
+        addLibraries(project.configurations.internal.files, project.configurations.internal, CompilerOption.INCLUDE_LIBRARIES, compilerArguments)
+        addLibraries(project.configurations.external.files, project.configurations.external, CompilerOption.EXTERNAL_LIBRARY_PATH, compilerArguments)
+        addLibraries(project.configurations.merged.files, project.configurations.merged, CompilerOption.LIBRARY_PATH, compilerArguments)
+        
         //add all the other user specified compiler options
-        project.additionalCompilerOptions.each { compilerOption ->
+        flexConvention.additionalCompilerOptions.each { compilerOption ->
             compilerArguments.add(compilerOption)
         }
 
-        compilerArguments.add("-output=${project.buildDir.path}/${project.output}.swc")
+        compilerArguments.add("-output=${project.buildDir.path}/${flexConvention.output}.swc")
         return compilerArguments
+    }
+    
+    protected FrameworkLinkage getDefaultFrameworkLinkage() {
+        return FrameworkLinkage.merged
     }
 
     private def addResources(List compilerArguments) {
-        project.resourceDirs.each { String resourceDirString ->
+        flexConvention.resourceDirs.each { String resourceDirString ->
             File resourceDir = project.file(resourceDirString)
 
             if(resourceDir.exists()) {
                 resourceDir.traverse(type: FileType.FILES) {
-                    compilerArguments.add("-include-file")
-                    compilerArguments.add("/" + new BaseDirFileResolver(new GenericFileSystem(), resourceDir).resolveAsRelativePath(it.path).replace('\\', '/'))
+                    String relativePath = resourceDir.toURI().relativize(it.toURI()).getPath();
+
+                    compilerArguments.add(CompilerOption.INCLUDE_FILE)
+                    compilerArguments.add(relativePath)
                     compilerArguments.add(it.path)
                 }
             }
-
         }
     }
 
     private def addSourceFilesAndDirectories(List compilerArguments) {
-        if (project.includeClasses == null && project.includeSources == null) {
-            project.srcDirs.each { sourcePath ->
+        if (flexConvention.includeClasses == null && flexConvention.includeSources == null) {
+            flexConvention.srcDirs.each { sourcePath ->
                 File sourceDir = project.file(sourcePath)
 
                 //don't allow non existing source paths unless they contain a token (e.g. {locale})
                 if(sourceDir.exists() || sourcePath.contains('{')) {
-                    compilerArguments.add("-include-sources+=" + sourceDir.path)
+                    compilerArguments.add("${CompilerOption.INCLUDE_SOURCES}+=${sourceDir.path}")
                 }
             }
         } else {
-            if (project.includeClasses != null) {
-                compilerArguments.add('-include-classes')
-                project.includeClasses.each { classToInclude ->
+            if (flexConvention.includeClasses != null) {
+                compilerArguments.add(CompilerOption.INCLUDE_CLASSES)
+                flexConvention.includeClasses.each { classToInclude ->
                     compilerArguments.add(classToInclude)
                 }
             }
 
-            if (project.includeSources != null) {
-                project.includeSources.each { classOrDirectoryToInclude ->
-                    compilerArguments.add('-include-sources+=' + project.file(classOrDirectoryToInclude).path)
+            if (flexConvention.includeSources != null) {
+                flexConvention.includeSources.each { classOrDirectoryToInclude ->
+                    compilerArguments.add("${CompilerOption.INCLUDE_SOURCES}+=${project.file(classOrDirectoryToInclude).path}")
                 }
             }
         }

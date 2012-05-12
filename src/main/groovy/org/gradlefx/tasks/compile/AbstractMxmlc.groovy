@@ -17,6 +17,7 @@
 package org.gradlefx.tasks.compile
 
 import org.gradle.api.artifacts.ResolveException
+import org.gradlefx.options.CompilerOption
 
 /*
  * Abstract base class capturing common functionality to execute Flex's MXMLC compiler. 
@@ -36,13 +37,13 @@ abstract class AbstractMxmlc extends AbstractCompileTask {
 	}
 
 	def compile(antResultProperty, antOutputProperty, compilerArguments) {
-		ant.java(jar:            project.flexHome + '/lib/mxmlc.jar',
-			     dir:            project.flexHome + '/frameworks',
+		ant.java(jar:            flexConvention.flexHome + '/lib/mxmlc.jar',
+			     dir:            flexConvention.flexHome + '/frameworks',
 			     fork:           true,
 			     resultproperty: antResultProperty,
 			     outputproperty: antOutputProperty) { javaTask ->
 
-            project.jvmArguments.each { jvmArgument ->
+            flexConvention.jvmArguments.each { jvmArgument ->
                 jvmarg(value: jvmArgument)
             }
 
@@ -65,7 +66,7 @@ abstract class AbstractMxmlc extends AbstractCompileTask {
             if (!dependency.exists()) {
 				throw new ResolveException("Couldn't find the ${dependency.name} file - are you sure the path is correct?")
             }
-			compilerArguments.add("-runtime-shared-library-path+=${dependency.path},${dependency.name[0..-2]}f")
+			compilerArguments.add("${CompilerOption.RUNTIME_SHARED_LIBRARY_PATH}+=${dependency.path},${dependency.name[0..-2]}f")
         }
     }
 }

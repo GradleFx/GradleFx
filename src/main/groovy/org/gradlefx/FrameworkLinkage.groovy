@@ -14,15 +14,26 @@
  * limitations under the License.
  */
 
-package org.gradlefx.tasks
+package org.gradlefx
 
-class Tasks {
-    public static final String COMPILE_TASK_NAME = 'compile'
-    public static final String ASDOC_TASK_NAME = 'asdoc'
-    public static final String BUILD_TASK_NAME = 'build'
-    public static final String PACKAGE_TASK_NAME = 'package'
-    public static final String TEST_TASK_NAME = 'test'
-    public static final String PUBLISH_TASK_NAME = 'publish'
-    public static final String COPY_RESOURCES_TASK_NAME = 'copyresources'
-    public static final String CREATE_HTML_WRAPPER = 'createHtmlWrapper'
+import org.gradlefx.options.CompilerOption;
+
+public enum FrameworkLinkage {
+    external(CompilerOption.EXTERNAL_LIBRARY_PATH),
+    rsl(CompilerOption.RUNTIME_SHARED_LIBRARY_PATH),
+    merged(CompilerOption.LIBRARY_PATH),
+    none;
+    
+    private CompilerOption compilerOption;
+    
+    private FrameworkLinkage() {}
+    
+    private FrameworkLinkage(CompilerOption compilerOption) {
+        this.compilerOption = compilerOption;
+    }
+    
+    public CompilerOption getCompilerOption() {
+        return compilerOption
+    }
+    
 }
