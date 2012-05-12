@@ -21,6 +21,7 @@ import org.gradle.testfixtures.ProjectBuilder
 import org.gradlefx.FlexType;
 import org.gradlefx.FrameworkLinkage;
 import spock.lang.Specification
+import org.gradlefx.conventions.GradleFxConvention
 
 class FrameworkLinkageValidatorTest extends Specification {
 
@@ -30,12 +31,13 @@ class FrameworkLinkageValidatorTest extends Specification {
 
     def setup() {
         validator.project = project
+        validator.flexConvention = new GradleFxConvention(project)
     }
 
     def "a combination of library project and RSL linkage should add error message"() {
         when:
-            project.type = FlexType.swc
-            project.frameworkLinkage = FrameworkLinkage.rsl
+            validator.flexConvention.type = FlexType.swc
+            validator.flexConvention.frameworkLinkage = FrameworkLinkage.rsl
             validator.execute();
 
         then:
@@ -44,8 +46,8 @@ class FrameworkLinkageValidatorTest extends Specification {
     
     def "a combination of webapp project and external linkage should add error message"() {
         when:
-            project.type = FlexType.swf
-            project.frameworkLinkage = FrameworkLinkage.external
+            validator.flexConvention.type = FlexType.swf
+            validator.flexConvention.frameworkLinkage = FrameworkLinkage.external
             validator.execute();
 
         then:
@@ -54,8 +56,8 @@ class FrameworkLinkageValidatorTest extends Specification {
     
     def "a combination of AIR project and external linkage should add error message"() {
         when:
-            project.type = FlexType.air
-            project.frameworkLinkage = FrameworkLinkage.external
+            validator.flexConvention.type = FlexType.air
+            validator.flexConvention.frameworkLinkage = FrameworkLinkage.external
             validator.execute();
 
         then:
@@ -65,36 +67,36 @@ class FrameworkLinkageValidatorTest extends Specification {
     def "any other combination should not add error messages"() {
         when:
             //swf with none, RSL or merged
-            project.type = FlexType.swf
-            project.frameworkLinkage = FrameworkLinkage.none
+            validator.flexConvention.type = FlexType.swf
+            validator.flexConvention.frameworkLinkage = FrameworkLinkage.none
             validator.execute();
             
-            project.frameworkLinkage = FrameworkLinkage.rsl
+            validator.flexConvention.frameworkLinkage = FrameworkLinkage.rsl
             validator.execute();
             
-            project.frameworkLinkage = FrameworkLinkage.merged
+            validator.flexConvention.frameworkLinkage = FrameworkLinkage.merged
             validator.execute();
             
             //AIR with none, RSL or merged
-            project.type = FlexType.air
-            project.frameworkLinkage = FrameworkLinkage.none
+            validator.flexConvention.type = FlexType.air
+            validator.flexConvention.frameworkLinkage = FrameworkLinkage.none
             validator.execute();
             
-            project.frameworkLinkage = FrameworkLinkage.rsl
+            validator.flexConvention.frameworkLinkage = FrameworkLinkage.rsl
             validator.execute();
             
-            project.frameworkLinkage = FrameworkLinkage.merged
+            validator.flexConvention.frameworkLinkage = FrameworkLinkage.merged
             validator.execute();
             
             //swc with none, external or merged
-            project.type = FlexType.swc
-            project.frameworkLinkage = FrameworkLinkage.none
+            validator.flexConvention.type = FlexType.swc
+            validator.flexConvention.frameworkLinkage = FrameworkLinkage.none
             validator.execute();
             
-            project.frameworkLinkage = FrameworkLinkage.external
+            validator.flexConvention.frameworkLinkage = FrameworkLinkage.external
             validator.execute();
             
-            project.frameworkLinkage = FrameworkLinkage.merged
+            validator.flexConvention.frameworkLinkage = FrameworkLinkage.merged
             validator.execute();
 
         then:

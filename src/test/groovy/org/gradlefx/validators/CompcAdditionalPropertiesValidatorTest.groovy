@@ -20,6 +20,7 @@ import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 import org.gradlefx.options.CompilerOption
 import spock.lang.Specification
+import org.gradlefx.conventions.GradleFxConvention
 
 class CompcAdditionalPropertiesValidatorTest extends Specification {
 
@@ -29,11 +30,12 @@ class CompcAdditionalPropertiesValidatorTest extends Specification {
 
     def setup() {
         validator.project = project
+        validator.flexConvention = new GradleFxConvention(project)
     }
 
     def "use of compiler option used in Compc task should add warning message"() {
         when:
-            project.additionalCompilerOptions = compilerOption
+            validator.flexConvention.additionalCompilerOptions = compilerOption
             validator.execute();
 
         then:
