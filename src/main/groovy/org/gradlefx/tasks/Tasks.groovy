@@ -18,12 +18,10 @@ package org.gradlefx.tasks
 
 class Tasks {
     public static final String COMPILE_TASK_NAME = 'compile'
-    public static final String TEST_COMPILE_TASK_NAME = 'testCompile'
     public static final String BUILD_TASK_NAME = 'build'
     public static final String PACKAGE_TASK_NAME = 'package'
     public static final String TEST_TASK_NAME = 'test'
     public static final String PUBLISH_TASK_NAME = 'publish'
     public static final String COPY_RESOURCES_TASK_NAME = 'copyresources'
-    public static final String CLEAN_TASK_NAME = 'clean'
     public static final String CREATE_HTML_WRAPPER = 'createHtmlWrapper'
 }
