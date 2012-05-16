@@ -55,9 +55,6 @@ class GradleFxPlugin implements Plugin<Project> {
 
         //do these tasks in the afterEvaluate phase because they need property access
         project.afterEvaluate {
-            //FIXME quick fix for issue #40
-            pluginConvention.flexHome = project.flexHome
-            //END quick fix
             configureAntWithFlex()
             addCompile(pluginConvention)
             addPackage()
