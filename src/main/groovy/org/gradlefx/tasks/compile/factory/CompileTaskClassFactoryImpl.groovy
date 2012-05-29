@@ -30,16 +30,11 @@ class CompileTaskClassFactoryImpl implements CompileTaskClassFactory {
     Logger log = LoggerFactory.getLogger('flex')
 
     Class<Task> createCompileTaskClass(FlexType flexType) {
-        switch (flexType) {
-            case FlexType.swc:
-                return Compc.class
-            case FlexType.swf:
-                return Mxmlc.class
-            case FlexType.air:
-                return Amxmlc.class
-            default:
-                log.warn "Adding compile task using an empty implementation"
-                return NullCompileTask.class
-        }
+        if (flexType.isLib()) return Compc.class
+        if (flexType.isWebApp()) return Mxmlc.class
+        if (flexType.isNativeApp()) return Amxmlc.class
+        
+        log.warn "Adding compile task using an empty implementation"
+        return NullCompileTask.class
     }
 }

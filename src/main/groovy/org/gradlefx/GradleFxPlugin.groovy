@@ -28,6 +28,11 @@ import org.gradlefx.configuration.Configurations
 import org.gradlefx.configuration.FlexAntTasksConfigurator
 import org.gradlefx.conventions.GradleFxConvention
 import org.gradlefx.tasks.compile.factory.CompileTaskClassFactoryImpl
+import org.gradlefx.tasks.project.FDTProject;
+import org.gradlefx.tasks.project.FlashBuilderProject;
+import org.gradlefx.tasks.project.FlashDevelopProject;
+import org.gradlefx.tasks.project.IdeaProject;
+import org.gradlefx.tasks.project.SkeletonProject;
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.gradlefx.tasks.*
@@ -52,16 +57,15 @@ class GradleFxPlugin implements Plugin<Project> {
         addCopyResources()
         addPublish()
 		addTest()
+        
+        addProjectTasks()
 
         //do these tasks in the afterEvaluate phase because they need property access
         project.afterEvaluate {
-            //FIXME quick fix for issue #40
-            pluginConvention.flexHome = project.flexHome
-            //END quick fix
             configureAntWithFlex()
             addCompile(pluginConvention)
-            addPackage()
-            addHtmlWrapper()
+            addPackage(pluginConvention)
+            addHtmlWrapper(pluginConvention)
             addDependsOnOtherProjects()
             addDefaultArtifact()
         }
@@ -87,12 +91,12 @@ class GradleFxPlugin implements Plugin<Project> {
     }
 
     private void addCompile(GradleFxConvention pluginConvention) {
-        Class<Task> compileClass = new CompileTaskClassFactoryImpl().createCompileTaskClass(project.type)
+        Class<Task> compileClass = new CompileTaskClassFactoryImpl().createCompileTaskClass(pluginConvention.type)
         project.tasks.add(Tasks.COMPILE_TASK_NAME, compileClass)
     }
 
     private void addPackage(GradleFxConvention pluginConvention) {
-        if(project.type == FlexType.air) {
+        if(pluginConvention.type.isNativeApp()) {
             Task packageTask = project.tasks.add(Tasks.PACKAGE_TASK_NAME, AirPackage)
             packageTask.dependsOn(Tasks.COMPILE_TASK_NAME)
         }
@@ -103,8 +107,8 @@ class GradleFxPlugin implements Plugin<Project> {
 		test.description = 'Run the FlexUnit tests.'
 	}
 
-    private void addHtmlWrapper() {
-        if (project.type == FlexType.swf) {
+    private void addHtmlWrapper(GradleFxConvention pluginConvention) {
+        if (pluginConvention.type.isWebApp()) {
             project.tasks.add(Tasks.CREATE_HTML_WRAPPER, HtmlWrapper)
         }
     }
@@ -115,6 +119,14 @@ class GradleFxPlugin implements Plugin<Project> {
 
     private void addPublish() {
         project.tasks.add(Tasks.PUBLISH_TASK_NAME, Publish)
+    }
+    
+    private void addProjectTasks() {
+        project.tasks.add(Tasks.FDT_TASK_NAME, FDTProject)
+        project.tasks.add(Tasks.FLASHBUILDER_TASK_NAME, FlashBuilderProject)
+        project.tasks.add(Tasks.FLASHDEVELOP_TASK_NAME, FlashDevelopProject)
+        project.tasks.add(Tasks.IDEA_TASK_NAME, IdeaProject)
+        project.tasks.add(Tasks.SKELETON_TASK_NAME, SkeletonProject)
     }
 
     private void addDependsOnOtherProjects() {

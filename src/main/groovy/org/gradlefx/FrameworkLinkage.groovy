@@ -22,9 +22,9 @@ public enum FrameworkLinkage {
     external(CompilerOption.EXTERNAL_LIBRARY_PATH),
     rsl(CompilerOption.RUNTIME_SHARED_LIBRARY_PATH),
     merged(CompilerOption.LIBRARY_PATH),
-    none;
+    none
     
-    private CompilerOption compilerOption;
+    private CompilerOption compilerOption
     
     private FrameworkLinkage() {}
     
@@ -34,6 +34,35 @@ public enum FrameworkLinkage {
     
     public CompilerOption getCompilerOption() {
         return compilerOption
+    }
+    
+    public boolean usesFlex() {
+        return this != none
+    }
+    
+    public boolean isCompilerDefault(FlexType type) {
+        FrameworkLinkage compilerDefault = getCompilerDefault(type)
+        return this == compilerDefault || (this == none && compilerDefault == merged)
+    }
+    
+    public FrameworkLinkage getCompilerDefault(FlexType type) {
+        return getCompilerDefault(this, type)
+    }
+    
+    /**
+    * The framework linkage defaults to 'RSL' for Flex application projects ('swf', 'air' or 'mobile' {@link FlexType}),
+    * 'merged' for pure ActionScript application projects
+    * and 'external' for library projects ('swc' {@link FlexType}).
+    *
+    * @return The default framework linkage
+    */
+    public static FrameworkLinkage getCompilerDefault(FrameworkLinkage linkage, FlexType type) {
+        return getCompilerDefault(linkage.usesFlex(), type)
+    }
+    
+    public static FrameworkLinkage getCompilerDefault(boolean useFlex, FlexType type) {
+        if (type.isLib()) return external
+        return useFlex ? rsl : merged
     }
     
 }
