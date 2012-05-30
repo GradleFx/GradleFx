@@ -19,6 +19,7 @@ package org.gradlefx.validators
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
+import org.gradlefx.conventions.GradleFxConvention
 
 class FlexSDKSpecifiedValidatorTest extends Specification {
 
@@ -29,11 +30,12 @@ class FlexSDKSpecifiedValidatorTest extends Specification {
 
     def setup() {
         validator.project = project
+        validator.flexConvention = new GradleFxConvention(project)
     }
 
     def "if the 'flexHome' property isn't specified, add an error message"() {
         when:
-            project.flexHome = ''
+            validator.flexConvention.flexHome = ''
             validator.execute();
 
         then:
@@ -42,7 +44,7 @@ class FlexSDKSpecifiedValidatorTest extends Specification {
     
     def "if the 'flexHome' property contains an invalid path, add an error message"() {
         when:
-            project.flexHome = '/invalid/path/to/FlexSDK'
+            validator.flexConvention.flexHome = '/invalid/path/to/FlexSDK'
             validator.execute();
 
         then:
@@ -51,7 +53,7 @@ class FlexSDKSpecifiedValidatorTest extends Specification {
     
     def "if the 'flexHome' dir contains no config-xml, add an error message"() {
         when:
-            project.flexHome = testResourceDir + 'flex-sdk-no-config'
+            validator.flexConvention.flexHome = testResourceDir + 'flex-sdk-no-config'
             validator.execute();
 
         then:
@@ -60,7 +62,7 @@ class FlexSDKSpecifiedValidatorTest extends Specification {
     
     def "if the 'flexHome' dir contains no libs, add an error message"() {
         when:
-            project.flexHome = testResourceDir + 'flex-sdk-no-libs'
+            validator.flexConvention.flexHome = testResourceDir + 'flex-sdk-no-libs'
             validator.execute();
 
         then:
@@ -69,7 +71,7 @@ class FlexSDKSpecifiedValidatorTest extends Specification {
     
     def "if the 'flexHome' dir contains no config-xml and no libs, add 2 error messages"() {
         when:
-            project.flexHome = testResourceDir + 'invalid-flex-sdk'
+            validator.flexConvention.flexHome = testResourceDir + 'invalid-flex-sdk'
             validator.execute();
 
         then:
@@ -78,7 +80,7 @@ class FlexSDKSpecifiedValidatorTest extends Specification {
     
     def "if the 'flexHome' property is valid, add no error messages"() { 
         when:
-            project.flexHome = testResourceDir + 'valid-flex-sdk'
+            validator.flexConvention.flexHome = testResourceDir + 'valid-flex-sdk'
             validator.execute();
 
         then:

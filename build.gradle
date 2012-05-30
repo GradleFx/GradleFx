@@ -74,44 +74,49 @@ if(gradle.startParameter.taskNames.contains("uploadArchives")) {
 
 uploadArchives {
     repositories {
-        mavenDeployer {
-            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-              authentication(userName: sonatypeUsername, password: sonatypePassword)
+        if (version.contains("SNAPSHOT")) {
+            mavenLocal()
+        }
+        else {
+            mavenDeployer {
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+    
+                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                  authentication(userName: sonatypeUsername, password: sonatypePassword)
+                }
+    
+                pom.project {
+                   name 'GradleFx'
+                   packaging 'jar'
+                   description 'GradleFx is a Gradle plugin for building Flex and Actionscript applications'
+                   url 'http://gradlefx.github.com/'
+    
+                   scm {
+                       url 'scm:git@github.com:GradleFx/GradleFx.git'
+                       connection 'scm:git@github.com:GradleFx/GradleFx.git'
+                       developerConnection 'scm:git@github.com:GradleFx/GradleFx.git'
+                   }
+    
+                   licenses {
+                       license {
+                           name 'The Apache Software License, Version 2.0'
+                           url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                           distribution 'repo'
+                       }
+                   }
+    
+                   developers {
+                       developer {
+                           id 'yennicktrevels'
+                           name 'Yennick Trevels'
+                       }
+                       developer {
+                           id 'stevendick'
+                           name 'Steven Dick'
+                       }
+                   }
+               }
             }
-
-            pom.project {
-               name 'GradleFx'
-               packaging 'jar'
-               description 'GradleFx is a Gradle plugin for building Flex and Actionscript applications'
-               url 'http://gradlefx.github.com/'
-
-               scm {
-                   url 'scm:git@github.com:GradleFx/GradleFx.git'
-                   connection 'scm:git@github.com:GradleFx/GradleFx.git'
-                   developerConnection 'scm:git@github.com:GradleFx/GradleFx.git'
-               }
-
-               licenses {
-                   license {
-                       name 'The Apache Software License, Version 2.0'
-                       url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                       distribution 'repo'
-                   }
-               }
-
-               developers {
-                   developer {
-                       id 'yennicktrevels'
-                       name 'Yennick Trevels'
-                   }
-                   developer {
-                       id 'stevendick'
-                       name 'Steven Dick'
-                   }
-               }
-           }
         }
     }
 }

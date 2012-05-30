@@ -25,8 +25,8 @@ class FrameworkLinkageValidator extends AbstractProjectPropertyValidator {
     @Override
     public void execute() {
         if (isLinkageIncompatibleWithFlexType()) {
-            addError("The frameworkLinkage '${project.frameworkLinkage}' is incompatible with " +
-                "Flex project type '${project.type}'")
+            addError("The frameworkLinkage '${flexConvention.frameworkLinkage}' is incompatible with " +
+                "Flex project type '${flexConvention.type}'")
         }
     }
     
@@ -37,8 +37,8 @@ class FrameworkLinkageValidator extends AbstractProjectPropertyValidator {
      * @return Whether the selected {@link FrameworkLinkage} is incompatible with the selected {@link FlexType}
      */
     private boolean isLinkageIncompatibleWithFlexType() {
-        FlexType type = project.type
-        FrameworkLinkage linkage = project.frameworkLinkage
+        FlexType type = flexConvention.type
+        FrameworkLinkage linkage = flexConvention.frameworkLinkage
         
         return  (type == FlexType.swc && linkage == FrameworkLinkage.rsl) || 
                 ((type == FlexType.swf || type == FlexType.air) && linkage == FrameworkLinkage.external)
