@@ -24,6 +24,11 @@ class IdeaProject extends AbstractIdeProjectTask {
     }
     
     @Override
+    protected void invalidateConventions() {
+        // TODO Auto-generated method stub
+    }
+    
+    @Override
     protected void createProjectConfig() {
         throw new Exception('TODO implement IdeaProject')
     }

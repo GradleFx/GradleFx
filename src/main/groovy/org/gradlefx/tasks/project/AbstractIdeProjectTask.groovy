@@ -16,6 +16,7 @@
 
 package org.gradlefx.tasks.project
 
+import org.gradlefx.configuration.Configurations;
 import org.gradlefx.tasks.Tasks
 import groovy.lang.Closure
 import groovy.util.XmlParser
@@ -25,7 +26,7 @@ import groovy.xml.XmlUtil
 abstract class AbstractIdeProjectTask extends AbstractProjectTask {
     
     /** The name of the targeted IDE */
-    String ideName
+    protected String ideName
     
     /**
      * Constructor
@@ -33,16 +34,24 @@ abstract class AbstractIdeProjectTask extends AbstractProjectTask {
      */
     public AbstractIdeProjectTask(String ideName) {
         this.ideName = ideName
-        description = "Generate ${ideName} project"
+        description = "Generate $ideName project"
         
         dependsOn(Tasks.SKELETON_TASK_NAME)
     }
     
     @Override
     public void generateProject() {
-        LOG.info "Creating ${ideName} project files"
+        LOG.info "Verifying project properties compatibility with $ideName"
+        invalidateConventions()
+        
+        LOG.info "Creating $ideName project files"
         createProjectConfig()
     }
+    
+    /**
+     * 
+     */
+    abstract protected void invalidateConventions()
     
     /**
      * Creates the configuration files required by the targeted IDE
@@ -62,6 +71,25 @@ abstract class AbstractIdeProjectTask extends AbstractProjectTask {
         
         toFile(path).withWriter { out ->
             XmlUtil.serialize xml, out
+        }
+    }
+    
+    /**
+     * Loops over all dependency files and allows you to use them through a {@link Closure}
+     * 
+     * @param closure A Closure in which to use the dependency file; takes the file and its {@link Configurations} as arguments
+     */
+    protected void eachDependencyFile(Closure closure) {
+        [
+            Configurations.INTERNAL_CONFIGURATION_NAME,
+            Configurations.EXTERNAL_CONFIGURATION_NAME,
+            Configurations.MERGE_CONFIGURATION_NAME,
+            Configurations.RSL_CONFIGURATION_NAME,
+            Configurations.THEME_CONFIGURATION_NAME
+        ].each() { type ->
+            project.configurations[type].files.each() {
+                closure it, type
+            }
         }
     }
 

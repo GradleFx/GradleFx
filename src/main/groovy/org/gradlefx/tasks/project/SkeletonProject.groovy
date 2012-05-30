@@ -98,14 +98,4 @@ class SkeletonProject extends AbstractProjectTask {
        return getClass().getResourceAsStream(path)
    }
    
-   /**
-    * Converts the path of the main class in to that of a descriptor file
-    * 
-    * @param mainClassPath The path of the main class
-    * @return The path of the descriptor file
-    */
-   private String toDescriptorPath(String mainClassPath) {
-       return mainClassPath.replaceAll(/\.(mxml|as)$/, '-app.xml')
-   }
-   
 }

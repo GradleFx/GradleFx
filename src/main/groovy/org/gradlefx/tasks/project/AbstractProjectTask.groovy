@@ -128,5 +128,15 @@ abstract class AbstractProjectTask extends DefaultTask implements ProjectTask {
     protected File toFile(String relativePath) {
         return new File(project.projectDir.absolutePath + '/' + relativePath)
     }
+        
+    /**
+     * Converts the path of the main class in to that of a descriptor file
+     *
+     * @param mainClassPath The path of the main class
+     * @return The path of the descriptor file
+     */
+    protected String toDescriptorPath(String mainClassPath) {
+        return mainClassPath.replaceAll(/\.(mxml|as)$/, '-app.xml')
+    }
 
 }

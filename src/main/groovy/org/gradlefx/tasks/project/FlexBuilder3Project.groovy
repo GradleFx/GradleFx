@@ -17,15 +17,20 @@
 package org.gradlefx.tasks.project
 
 
-class FlashBuilderProject extends AbstractIdeProjectTask {
+class FlexBuilder3Project extends AbstractIdeProjectTask {
     
-    public FlashBuilderProject() {
-        super('FlashBuilder')
-    }    
+    public FlexBuilder3Project() {
+        super('FlexBuilder 3')
+    }
+    
+    @Override
+    protected void invalidateConventions() {
+        // TODO Auto-generated method stub
+    }
     
     @Override
     protected void createProjectConfig() {
-        throw new Exception('TODO implement FlashBuilderProject')
+        throw new Exception('TODO implement FlexBuilder3Project')
     }
 
 }
