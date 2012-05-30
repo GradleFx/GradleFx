@@ -54,12 +54,15 @@ class GradleFxConvention {
     //equivalent of the include-sources compiler option
     List includeSources;
 
-    // what type of Flex project are we?  either SWF or SWC
+    // what type of Flex project are we?  either SWF, SWC or AIR
     FlexType type
     
     //how the Flex framework will be linked in the project: external, RSL, merged or none
     //default: RSL for swf, external for swc
     FrameworkLinkage frameworkLinkage
+
+    //Whether the asdocs should be merged into the swc for use in Flash Builder
+    Boolean fatSwc
 
     // the directory where we should publish the build artifacts
     String publishDir = 'publish'
@@ -131,7 +134,6 @@ class GradleFxConvention {
 
         asdoc = [
             outputDir:              'doc',
-            fatSwc:                 false,
             additionalASDocOptions: []
         ]
 		

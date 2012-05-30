@@ -24,6 +24,8 @@ import org.gradlefx.FlexType
 import org.gradlefx.FrameworkLinkage;
 import org.gradlefx.options.CompilerOption
 import org.gradlefx.conventions.GradleFxConvention
+import org.gradle.api.Project
+import org.gradle.api.Task
 
 abstract class AbstractCompileTask extends DefaultTask {
 
@@ -130,4 +132,17 @@ abstract class AbstractCompileTask extends DefaultTask {
 	def showAntOutput(antOutput) {
 		println antOutput
 	}
+
+    /**
+     * Adds a dependency on tasks with the specified name in other projects.  The other projects are determined from
+     * project lib dependencies using the specified configuration name. These may be projects this project depends on or
+     * projects that depend on this project based on the useDependOn argument.
+     *
+     * @param otherProjectTaskName name of task in other projects
+     * @param configurationName name of configuration to use to find the other projects
+     */
+    protected void addDependsOnTaskInOtherProjects(String otherProjectTaskName, String configurationName) {
+        final Configuration configuration = project.getConfigurations().getByName(configurationName);
+        this.dependsOn(configuration.getTaskDependencyFromProjectDependency(true, otherProjectTaskName));
+    }
 }

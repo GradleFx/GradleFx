@@ -18,6 +18,11 @@ package org.gradlefx.tasks
 
 import org.gradle.api.tasks.TaskAction
 import org.gradlefx.tasks.compile.AbstractMxmlc
+import org.gradlefx.FrameworkLinkage
+import org.gradlefx.options.CompilerOption
+import org.gradle.api.Project
+import org.gradlefx.configuration.Configurations
+import org.gradle.api.internal.artifacts.dependencies.DefaultProjectDependency
 
 class ASDoc extends AbstractMxmlc {
 
@@ -26,14 +31,17 @@ class ASDoc extends AbstractMxmlc {
 
     ASDoc() {
         description = 'Generates ASDoc documentation'
-        dependsOn(Tasks.COMPILE_TASK_NAME)
+
+        addDependsOnTaskInOtherProjects(Tasks.COMPILE_TASK_NAME, Configurations.MERGE_CONFIGURATION_NAME)
+        addDependsOnTaskInOtherProjects(Tasks.COMPILE_TASK_NAME, Configurations.EXTERNAL_CONFIGURATION_NAME)
+        addDependsOnTaskInOtherProjects(Tasks.COMPILE_TASK_NAME, Configurations.INTERNAL_CONFIGURATION_NAME)
 
         initInputDirectory()
         initOutputDirectory()
     }
 
     private def initInputDirectory() {
-        project.srcDirs.each { sourceDirectory ->
+        flexConvention.srcDirs.each { sourceDirectory ->
             inputs.dir sourceDirectory
         }
     }
@@ -47,21 +55,19 @@ class ASDoc extends AbstractMxmlc {
         if(hasDocSources()) {
             super.compileFlex(ANT_RESULT_PROPERTY, ANT_OUTPUT_PROPERTY, 'asdoc', createCompilerArguments())
 
-            if(project.asdoc.fatSwc == true) {
-                addDocsToSwc()
-            }
+
         }
     }
 
     @Override
     def compile(antResultProperty, antOutputProperty, compilerArguments) {
-        ant.java(jar:            project.flexHome + '/lib/asdoc.jar',
-                 dir:            project.flexHome + '/frameworks',
+        ant.java(jar:            flexConvention.flexHome + '/lib/asdoc.jar',
+                 dir:            flexConvention.flexHome + '/frameworks',
                  fork:           true,
                  resultproperty: antResultProperty,
                  outputproperty: antOutputProperty) { javaTask ->
 
-            project.jvmArguments.each { jvmArgument ->
+            flexConvention.jvmArguments.each { jvmArgument ->
                 jvmarg(value: jvmArgument)
             }
 
@@ -69,6 +75,10 @@ class ASDoc extends AbstractMxmlc {
                 arg(value: compilerArgument)
             }
         }
+    }
+
+    protected FrameworkLinkage getDefaultFrameworkLinkage() {
+        return FrameworkLinkage.merged
     }
 
     protected List createCompilerArguments() {
@@ -80,27 +90,28 @@ class ASDoc extends AbstractMxmlc {
         addLocales(compilerArguments)
 
         //add dependencies
-        addLibraries(project.configurations.internal.files, project.configurations.internal, "-include-libraries", compilerArguments)
-        addLibraries(project.configurations.external.files - project.configurations.internal.files - project.configurations.merged.files, project.configurations.external, '-external-library-path', compilerArguments)
-        addLibraries(project.configurations.merged.files, project.configurations.merged, "-library-path", compilerArguments)
-        addLibraries(project.configurations.theme.files, project.configurations.theme, "-theme", compilerArguments)
+        addLibraries(project.configurations.internal.files, project.configurations.internal, CompilerOption.INCLUDE_LIBRARIES, compilerArguments)
+        addLibraries(project.configurations.external.files, project.configurations.external, CompilerOption.EXTERNAL_LIBRARY_PATH, compilerArguments)
+        addLibraries(project.configurations.merged.files, project.configurations.merged, CompilerOption.LIBRARY_PATH, compilerArguments)
+        addLibraries(project.configurations.theme.files, project.configurations.theme, CompilerOption.THEME, compilerArguments)
         addRsls(compilerArguments)
 
         //add all the other user specified compiler options
-        project.additionalCompilerOptions.each { compilerOption ->
+        flexConvention.additionalCompilerOptions.each { compilerOption ->
             compilerArguments.add(compilerOption)
         }
 
-        project.asdoc.additionalASDocOptions.each { asdocOption ->
+        flexConvention.asdoc.additionalASDocOptions.each { asdocOption ->
             compilerArguments.add(asdocOption)
         }
 
-        if(project.asdoc.fatSwc == true) {
+        // only generate the tempdita folder when having to create a fat swc
+        if(flexConvention.fatSwc == true) {
             compilerArguments.add("-keep-xml=true")
             compilerArguments.add("-skip-xsl=true")
         }
 
-        compilerArguments.add("-output=${project.file(project.asdoc.outputDir).path}" )
+        compilerArguments.add("-output=${project.file(flexConvention.asdoc.outputDir).path}" )
 
         return compilerArguments
     }
@@ -110,7 +121,7 @@ class ASDoc extends AbstractMxmlc {
      * @param compilerArguments
      */
     private void addDocSources(List compilerArguments) {
-        project.srcDirs.each { sourcePath ->
+        flexConvention.srcDirs.each { sourcePath ->
             File sourcePathDir = project.file(sourcePath)
 
             if (sourcePathDir.exists()) {
@@ -120,18 +131,9 @@ class ASDoc extends AbstractMxmlc {
     }
     
     private boolean hasDocSources() {
-        return project.srcDirs.any { sourcePath ->
+        return flexConvention.srcDirs.any { sourcePath ->
             return project.file(sourcePath).exists()
         }
     }
 
-    private void addDocsToSwc() {
-        ant.zip(destfile: new File(project.buildDir.absolutePath, "${project.output}.${project.type}"),
-                update: true) {
-            zipfileset(dir: project.file(project.asdoc.outputDir + "/tempdita"), prefix: 'docs') {
-                exclude(name: 'ASDoc_Config.xml')
-                exclude(name: 'overviews.xml')
-            }
-        }
-    }
 }
