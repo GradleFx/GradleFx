@@ -47,7 +47,7 @@ class ASDoc extends AbstractMxmlc {
     }
 
     private def initOutputDirectory() {
-        outputs.dir project.buildDir
+        outputs.dir flexConvention.asdoc.outputDir
     }
 
     @TaskAction
@@ -108,7 +108,6 @@ class ASDoc extends AbstractMxmlc {
         // only generate the tempdita folder when having to create a fat swc
         if(flexConvention.fatSwc == true) {
             compilerArguments.add("-keep-xml=true")
-            compilerArguments.add("-skip-xsl=true")
         }
 
         compilerArguments.add("-output=${project.file(flexConvention.asdoc.outputDir).path}" )
