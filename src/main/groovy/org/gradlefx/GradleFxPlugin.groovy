@@ -57,8 +57,8 @@ class GradleFxPlugin implements Plugin<Project> {
         project.afterEvaluate {
             configureAntWithFlex()
             addCompile(pluginConvention)
-            addPackage()
-            addHtmlWrapper()
+            addPackage(pluginConvention)
+            addHtmlWrapper(pluginConvention)
             addDependsOnOtherProjects()
             addDefaultArtifact()
         }
@@ -84,12 +84,12 @@ class GradleFxPlugin implements Plugin<Project> {
     }
 
     private void addCompile(GradleFxConvention pluginConvention) {
-        Class<Task> compileClass = new CompileTaskClassFactoryImpl().createCompileTaskClass(project.type)
+        Class<Task> compileClass = new CompileTaskClassFactoryImpl().createCompileTaskClass(pluginConvention.type)
         project.tasks.add(Tasks.COMPILE_TASK_NAME, compileClass)
     }
 
     private void addPackage(GradleFxConvention pluginConvention) {
-        if(project.type == FlexType.air) {
+        if(pluginConvention.type.isNativeApp()) {
             Task packageTask = project.tasks.add(Tasks.PACKAGE_TASK_NAME, AirPackage)
             packageTask.dependsOn(Tasks.COMPILE_TASK_NAME)
         }
@@ -100,8 +100,8 @@ class GradleFxPlugin implements Plugin<Project> {
 		test.description = 'Run the FlexUnit tests.'
 	}
 
-    private void addHtmlWrapper() {
-        if (project.type == FlexType.swf) {
+    private void addHtmlWrapper(GradleFxConvention pluginConvention) {
+        if (pluginConvention.type.isWebApp()) {
             project.tasks.add(Tasks.CREATE_HTML_WRAPPER, HtmlWrapper)
         }
     }

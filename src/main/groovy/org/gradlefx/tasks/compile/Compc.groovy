@@ -18,7 +18,6 @@ package org.gradlefx.tasks.compile
 
 import groovy.io.FileType
 import org.gradle.api.tasks.TaskAction
-import org.gradlefx.FrameworkLinkage
 import org.gradlefx.options.CompilerOption
 import org.gradlefx.validators.actions.ValidateCompcTaskPropertiesAction
 
@@ -85,10 +84,6 @@ class Compc extends AbstractCompileTask {
 
         compilerArguments.add("-output=${project.buildDir.path}/${flexConvention.output}.swc")
         return compilerArguments
-    }
-    
-    protected FrameworkLinkage getDefaultFrameworkLinkage() {
-        return FrameworkLinkage.merged
     }
 
     private def addResources(List compilerArguments) {

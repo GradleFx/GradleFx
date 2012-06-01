@@ -21,14 +21,24 @@ import org.gradlefx.FlexType
 import org.gradlefx.FrameworkLinkage
 
 
+@Mixin(GradleFxDerivedProperties)
 class GradleFxConvention {
 
     private Project project
 
     String output
+    
+    public String getOutput() {
+        return output ?: project.name
+    }
 
     // the home directory of the Flex SDK
-    def flexHome = System.getenv()['FLEX_HOME'] //default to FLEX_HOME environment variable
+    String flexHome = System.getenv()['FLEX_HOME'] //default to FLEX_HOME environment variable
+    
+    public void setFlexHome(String flexHome) {
+        //convert relative paths to absolute ones to prevent ANT from freaking out
+        this.flexHome = flexHome ? new File(flexHome).absolutePath : null
+    }
 
     // which directories to look into for source code
     def srcDirs = ['src/main/actionscript']
@@ -60,12 +70,16 @@ class GradleFxConvention {
     //how the Flex framework will be linked in the project: external, RSL, merged or none
     //default: RSL for swf, external for swc
     FrameworkLinkage frameworkLinkage
+    
+    public FrameworkLinkage getFrameworkLinkage() {
+        return frameworkLinkage ?: FrameworkLinkage.getCompilerDefault(true, type)
+    }
 
     // the directory where we should publish the build artifacts
     String publishDir = 'publish'
 
     //the root class which is used by the mxmlc compiler to create a swf
-    def mainClass = 'Main.mxml'
+    def mainClass = 'Main'
 
     //array of additional compiler options as defined by the compc or mxmlc compiler
     def additionalCompilerOptions = []
@@ -125,34 +139,6 @@ class GradleFxConvention {
             applicationDescriptor:  "/src/main/actionscript/${project.name}.xml",
             includeFileTrees:       null
         ]
-		
-        project.afterEvaluate {
-            initializeEmptyProperties()
-        }
-    }
-
-    public def initializeEmptyProperties() {
-		output = output ?: project.name
-        frameworkLinkage = getFrameworkLinkage()
-    }
-    
-    /**
-     * The framework linkage defaults to 'RSL' for application projects ('air' or 'swf' {@link FlexType}) 
-     * and 'external' for library projects ('swc' {@link FlexType}). 
-     * 
-     * @return The project's framework linkage
-     */
-    private FrameworkLinkage getFrameworkLinkage() {
-        FrameworkLinkage defaultLinkage;
-        
-        switch (type) {
-            case FlexType.air:
-            case FlexType.swf: defaultLinkage = FrameworkLinkage.rsl; break
-            case FlexType.swc: defaultLinkage = FrameworkLinkage.external; break
-            default: defaultLinkage = FrameworkLinkage.none; break
-        }
-        
-        return frameworkLinkage ? frameworkLinkage : defaultLinkage
     }
     
 }

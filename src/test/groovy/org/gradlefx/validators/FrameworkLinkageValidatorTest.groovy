@@ -64,6 +64,16 @@ class FrameworkLinkageValidatorTest extends Specification {
             validator.getErrorMessages().size() == 1
     }
     
+    def "a combination of mobile project and external linkage should add error message"() {
+        when:
+            validator.flexConvention.type = FlexType.mobile
+            validator.flexConvention.frameworkLinkage = FrameworkLinkage.external
+            validator.execute();
+
+        then:
+            validator.getErrorMessages().size() == 1
+    }
+    
     def "any other combination should not add error messages"() {
         when:
             //swf with none, RSL or merged
@@ -79,6 +89,17 @@ class FrameworkLinkageValidatorTest extends Specification {
             
             //AIR with none, RSL or merged
             validator.flexConvention.type = FlexType.air
+            validator.flexConvention.frameworkLinkage = FrameworkLinkage.none
+            validator.execute();
+            
+            validator.flexConvention.frameworkLinkage = FrameworkLinkage.rsl
+            validator.execute();
+            
+            validator.flexConvention.frameworkLinkage = FrameworkLinkage.merged
+            validator.execute();
+            
+            //mobile with none, RSL or merged
+            validator.flexConvention.type = FlexType.mobile
             validator.flexConvention.frameworkLinkage = FrameworkLinkage.none
             validator.execute();
             

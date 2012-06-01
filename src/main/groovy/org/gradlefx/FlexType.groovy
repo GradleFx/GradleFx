@@ -19,5 +19,23 @@ package org.gradlefx
 enum FlexType {
     swf,
     swc,
-    air
+    air,
+    mobile
+    
+    public boolean isApp() {
+        return isWebApp() || isNativeApp()
+    }
+    
+    public boolean isLib() {
+        return this == swc
+    }
+    
+    public boolean isWebApp() {
+        return this == swf
+    }
+    
+    public boolean isNativeApp() {
+        return this == air || this == mobile
+    }
+    
 }

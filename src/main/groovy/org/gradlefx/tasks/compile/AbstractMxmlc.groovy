@@ -33,7 +33,13 @@ abstract class AbstractMxmlc extends AbstractCompileTask {
 				return desiredFile
 			}
 		}
-		throw new Exception("The file ${fileName} couldn't be found in directories ${dirs}")
+        
+		throw new Exception(
+            "The file ${fileName} couldn't be found in directories ${dirs}; " +
+            "note that if you used the 'flashbuilder' plugin this file may have been moved " +
+            "to comply to FlashBuilder's restrictions (execute 'flashbuilder' and see if you get any warnings); " +
+            "consider editing the 'mainClass' property or switching to a decent IDE"
+        )
 	}
 
 	def compile(antResultProperty, antOutputProperty, compilerArguments) {
