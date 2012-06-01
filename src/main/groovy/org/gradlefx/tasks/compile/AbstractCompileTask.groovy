@@ -112,7 +112,7 @@ abstract class AbstractCompileTask extends DefaultTask {
             compilerArguments.add("${CompilerOption.RUNTIME_SHARED_LIBRARY_PATH}=")
             
             //set the RSL's defined in config.xml on the library path
-            def flexConfig = new XmlSlurper().parse("${flexConvention.flexHome}/frameworks/flex-config.xml")
+            def flexConfig = new XmlSlurper().parse(flexConvention.configPath)
             flexConfig['runtime-shared-library-path']['path-element'].each {
                 compilerArguments.add("${linkage.getCompilerOption()}+=${flexConvention.flexHome}/frameworks/${it}")
             }

@@ -17,7 +17,6 @@
 package org.gradlefx.tasks.compile
 
 import java.util.List;
-import org.gradlefx.FlexType;
 import org.gradlefx.options.CompilerOption
 
 class Amxmlc extends Mxmlc {
@@ -25,7 +24,7 @@ class Amxmlc extends Mxmlc {
      @Override
      protected List createCompilerArguments() {
          List arguments = super.createCompilerArguments()
-         arguments.add(0, '+configname=air' + (flexConvention.type == FlexType.mobile ? 'mobile' : ''))
+         arguments.add(0, '+configname=air' + flexConvention.type.configName)
          return arguments
      }
      

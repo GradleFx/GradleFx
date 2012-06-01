@@ -88,7 +88,7 @@ class Mxmlc extends AbstractMxmlc {
         AntBuilder ant = new AntBuilder()
         ant.project.getBuildListeners()[0].setMessageOutputLevel(0)
         
-        def flexConfig = new XmlSlurper().parse("${flexConvention.flexHome}/frameworks/flex-config.xml")
+        def flexConfig = new XmlSlurper().parse(flexConvention.configPath)
         
         flexConfig['runtime-shared-library-path'].each {
             String swcName = it['path-element'].text()

@@ -20,6 +20,7 @@ import static java.util.UUID.randomUUID
 import java.io.File;
 import java.util.List;
 import org.gradle.api.artifacts.ProjectDependency;
+import org.gradlefx.FlexType;
 import org.gradlefx.FrameworkLinkage;
 import org.gradlefx.options.CompilerOption;
 
@@ -80,6 +81,14 @@ class GradleFxDerivedProperties {
     public String getMainClassPath() {
         if (!mainClassPath) mainClassPath = createMainClassPath getMainClass(), getDefaultExtension()
         return mainClassPath
+    }
+    
+    /** The path to the Flex SDK's configuration file */
+    String configPath
+    
+    public String getConfigPath() {
+        if (!configPath) configPath = "${getFlexHome()}/frameworks/${getType().configName}-config.xml"
+        return configPath
     }
     
     /** A collection of all source directories */

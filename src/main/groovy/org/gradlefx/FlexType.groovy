@@ -17,10 +17,21 @@
 package org.gradlefx
 
 enum FlexType {
-    swf,
-    swc,
-    air,
-    mobile
+    swf('flex'),
+    swc('flex'),
+    air('air'),
+    mobile('mobile')
+        
+    private String configName
+    
+    
+    public FlexType(String configName) {
+        this.configName = configName
+    }
+    
+    public String getConfigName() {
+        return configName
+    }
     
     public boolean isApp() {
         return isWebApp() || isNativeApp()
