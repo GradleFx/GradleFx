@@ -24,12 +24,4 @@ class Tasks {
     public static final String PUBLISH_TASK_NAME = 'publish'
     public static final String COPY_RESOURCES_TASK_NAME = 'copyresources'
     public static final String CREATE_HTML_WRAPPER = 'createHtmlWrapper'
-    
-    //IDE project tasks
-    public static final String FDT_TASK_NAME = 'fdt'
-    public static final String FLASHBUILDER4_TASK_NAME = 'fb4'
-    public static final String FLEXBUILDER3_TASK_NAME = 'fb3'
-    public static final String FLASHDEVELOP_TASK_NAME = 'fd'
-    public static final String IDEA_TASK_NAME = 'idea'
-    public static final String SKELETON_TASK_NAME = 'skeleton'
 }

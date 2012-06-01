@@ -14,15 +14,17 @@
 * limitations under the License.
 */
 
-package org.gradlefx.tasks.project
+package org.gradlefx.ide.tasks
 
 import org.gradlefx.FlexType
 import org.gradlefx.FrameworkLinkage
 import org.gradlefx.configuration.Configurations;
-import org.gradlefx.tasks.Tasks;
+import org.gradlefx.templates.tasks.Scaffold;
 
 
-class FlashBuilder4Project extends AbstractIdeProjectTask {
+class FlashBuilderProject extends AbstractIDEProject {
+    public static final String NAME = 'flashbuilder'
+    
     private static String eclipseProject = '.project'
     private static String actionScriptProperties = '.actionScriptProperties'
     private static String flexLibProperties = '.flexLibProperties'
@@ -44,8 +46,8 @@ class FlashBuilder4Project extends AbstractIdeProjectTask {
     
     protected String mainSrcDir
     
-    public FlashBuilder4Project() {
-        super('FlashBuilder 4')
+    public FlashBuilderProject() {
+        super('FlashBuilder')
         mainSrcDir = flexConvention.srcDirs[0]
     }
     
@@ -98,7 +100,7 @@ class FlashBuilder4Project extends AbstractIdeProjectTask {
         flexConvention.applicationId = null
         
         //re-execute SkeletonProject#createMainClass() with new settings
-        project.tasks.getByName(Tasks.SKELETON_TASK_NAME).createMainClass()
+        project.tasks.getByName(Scaffold.NAME).createMainClass()
         
         LOG.warn "\t[WARNING] $ideName conflict resolved; " + 
                  "if you wish to get rid of this message, edit the mainClass' location"

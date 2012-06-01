@@ -14,21 +14,37 @@
 * limitations under the License.
 */
 
-package org.gradlefx.tasks.project
+package org.gradlefx.templates.tasks
 
 import java.io.InputStream;
+import org.gradle.api.DefaultTask;
+import org.gradle.api.logging.LogLevel;
+import org.gradle.api.tasks.TaskAction;
+import org.gradlefx.conventions.GradleFxConvention;
+import org.gradlefx.util.TemplateUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
-class SkeletonProject extends AbstractProjectTask {
+@Mixin(TemplateUtil)
+class Scaffold extends DefaultTask {
+    public static final String NAME = 'scaffold'
+    
+    protected static final Logger LOG = LoggerFactory.getLogger 'gradlefx'
+    
+    /** Convention properties */
+    GradleFxConvention flexConvention
 
     /**
      * Constructor
      */
-    public SkeletonProject() {
-        description = "Generate IDE independent project skeleton"
+    public Scaffold() {
+        description = "Generate IDE independent project scaffold"
+        logging.setLevel LogLevel.INFO
+        flexConvention = project.convention.plugins.flex
     }
 
-    @Override
+    @TaskAction
     public void generateProject() {
         createDirectories()
         createMainClass()

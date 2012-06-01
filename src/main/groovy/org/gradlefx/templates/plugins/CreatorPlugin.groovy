@@ -14,14 +14,19 @@
 * limitations under the License.
 */
 
-package org.gradlefx.tasks.project
+package org.gradlefx.templates.plugins
+
+import org.gradle.api.Plugin;
+import org.gradle.api.Project;
 
 
-public interface ProjectTask {
-
-    /**
-     * Generates all files that are required for this project
-     */
-    void generateProject()
+class CreatorPlugin implements Plugin<Project> {
+    
+    @Override
+    public void apply(Project project) {
+        project.apply(plugin: 'base')
+        
+        //project.tasks.add(CreateComponent.NAME, CreateComponent)
+    }
 
 }

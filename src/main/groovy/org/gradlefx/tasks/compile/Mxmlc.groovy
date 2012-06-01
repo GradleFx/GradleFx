@@ -18,6 +18,7 @@ package org.gradlefx.tasks.compile
 
 import java.util.List
 import org.gradle.api.tasks.TaskAction
+import org.gradlefx.FrameworkLinkage;
 import org.gradlefx.options.CompilerOption
 import org.gradlefx.tasks.Tasks
 import org.gradlefx.validators.actions.ValidateMxmlcTaskPropertiesAction
@@ -74,7 +75,9 @@ class Mxmlc extends AbstractMxmlc {
     @Override
     protected void addFramework(List compilerArguments) {
         super.addFramework(compilerArguments)
-        if (project.frameworkLinkage == getDefaultFrameworkLinkage()) copyFrameworkRSLs()
+        
+        if (flexConvention.frameworkLinkage == FrameworkLinkage.rsl) 
+            copyFrameworkRSLs()
     }
     
     /**

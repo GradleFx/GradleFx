@@ -28,11 +28,6 @@ import org.gradlefx.configuration.Configurations
 import org.gradlefx.configuration.FlexAntTasksConfigurator
 import org.gradlefx.conventions.GradleFxConvention
 import org.gradlefx.tasks.compile.factory.CompileTaskClassFactoryImpl
-import org.gradlefx.tasks.project.FDTProject;
-import org.gradlefx.tasks.project.FlashBuilder4Project;
-import org.gradlefx.tasks.project.FlashDevelopProject;
-import org.gradlefx.tasks.project.IdeaProject;
-import org.gradlefx.tasks.project.SkeletonProject;
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.gradlefx.tasks.*
@@ -57,8 +52,6 @@ class GradleFxPlugin implements Plugin<Project> {
         addCopyResources()
         addPublish()
 		addTest()
-        
-        addProjectTasks()
 
         //do these tasks in the afterEvaluate phase because they need property access
         project.afterEvaluate {
@@ -119,15 +112,6 @@ class GradleFxPlugin implements Plugin<Project> {
 
     private void addPublish() {
         project.tasks.add(Tasks.PUBLISH_TASK_NAME, Publish)
-    }
-    
-    private void addProjectTasks() {
-        project.tasks.add(Tasks.FDT_TASK_NAME, FDTProject)
-        project.tasks.add(Tasks.FLASHBUILDER4_TASK_NAME, FlashBuilder4Project)       
-        project.tasks.add(Tasks.FLEXBUILDER3_TASK_NAME, FlashBuilder4Project)
-        project.tasks.add(Tasks.FLASHDEVELOP_TASK_NAME, FlashDevelopProject)
-        project.tasks.add(Tasks.IDEA_TASK_NAME, IdeaProject)
-        project.tasks.add(Tasks.SKELETON_TASK_NAME, SkeletonProject)
     }
 
     private void addDependsOnOtherProjects() {

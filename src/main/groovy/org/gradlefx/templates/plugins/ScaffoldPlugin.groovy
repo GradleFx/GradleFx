@@ -14,23 +14,20 @@
 * limitations under the License.
 */
 
-package org.gradlefx.tasks.project
+package org.gradlefx.templates.plugins
+
+import org.gradle.api.Plugin;
+import org.gradle.api.Project;
+import org.gradlefx.templates.tasks.Scaffold;
 
 
-class FDTProject extends AbstractIdeProjectTask {
-    
-    public FDTProject() {
-        super('fdt')
-    }
+class ScaffoldPlugin implements Plugin<Project> {
     
     @Override
-    protected void invalidateConventions() {
-        // TODO Auto-generated method stub
-    }
-    
-    @Override
-    protected void createProjectConfig() {
-        throw new Exception('TODO implement FDTProject')
+    public void apply(Project project) {
+        project.apply(plugin: 'base')
+        
+        project.tasks.add(Scaffold.NAME, Scaffold)
     }
 
 }

@@ -14,23 +14,21 @@
 * limitations under the License.
 */
 
-package org.gradlefx.tasks.project
+package org.gradlefx.ide.plugins
+
+import org.gradle.api.Plugin;
+import org.gradle.api.Project;
+import org.gradlefx.ide.tasks.FDTProject;
 
 
-class FlashDevelopProject extends AbstractIdeProjectTask {
-
-    public FlashDevelopProject() {
-        super('FlashDevelop')
-    }
+class FDTPlugin implements Plugin<Project> {
     
     @Override
-    protected void invalidateConventions() {
-        // TODO Auto-generated method stub
+    public void apply(Project project) {
+        project.apply(plugin: 'base')
+        project.apply(plugin: 'scaffold')
+        
+        project.tasks.add(FDTProject.NAME, FDTProject)
     }
-    
-    @Override
-    protected void createProjectConfig() {
-        throw new Exception('TODO implement FlashDevelopProject')
-    }
-    
+
 }

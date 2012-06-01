@@ -14,16 +14,29 @@
 * limitations under the License.
 */
 
-package org.gradlefx.tasks.project
+package org.gradlefx.ide.tasks
 
-import org.gradlefx.configuration.Configurations;
-import org.gradlefx.tasks.Tasks
+import org.gradle.api.DefaultTask
+import org.gradle.api.logging.LogLevel;
+import org.gradle.api.tasks.TaskAction;
+import org.gradlefx.configuration.Configurations
+import org.gradlefx.conventions.GradleFxConvention
+import org.gradlefx.templates.tasks.Scaffold
+import org.gradlefx.util.TemplateUtil;
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import groovy.lang.Closure
 import groovy.util.XmlParser
 import groovy.xml.XmlUtil
 
 
-abstract class AbstractIdeProjectTask extends AbstractProjectTask {
+@Mixin(TemplateUtil)
+abstract class AbstractIDEProject extends DefaultTask implements ProjectTask {
+    
+    protected static final Logger LOG = LoggerFactory.getLogger 'gradlefx'
+    
+    /** Convention properties */
+    protected GradleFxConvention flexConvention
     
     /** The name of the targeted IDE */
     protected String ideName
@@ -32,14 +45,18 @@ abstract class AbstractIdeProjectTask extends AbstractProjectTask {
      * Constructor
      * @param ideName The name of the targeted IDE
      */
-    public AbstractIdeProjectTask(String ideName) {
+    public AbstractIDEProject(String ideName) {
         this.ideName = ideName
         description = "Generate $ideName project"
         
-        dependsOn(Tasks.SKELETON_TASK_NAME)
+        logging.setLevel LogLevel.INFO
+        flexConvention = project.convention.plugins.flex
+        
+        dependsOn(Scaffold.NAME)
     }
     
     @Override
+    @TaskAction
     public void generateProject() {
         LOG.info "Verifying project properties compatibility with $ideName"
         invalidateConventions()
@@ -65,7 +82,7 @@ abstract class AbstractIdeProjectTask extends AbstractProjectTask {
      * @param closure   A Closure in which to edit the XML data; takes the root node as an argument
      */
     protected void editXmlFile(String path, Closure closure) {
-        def xml = new XmlParser().parse path
+        def xml = new XmlParser().parse project.projectDir.absolutePath + '/' + path
         
         closure xml
         

@@ -14,23 +14,21 @@
 * limitations under the License.
 */
 
-package org.gradlefx.tasks.project
+package org.gradlefx.ide.plugins
+
+import org.gradle.api.Plugin;
+import org.gradle.api.Project;
 
 
-class FlexBuilder3Project extends AbstractIdeProjectTask {
-    
-    public FlexBuilder3Project() {
-        super('FlexBuilder 3')
-    }
+class IDEPlugin implements Plugin<Project> {
     
     @Override
-    protected void invalidateConventions() {
-        // TODO Auto-generated method stub
-    }
-    
-    @Override
-    protected void createProjectConfig() {
-        throw new Exception('TODO implement FlexBuilder3Project')
+    public void apply(Project project) {
+        project.apply(plugin: 'fdt')
+        project.apply(plugin: 'flashbuilder')
+        project.apply(plugin: 'flashdevelop')
+        project.apply(plugin: 'flexbuilder')
+        project.apply(plugin: 'ideafx')
     }
 
 }
