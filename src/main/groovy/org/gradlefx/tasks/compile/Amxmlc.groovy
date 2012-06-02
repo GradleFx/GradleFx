@@ -24,7 +24,7 @@ class Amxmlc extends Mxmlc {
      @Override
      protected List createCompilerArguments() {
          List arguments = super.createCompilerArguments()
-         arguments.add(0, '+configname=air' + flexConvention.type.configName)
+         arguments.add(0, '+configname=' + flexConvention.type.configName)
          return arguments
      }
      
