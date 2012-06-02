@@ -102,21 +102,19 @@ abstract class AbstractCompileTask extends DefaultTask {
         compilerArguments.add("${CompilerOption.EXTERNAL_LIBRARY_PATH}+=${libPath}");
     }
     
-    abstract protected FrameworkLinkage getDefaultFrameworkLinkage()
-    
     protected void addFramework(List compilerArguments) {
         FrameworkLinkage linkage = flexConvention.frameworkLinkage
         
-        //if FrameworkLinkage is 'none', we don't want to load the Flex configuration
-        if (linkage == FrameworkLinkage.none)
+        //ii's a pure AS project: we don't want to load the Flex configuration
+        if (!linkage.usesFlex())
             compilerArguments.add("-load-config=")
         //when FrameworkLinkage is the default for this compiler, we don't have to do anything
-        else if (linkage != getDefaultFrameworkLinkage()) {
+        else if (!linkage.isCompilerDefault(flexConvention.type)) {
             //remove RSL's defined in config.xml
             compilerArguments.add("${CompilerOption.RUNTIME_SHARED_LIBRARY_PATH}=")
             
             //set the RSL's defined in config.xml on the library path
-            def flexConfig = new XmlSlurper().parse("${flexConvention.flexHome}/frameworks/flex-config.xml")
+            def flexConfig = new XmlSlurper().parse(flexConvention.configPath)
             flexConfig['runtime-shared-library-path']['path-element'].each {
                 compilerArguments.add("${linkage.getCompilerOption()}+=${flexConvention.flexHome}/frameworks/${it}")
             }

@@ -1,5 +1,8 @@
 .gradle
 .idea
+.settings
+.classpath
+bin
 build
 GradleFx.iml
 gradlefx.ipr

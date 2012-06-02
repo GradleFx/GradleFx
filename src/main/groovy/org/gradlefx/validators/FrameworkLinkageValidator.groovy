@@ -40,8 +40,8 @@ class FrameworkLinkageValidator extends AbstractProjectPropertyValidator {
         FlexType type = flexConvention.type
         FrameworkLinkage linkage = flexConvention.frameworkLinkage
         
-        return  (type == FlexType.swc && linkage == FrameworkLinkage.rsl) || 
-                ((type == FlexType.swf || type == FlexType.air) && linkage == FrameworkLinkage.external)
+        return  (type.isLib() && linkage == FrameworkLinkage.rsl) || 
+                (type.isApp() && linkage == FrameworkLinkage.external)
     }
 
 }
