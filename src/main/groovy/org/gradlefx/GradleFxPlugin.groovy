@@ -57,6 +57,7 @@ class GradleFxPlugin implements Plugin<Project> {
         project.afterEvaluate {
             configureAntWithFlex()
             addCompile(pluginConvention)
+            addASDoc(pluginConvention)
             addPackage(pluginConvention)
             addHtmlWrapper(pluginConvention)
             addDependsOnOtherProjects()
@@ -86,6 +87,12 @@ class GradleFxPlugin implements Plugin<Project> {
     private void addCompile(GradleFxConvention pluginConvention) {
         Class<Task> compileClass = new CompileTaskClassFactoryImpl().createCompileTaskClass(pluginConvention.type)
         project.tasks.add(Tasks.COMPILE_TASK_NAME, compileClass)
+    }
+    
+    private void addASDoc(GradleFxConvention pluginConvention) {
+        if(pluginConvention.type.isLib()) {
+            project.tasks.add(Tasks.ASDOC_TASK_NAME, ASDoc)
+        }
     }
 
     private void addPackage(GradleFxConvention pluginConvention) {

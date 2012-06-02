@@ -19,6 +19,7 @@ package org.gradlefx.tasks.compile
 import groovy.io.FileType
 import org.gradle.api.tasks.TaskAction
 import org.gradlefx.options.CompilerOption
+import org.gradlefx.tasks.Tasks
 import org.gradlefx.validators.actions.ValidateCompcTaskPropertiesAction
 
 /*
@@ -31,6 +32,10 @@ class Compc extends AbstractCompileTask {
 	
     public Compc() {
         description = 'Compiles Flex component (*.swc) using the compc compiler'
+
+        if(flexConvention.fatSwc) {
+            dependsOn(Tasks.ASDOC_TASK_NAME)
+        }
     }
 
     @TaskAction
@@ -57,6 +62,10 @@ class Compc extends AbstractCompileTask {
         handleBuildIfFailed ANT_RESULT_PROPERTY, ANT_OUTPUT_PROPERTY, 'Compc'
 		
 		showAntOutput ant.properties[ANT_OUTPUT_PROPERTY]
+
+        if(flexConvention.fatSwc) {
+            addAsdocToSwc()
+        }
     }
 
     private List createCompilerArguments() {
@@ -124,6 +133,16 @@ class Compc extends AbstractCompileTask {
                 flexConvention.includeSources.each { classOrDirectoryToInclude ->
                     compilerArguments.add("${CompilerOption.INCLUDE_SOURCES}+=${project.file(classOrDirectoryToInclude).path}")
                 }
+            }
+        }
+    }
+
+    def addAsdocToSwc() {
+        ant.zip(destfile: new File(project.buildDir.absolutePath, "${flexConvention.output}.${flexConvention.type}"),
+                update: true) {
+            zipfileset(dir: project.file(flexConvention.asdoc.outputDir + "/tempdita"), prefix: 'docs') {
+                exclude(name: 'ASDoc_Config.xml')
+                exclude(name: 'overviews.xml')
             }
         }
     }
