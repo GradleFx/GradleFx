@@ -20,7 +20,7 @@ enum FlexType {
     swf('flex'),
     swc('flex'),
     air('air'),
-    mobile('mobile')
+    mobile('airmobile')
         
     private String configName
     
