@@ -60,13 +60,13 @@ class Scaffold extends DefaultTask {
        
        flexConvention.allSrcDirs.each {
            LOG.info "\t" + it
-           toFile(it).mkdirs()
+           project.file(it).mkdirs()
        }
        
        flexConvention.locales.each {
            String dir = flexConvention.localeDir + '/' + it
            LOG.info "\t" + dir
-           toFile(dir).mkdirs()
+           project.file(dir).mkdirs()
        }
    }
    
@@ -79,7 +79,7 @@ class Scaffold extends DefaultTask {
        if (flexConvention.type.isLib()) return
        
        String relativePath = flexConvention.srcDirs[0] + '/' + flexConvention.mainClassPath
-       File file = toFile relativePath
+       File file = project.file relativePath
        boolean needsDescriptor = flexConvention.type.isNativeApp()
        
        if (file.exists()) LOG.info "Main class already exists"
