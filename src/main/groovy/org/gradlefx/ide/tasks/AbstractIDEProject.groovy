@@ -86,7 +86,7 @@ abstract class AbstractIDEProject extends DefaultTask implements ProjectTask {
         
         closure xml
         
-        toFile(path).withWriter { out ->
+        project.file(path).withWriter { out ->
             XmlUtil.serialize xml, out
         }
     }

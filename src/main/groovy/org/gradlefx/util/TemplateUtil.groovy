@@ -61,16 +61,6 @@ class TemplateUtil {
            }
        }
    }
-   
-    /**
-     * Creates a {@link File} from a given relative path that can be used in multi-projects
-     *
-     * @param relativePath  The relative path we want a File reference for
-     * @return A File reference based on an absolute path
-     */
-    public File toFile(String relativePath) {
-        return new File(project.projectDir.absolutePath + '/' + relativePath)
-    }
       
     /**
      * Converts the path of the main class in to that of a descriptor file
