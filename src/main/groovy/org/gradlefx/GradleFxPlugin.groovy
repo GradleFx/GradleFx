@@ -27,7 +27,7 @@ import org.gradle.api.internal.artifacts.publish.DefaultPublishArtifact
 import org.gradlefx.configuration.Configurations
 import org.gradlefx.configuration.FlexAntTasksConfigurator
 import org.gradlefx.conventions.GradleFxConvention
-import org.gradlefx.tasks.compile.factory.CompileTaskClassFactoryImpl
+import org.gradlefx.tasks.compile.Compile;
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.gradlefx.tasks.*
@@ -52,11 +52,13 @@ class GradleFxPlugin implements Plugin<Project> {
         addCopyResources()
         addPublish()
 		addTest()
+        
+        addCompile()
 
         //do these tasks in the afterEvaluate phase because they need property access
         project.afterEvaluate {
             configureAntWithFlex()
-            addCompile(pluginConvention)
+            
             addASDoc(pluginConvention)
             addPackage(pluginConvention)
             addHtmlWrapper(pluginConvention)
@@ -84,9 +86,8 @@ class GradleFxPlugin implements Plugin<Project> {
         buildTask.dependsOn(Tasks.TEST_TASK_NAME)
     }
 
-    private void addCompile(GradleFxConvention pluginConvention) {
-        Class<Task> compileClass = new CompileTaskClassFactoryImpl().createCompileTaskClass(pluginConvention.type)
-        project.tasks.add(Tasks.COMPILE_TASK_NAME, compileClass)
+    private void addCompile() {
+        project.tasks.add(Tasks.COMPILE_TASK_NAME, Compile)
     }
     
     private void addASDoc(GradleFxConvention pluginConvention) {

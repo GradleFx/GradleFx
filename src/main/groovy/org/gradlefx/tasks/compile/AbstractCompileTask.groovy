@@ -16,38 +16,22 @@
 
 package org.gradlefx.tasks.compile
 
-import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ResolveException
-import org.gradle.api.logging.LogLevel
 import org.gradlefx.FlexType
 import org.gradlefx.FrameworkLinkage;
 import org.gradlefx.options.CompilerOption
 import org.gradlefx.conventions.GradleFxConvention
-import org.gradle.api.Project
-import org.gradle.api.Task
+import org.gradle.api.Task;
 
-abstract class AbstractCompileTask extends DefaultTask {
+abstract class AbstractCompileTask implements CompileTask {
 
-    GradleFxConvention flexConvention;
+    Task task
+    GradleFxConvention flexConvention
 
-    protected AbstractCompileTask() {
-        logging.setLevel(LogLevel.INFO)
-
-        flexConvention = project.convention.plugins.flex
-
-        initInputDirectory()
-        initOutputDirectory()
-    }
-
-    private def initInputDirectory() {
-        flexConvention.srcDirs.each { sourceDirectory ->
-            inputs.dir sourceDirectory
-        }
-    }
-
-    private def initOutputDirectory() {
-        outputs.dir project.buildDir
+    protected AbstractCompileTask(Task task) {
+        this.task = task
+        flexConvention = task.project.convention.plugins.flex
     }
     
     /**
@@ -61,8 +45,8 @@ abstract class AbstractCompileTask extends DefaultTask {
         }
         
         flexConvention.srcDirs.each { sourcePath ->
-            File sourcePathDir = project.file(sourcePath)
-            String path = project.file(sourcePath).path
+            File sourcePathDir = task.project.file sourcePath
+            String path = task.project.file(sourcePath).path
             if (sourcePath == flexConvention.localeDir) path += '/{locale}'
 
             if (sourcePathDir.exists() || sourcePath.contains('{')) {
@@ -122,7 +106,7 @@ abstract class AbstractCompileTask extends DefaultTask {
     }
 	
 	def handleBuildIfFailed(antResultProperty, antOutputProperty, taskName) {
-		if (ant.properties[antResultProperty] != '0') {
+		if (task.ant.properties[antResultProperty] != '0') {
 			throw new Exception("${taskName} compilation failed: ${ant.properties[antOutputProperty]}\n")
 		}
 	}
@@ -140,7 +124,7 @@ abstract class AbstractCompileTask extends DefaultTask {
      * @param configurationName name of configuration to use to find the other projects
      */
     protected void addDependsOnTaskInOtherProjects(String otherProjectTaskName, String configurationName) {
-        final Configuration configuration = project.getConfigurations().getByName(configurationName);
-        this.dependsOn(configuration.getTaskDependencyFromProjectDependency(true, otherProjectTaskName));
+        final Configuration configuration = task.project.getConfigurations().getByName(configurationName);
+        task.dependsOn(configuration.getTaskDependencyFromProjectDependency(true, otherProjectTaskName));
     }
 }

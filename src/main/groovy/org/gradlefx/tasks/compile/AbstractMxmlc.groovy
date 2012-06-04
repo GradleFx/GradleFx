@@ -27,7 +27,7 @@ abstract class AbstractMxmlc extends AbstractCompileTask {
 
 	protected File findFile(dirs, fileName) {
 		for (String dirName : dirs) {
-			File dir = project.file(dirName)
+			File dir = task.project.file(dirName)
 			File desiredFile = new File(dir, fileName)
 			if (desiredFile.exists()) {
 				return desiredFile
@@ -43,18 +43,19 @@ abstract class AbstractMxmlc extends AbstractCompileTask {
 	}
 
 	def compile(antResultProperty, antOutputProperty, compilerArguments) {
-		ant.java(jar:            flexConvention.flexHome + '/lib/mxmlc.jar',
-			     dir:            flexConvention.flexHome + '/frameworks',
-			     fork:           true,
-			     resultproperty: antResultProperty,
-			     outputproperty: antOutputProperty) { javaTask ->
-
-            flexConvention.jvmArguments.each { jvmArgument ->
-                jvmarg(value: jvmArgument)
+		task.ant.java(
+            jar:            flexConvention.flexHome + '/lib/mxmlc.jar',
+			dir:            flexConvention.flexHome + '/frameworks',
+			fork:           true,
+			resultproperty: antResultProperty,
+			outputproperty: antOutputProperty
+        ) {
+            flexConvention.jvmArguments.each {
+                jvmarg(value: it)
             }
 
-			compilerArguments.each { compilerArgument ->
-				arg(value: compilerArgument)
+			compilerArguments.each {
+				arg(value: it)
 			}
 		}
 	}
@@ -64,11 +65,11 @@ abstract class AbstractMxmlc extends AbstractCompileTask {
 	
 		handleBuildIfFailed antResultProperty, antOutputProperty, 'taskName'
 			
-		showAntOutput ant.properties[antOutputProperty]
+		showAntOutput task.ant.properties[antOutputProperty]
 	}
 	
     def addRsls(List compilerArguments) {
-        project.configurations.rsl.files.each { dependency ->
+        task.project.configurations.rsl.files.each { dependency ->
             if (!dependency.exists()) {
 				throw new ResolveException("Couldn't find the ${dependency.name} file - are you sure the path is correct?")
             }
