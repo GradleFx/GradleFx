@@ -14,23 +14,14 @@
 * limitations under the License.
 */
 
-package org.gradlefx.ide.plugins
-
-import org.gradle.api.Plugin;
-import org.gradle.api.Project;
-import org.gradlefx.ide.tasks.FlashBuilderClean;
-import org.gradlefx.ide.tasks.FlashBuilderProject;
+package org.gradlefx.ide.tasks
 
 
-class FlashBuilderPlugin implements Plugin<Project> {
-    
-    @Override
-    public void apply(Project project) {
-        project.apply(plugin: 'base')
-        project.apply(plugin: 'scaffold')
-        
-        project.tasks.add(FlashBuilderProject.NAME, FlashBuilderProject)
-        project.tasks.add(FlashBuilderClean.NAME, FlashBuilderClean)
-    }
+public interface CleanTask {
+
+    /**
+     * Removes all IDE related files from this project
+     */
+    void cleanProject()
 
 }
