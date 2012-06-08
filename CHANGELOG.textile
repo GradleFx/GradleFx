@@ -1,5 +1,23 @@
 h2. GradleFx changelog
 
+h3. v0.5
+
+h5. New features
+* asdoc generation feature (+ 'fatSwc' convention property for fat swc generation)
+* added 'frameworkLinkage' property: defines how the Flex SDK will be linked. defaults to external for swc-based Flex projects, rsl for swf-based projects and none for pure actionscript projects
+* added the 'templates' plugin with a subplugin 'scaffold': generates project directory structure and main file. See documentation for more info: https://github.com/GradleFx/GradleFx/wiki/Templates-plugin
+* added the 'ide' plugin with a subplugin 'flashbuilder': allows you to generate the Adobe Flash Builder project files based on your build configuration. See documentation for more info: https://github.com/GradleFx/GradleFx/wiki/IDE-plugin
+
+h5. Improvements
+* Gradle 1.0 RC3 compatibility
+* Major rework of the FlexUnit integration (greatly simplified the required setup). See documentation for more information: https://github.com/GradleFx/GradleFx/wiki/Flexunit
+* 'mainClass' package notation is now also allowed (org.gradlefx.MainApp or org/gradlefx/MainApp.mxml)
+* Improved the error/warning/info messages
+
+h5. Bug fixes
+* Fixed issue 37: resources aren't added correctly to the swc
+* various other bug fixes
+
 h3. v0.4.2
 
 ATTENTION: Gradle 1.0 milestone 8 is required from now on.

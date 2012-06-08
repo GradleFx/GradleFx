@@ -1,7 +1,12 @@
 .gradle
 .idea
+.settings
+.classpath
+bin
 build
 GradleFx.iml
+gradlefx.ipr
+gradlefx.iws
+/target
 .orig
 /.project
-gradle.properties

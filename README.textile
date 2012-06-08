@@ -6,24 +6,16 @@ All compiler arguments are supported. Some are automatically filled in by the pl
 dependencies) and other more specific arguments can be provided to the plugin by adding them on the
 additionalCompilerOptions convention property.
 
-It adds the following tasks:
-* compile
-* compileTest
-* package
-* test
-* createHtmlWrapper
-* build
-* publish
-* clean
-* copyresources
-
-The plugin has support for the following dependency scopes:
-* internal
-* external
-* merged
-* rsl
-* test
-* theme
+Features:
+* convention-over-configuration
+* dependency management
+* multi-project support
+* source file change detection
+* SWC, SWF and AIR project support
+* FlexUnit support
+* AsDoc support
+* Adobe Flash Builder project generation
+* project scaffolding
 
 h2. Useful links
 * Documentation: "https://github.com/GradleFx/GradleFx/wiki":https://github.com/GradleFx/GradleFx/wiki
@@ -33,6 +25,6 @@ h2. Useful links
 * Changelog: "https://github.com/GradleFx/GradleFx/blob/master/CHANGELOG.textile":https://github.com/GradleFx/GradleFx/blob/master/CHANGELOG.textile
 
 h2. Upcoming features
-* IDEA and Eclipse project generation support
-* AS3Doc generation
+* IDEA project generation support
 * Mobile support
+* Automatic downloading of the Flex SDK

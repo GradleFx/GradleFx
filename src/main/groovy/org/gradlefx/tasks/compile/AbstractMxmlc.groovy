@@ -17,6 +17,7 @@
 package org.gradlefx.tasks.compile
 
 import org.gradle.api.artifacts.ResolveException
+import org.gradlefx.options.CompilerOption
 
 /*
  * Abstract base class capturing common functionality to execute Flex's MXMLC compiler. 
@@ -32,17 +33,23 @@ abstract class AbstractMxmlc extends AbstractCompileTask {
 				return desiredFile
 			}
 		}
-		throw new Exception("The file ${fileName} couldn't be found in directories ${dirs}")
+        
+		throw new Exception(
+            "The file ${fileName} couldn't be found in directories ${dirs}; " +
+            "note that if you used the 'flashbuilder' plugin this file may have been moved " +
+            "to comply to FlashBuilder's restrictions (execute 'flashbuilder' and see if you get any warnings); " +
+            "consider editing the 'mainClass' property or switching to a decent IDE"
+        )
 	}
 
 	def compile(antResultProperty, antOutputProperty, compilerArguments) {
-		ant.java(jar:            project.flexHome + '/lib/mxmlc.jar',
-			     dir:            project.flexHome + '/frameworks',
+		ant.java(jar:            flexConvention.flexHome + '/lib/mxmlc.jar',
+			     dir:            flexConvention.flexHome + '/frameworks',
 			     fork:           true,
 			     resultproperty: antResultProperty,
 			     outputproperty: antOutputProperty) { javaTask ->
 
-            project.jvmArguments.each { jvmArgument ->
+            flexConvention.jvmArguments.each { jvmArgument ->
                 jvmarg(value: jvmArgument)
             }
 
@@ -65,7 +72,7 @@ abstract class AbstractMxmlc extends AbstractCompileTask {
             if (!dependency.exists()) {
 				throw new ResolveException("Couldn't find the ${dependency.name} file - are you sure the path is correct?")
             }
-			compilerArguments.add("-runtime-shared-library-path+=${dependency.path},${dependency.name[0..-2]}f")
+			compilerArguments.add("${CompilerOption.RUNTIME_SHARED_LIBRARY_PATH}+=${dependency.path},${dependency.name[0..-2]}f")
         }
     }
 }

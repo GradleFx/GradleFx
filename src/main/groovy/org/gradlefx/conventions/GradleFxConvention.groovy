@@ -18,17 +18,27 @@ package org.gradlefx.conventions
 
 import org.gradle.api.Project
 import org.gradlefx.FlexType
+import org.gradlefx.FrameworkLinkage
 
+
+@Mixin(GradleFxDerivedProperties)
 class GradleFxConvention {
 
     private Project project
 
     String output
-	
-	def testOutput = 'TestRunner' 
+    
+    public String getOutput() {
+        return output ?: project.name
+    }
 
     // the home directory of the Flex SDK
-    def flexHome = System.getenv()['FLEX_HOME'] //default to FLEX_HOME environment variable
+    String flexHome = System.getenv()['FLEX_HOME'] //default to FLEX_HOME environment variable
+    
+    public void setFlexHome(String flexHome) {
+        //convert relative paths to absolute ones to prevent ANT from freaking out
+        this.flexHome = flexHome ? new File(flexHome).absolutePath : null
+    }
 
     // which directories to look into for source code
     def srcDirs = ['src/main/actionscript']
@@ -54,17 +64,25 @@ class GradleFxConvention {
     //equivalent of the include-sources compiler option
     List includeSources;
 
-    // what type of Flex project are we?  either SWF or SWC
+    // what type of Flex project are we?  either SWF, SWC or AIR
     FlexType type
+    
+    //how the Flex framework will be linked in the project: external, RSL, merged or none
+    //default: RSL for swf, external for swc
+    FrameworkLinkage frameworkLinkage
+    
+    public FrameworkLinkage getFrameworkLinkage() {
+        return frameworkLinkage ?: FrameworkLinkage.getCompilerDefault(true, type)
+    }
+
+    //Whether the asdocs should be merged into the swc for use in Flash Builder
+    Boolean fatSwc
 
     // the directory where we should publish the build artifacts
     String publishDir = 'publish'
 
     //the root class which is used by the mxmlc compiler to create a swf
-    def mainClass = 'Main.mxml'
-	
-	//the root class for unit testing
-	def testClass = null
+    def mainClass = 'Main'
 
     //array of additional compiler options as defined by the compc or mxmlc compiler
     def additionalCompilerOptions = []
@@ -82,6 +100,9 @@ class GradleFxConvention {
 
     // AIR packaging properties
     def air
+
+    // ASDoc properties
+    def asdoc
 
 
     def GradleFxConvention(Project project) {
@@ -101,13 +122,10 @@ class GradleFxConvention {
         ]
 
 		flexUnit = [
-			home:            System.getenv()['FLEXUNIT_HOME'],
-			antTasksJar:     'flexUnitTasks-4.1.0-8.jar',
 			player:          'flash',
 			command:         System.getenv()['FLASH_PLAYER_EXE'],
-			swf:             "${project.buildDirName}/${testOutput}.swf",
-			toDir:           "${project.buildDirName}/reports",
-			workingDir:      project.path,
+			toDir:           "${project.buildDir}/reports",
+			workingDir:      project.buildDir,
 			haltonfailure:   'false',
 			verbose:         'false',
 			localTrusted:    'true',
@@ -116,7 +134,9 @@ class GradleFxConvention {
 			timeout:         '60000', //60 seconds
 			failureproperty: 'flexUnitFailed',
 			headless:        'false',
-			display:         '99'
+			display:         '99',
+            includes:         ['**/*Test.as'],
+            excludes:         []
 		]
 
         air = [
@@ -125,14 +145,12 @@ class GradleFxConvention {
             applicationDescriptor:  "/src/main/actionscript/${project.name}.xml",
             includeFileTrees:       null
         ]
-		
-        project.afterEvaluate {
-            initializeEmptyProperties()
-        }
-    }
 
-    public def initializeEmptyProperties() {
-		output = output ?: project.name
+        asdoc = [
+            outputDir:              'doc',
+            additionalASDocOptions: []
+        ]
     }
+    
 }
 

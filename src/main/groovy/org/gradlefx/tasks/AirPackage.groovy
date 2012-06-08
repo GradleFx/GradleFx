@@ -21,21 +21,29 @@ import org.gradle.api.file.ConfigurableFileTree
 import org.gradle.api.file.FileTreeElement
 import org.gradle.api.tasks.TaskAction
 import org.gradlefx.FlexType
+import org.gradlefx.validators.actions.ValidateAirPackageTaskPropertiesAction
+import org.gradlefx.conventions.GradleFxConvention
 
 class AirPackage extends DefaultTask {
     
     private static final String ANT_RESULT_PROPERTY = 'airPackageResult'
     private static final String ANT_OUTPUT_PROPERTY = 'airPackageOutput'
 
+    GradleFxConvention flexConvention;
+
     public AirPackage() {
         description = 'Packages the generated swf file into an .air package'
+
+        flexConvention = project.convention.plugins.flex
     }
 
     @TaskAction
     def packageAir() {
+        new ValidateAirPackageTaskPropertiesAction().execute(this)
+
         List compilerArguments = createCompilerArguments()
 
-        ant.java(jar: project.flexHome + '/lib/adt.jar',
+        ant.java(jar: flexConvention.flexHome + '/lib/adt.jar',
                 fork: true,
                 timeout: 10000,
                 resultproperty: ANT_RESULT_PROPERTY,
@@ -57,9 +65,9 @@ class AirPackage extends DefaultTask {
         addAirSigningOptions(airOptions)
 
         airOptions.addAll([
-            new File(project.buildDir.absolutePath, project.output).absolutePath,
-            project.relativePath(project.air.applicationDescriptor),
-            project.relativePath("${project.buildDirName}/${project.output}.${FlexType.swf}")
+            new File(project.buildDir.absolutePath, flexConvention.output).absolutePath,
+            project.relativePath(flexConvention.air.applicationDescriptor),
+            project.relativePath("${project.buildDir}/${flexConvention.output}.${FlexType.swf}")
         ])
 
         addFiles(airOptions)
@@ -68,7 +76,7 @@ class AirPackage extends DefaultTask {
     }
 
     private void addFiles(List compilerOptions) {
-        project.air.includeFileTrees.each { ConfigurableFileTree fileTree ->
+        flexConvention.air.includeFileTrees.each { ConfigurableFileTree fileTree ->
             compilerOptions.add("-C")
             compilerOptions.add(fileTree.dir.absolutePath)
 
@@ -85,9 +93,9 @@ class AirPackage extends DefaultTask {
                 "-storetype",
                 "pkcs12",
                 "-keystore",
-                project.air.keystore,
+                flexConvention.air.keystore,
                 "-storepass",
-                project.air.storepass
+                flexConvention.air.storepass
         ])
     }
 

@@ -14,74 +14,55 @@
  * limitations under the License.
  */
 
-package org.gradlefx
+package org.gradlefx.plugins
 
 import org.gradle.api.DefaultTask
-import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.api.artifacts.dsl.ArtifactHandler
 import org.gradle.api.internal.artifacts.publish.DefaultPublishArtifact
-import org.gradle.api.tasks.Delete
-import org.gradlefx.conventions.GradleFxConvention
-import org.gradlefx.tasks.CopyResources
-import org.gradlefx.tasks.HtmlWrapper
-import org.gradlefx.tasks.Publish
-import org.gradlefx.tasks.Test
-import org.gradlefx.tasks.compile.TestCompile
-
-import org.gradlefx.tasks.compile.factory.CompileTaskClassFactoryImpl
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-import org.gradlefx.tasks.AirPackage
-import org.gradlefx.configuration.FlexAntTasksConfigurator
-import org.gradlefx.configuration.FlexUnitAntTasksConfigurator
-import org.gradlefx.tasks.Tasks
 import org.gradlefx.configuration.Configurations
+import org.gradlefx.configuration.FlexAntTasksConfigurator
+import org.gradlefx.conventions.GradleFxConvention
+import org.gradlefx.tasks.compile.factory.CompileTaskClassFactoryImpl
+import org.gradlefx.tasks.*
 
-class GradleFxPlugin implements Plugin<Project> {
-
-    Logger log = LoggerFactory.getLogger('flex')
-
-    private Project project
-
+class GradleFxPlugin extends AbstractGradleFxPlugin {
+    
+    @Override
     public void apply(Project project) {
-        this.project = project
-
-        project.apply(plugin: 'base')
-
-        GradleFxConvention pluginConvention = new GradleFxConvention(project)
-        project.convention.plugins.flex = pluginConvention
-
+        super.apply project
+        
         addDefaultConfigurations()
+        
+        project.afterEvaluate {
+            configureAntWithFlex()
+            addDependsOnOtherProjects()
+            addDefaultArtifact()
+        }
+    }
 
+    @Override
+    protected void addTasks() {
         addBuild()
         addCopyResources()
         addPublish()
-		addTestCompile()
 		addTest()
 
         //do these tasks in the afterEvaluate phase because they need property access
-        project.afterEvaluate {
-            configureAntWithFlex()
-			configureAntWithFlexUnit()
-            addCompile(pluginConvention)
-            addPackage()
-            addHtmlWrapper()
-            addDependsOnOtherProjects()
-            addDefaultArtifact()
+        project.afterEvaluate {           
+            addCompile flexConvention
+            addASDoc flexConvention
+            addPackage flexConvention
+            addHtmlWrapper flexConvention           
         }
     }
 
     private void configureAntWithFlex() {
         new FlexAntTasksConfigurator(project).configure()
     }
-
-	private void configureAntWithFlexUnit() {
-        new FlexUnitAntTasksConfigurator(project).configure()
-	}
 	
     private void addDefaultConfigurations() {
         project.configurations.add(Configurations.INTERNAL_CONFIGURATION_NAME)
@@ -93,49 +74,46 @@ class GradleFxPlugin implements Plugin<Project> {
     }
 
     private void addBuild() {
-        DefaultTask buildTask = project.tasks.add(Tasks.BUILD_TASK_NAME, DefaultTask)
+        DefaultTask buildTask = addTask Tasks.BUILD_TASK_NAME, DefaultTask
         buildTask.setDescription("Assembles and tests this project.")
         buildTask.dependsOn(Tasks.TEST_TASK_NAME)
     }
 
     private void addCompile(GradleFxConvention pluginConvention) {
-        Class<Task> compileClass = new CompileTaskClassFactoryImpl().createCompileTaskClass(project.type)
-        project.tasks.add(Tasks.COMPILE_TASK_NAME, compileClass)
+        Class<Task> compileClass = new CompileTaskClassFactoryImpl().createCompileTaskClass(pluginConvention.type)
+        addTask Tasks.COMPILE_TASK_NAME, compileClass
+    }
+    
+    private void addASDoc(GradleFxConvention pluginConvention) {
+        if(pluginConvention.type.isLib()) {
+            addTask Tasks.ASDOC_TASK_NAME, ASDoc
+        }
     }
 
     private void addPackage(GradleFxConvention pluginConvention) {
-        if(project.type == FlexType.air) {
-            Task packageTask = project.tasks.add(Tasks.PACKAGE_TASK_NAME, AirPackage)
+        if(pluginConvention.type.isNativeApp()) {
+            Task packageTask = addTask Tasks.PACKAGE_TASK_NAME, AirPackage
             packageTask.dependsOn(Tasks.COMPILE_TASK_NAME)
         }
     }
 	
-	private void addTestCompile() {
-		Task testCompile = project.tasks.add(Tasks.TEST_COMPILE_TASK_NAME, TestCompile)
-		testCompile.description = 'Compile the test runner SWF.'
-		testCompile.dependsOn(Tasks.COMPILE_TASK_NAME)
-		testCompile.onlyIf{project.testClass != null}
-	}
-	
 	private void addTest() {
-		Task test = project.tasks.add(Tasks.TEST_TASK_NAME, Test)
+		Task test = addTask Tasks.TEST_TASK_NAME, Test
 		test.description = 'Run the FlexUnit tests.'
-		test.dependsOn(Tasks.TEST_COMPILE_TASK_NAME)
-		test.onlyIf{project.testClass != null}
 	}
 
-    private void addHtmlWrapper() {
-        if (project.type == FlexType.swf) {
-            project.tasks.add(Tasks.CREATE_HTML_WRAPPER, HtmlWrapper)
+    private void addHtmlWrapper(GradleFxConvention pluginConvention) {
+        if (pluginConvention.type.isWebApp()) {
+            addTask Tasks.CREATE_HTML_WRAPPER, HtmlWrapper
         }
     }
 
     private void addCopyResources() {
-        project.tasks.add(Tasks.COPY_RESOURCES_TASK_NAME, CopyResources)
+        addTask Tasks.COPY_RESOURCES_TASK_NAME, CopyResources
     }
 
     private void addPublish() {
-        project.tasks.add(Tasks.PUBLISH_TASK_NAME, Publish)
+        addTask Tasks.PUBLISH_TASK_NAME, Publish
     }
 
     private void addDependsOnOtherProjects() {

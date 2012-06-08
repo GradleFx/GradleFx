@@ -19,7 +19,7 @@ package org.gradlefx.configuration
 import org.gradle.api.Project
 
 class FlexUnitAntTasksConfigurator {
-
+    
     private Project project
 
     FlexUnitAntTasksConfigurator(Project project) {
@@ -27,14 +27,7 @@ class FlexUnitAntTasksConfigurator {
     }
 
     public void configure() {
-        if (project.flexUnit.home == null) return
-
-        project.ant.taskdef(resource: 'flexUnitTasks.tasks') {
-            classpath {
-                fileset(dir: project.flexUnit.home) {
-                    include(name: project.flexUnit.antTasksJar)
-                }
-            }
-        }
+        project.ant.taskdef(resource: 'flexUnitTasks.tasks',
+                            classpath: project.configurations.test.asPath)
     }
 }
