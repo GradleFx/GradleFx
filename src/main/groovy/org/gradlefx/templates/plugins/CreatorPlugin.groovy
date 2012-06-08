@@ -17,16 +17,14 @@
 package org.gradlefx.templates.plugins
 
 import org.gradle.api.Plugin;
-import org.gradle.api.Project;
+import org.gradlefx.plugins.AbstractGradleFxPlugin;
 
 
-class CreatorPlugin implements Plugin<Project> {
+class CreatorPlugin extends AbstractGradleFxPlugin {
     
     @Override
-    public void apply(Project project) {
-        project.apply(plugin: 'base')
-        
-        //project.tasks.add(CreateComponent.NAME, CreateComponent)
+    protected void addTasks() {
+        //addTask CreateComponent.NAME, CreateComponent
     }
 
 }
