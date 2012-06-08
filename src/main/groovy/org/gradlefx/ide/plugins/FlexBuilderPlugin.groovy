@@ -16,19 +16,21 @@
 
 package org.gradlefx.ide.plugins
 
-import org.gradle.api.Plugin;
-import org.gradle.api.Project;
 import org.gradlefx.ide.tasks.FlexBuilderProject;
+import org.gradlefx.plugins.AbstractGradleFxPlugin;
 
 
-class FlexBuilderPlugin implements Plugin<Project> {
+class FlexBuilderPlugin extends AbstractGradleFxPlugin {
     
     @Override
-    public void apply(Project project) {
-        project.apply(plugin: 'base')
-        project.apply(plugin: 'scaffold')
-        
-        project.tasks.add(FlexBuilderProject.NAME, FlexBuilderProject)
+    protected void applyPlugins() {
+        super.applyPlugins()
+        applyPlugin 'scaffold'
+    }
+    
+    @Override
+    protected void addTasks() {
+        addTask FlexBuilderProject.NAME, FlexBuilderProject
     }
 
 }

@@ -16,19 +16,21 @@
 
 package org.gradlefx.ide.plugins
 
-import org.gradle.api.Plugin;
-import org.gradle.api.Project;
 import org.gradlefx.ide.tasks.IdeaProject;
+import org.gradlefx.plugins.AbstractGradleFxPlugin;
 
 
-class IdeaPlugin implements Plugin<Project> {
+class IdeaPlugin extends AbstractGradleFxPlugin {
     
     @Override
-    public void apply(Project project) {
-        project.apply(plugin: 'base')
-        project.apply(plugin: 'scaffold')
-        
-        project.tasks.add(IdeaProject.NAME, IdeaProject)
+    protected void applyPlugins() {
+        super.applyPlugins()
+        applyPlugin 'scaffold'
+    }
+    
+    @Override
+    protected void addTasks() {
+        addTask IdeaProject.NAME, IdeaProject
     }
 
 }

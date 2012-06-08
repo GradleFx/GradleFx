@@ -1,3 +1,4 @@
+
 /*
 * Copyright (c) 2011 the original author or authors
 *
@@ -16,19 +17,21 @@
 
 package org.gradlefx.ide.plugins
 
-import org.gradle.api.Plugin;
-import org.gradle.api.Project;
 import org.gradlefx.ide.tasks.FDTProject;
+import org.gradlefx.plugins.AbstractGradleFxPlugin;
 
 
-class FDTPlugin implements Plugin<Project> {
+class FDTPlugin extends AbstractGradleFxPlugin {
     
     @Override
-    public void apply(Project project) {
-        project.apply(plugin: 'base')
-        project.apply(plugin: 'scaffold')
-        
-        project.tasks.add(FDTProject.NAME, FDTProject)
+    protected void applyPlugins() {
+        super.applyPlugins()
+        applyPlugin 'scaffold'
+    }
+    
+    @Override
+    protected void addTasks() {
+        addTask FDTProject.NAME, FDTProject
     }
 
 }
