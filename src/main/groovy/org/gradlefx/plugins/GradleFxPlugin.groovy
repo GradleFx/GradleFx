@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package org.gradlefx
+package org.gradlefx.plugins
 
 import org.gradle.api.DefaultTask
-import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.artifacts.Configuration
@@ -27,27 +26,25 @@ import org.gradle.api.internal.artifacts.publish.DefaultPublishArtifact
 import org.gradlefx.configuration.Configurations
 import org.gradlefx.configuration.FlexAntTasksConfigurator
 import org.gradlefx.conventions.GradleFxConvention
-import org.gradlefx.tasks.compile.Compile;
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.gradlefx.tasks.*
 
-class GradleFxPlugin implements Plugin<Project> {
-
-    Logger log = LoggerFactory.getLogger('flex')
-
-    private Project project
-
+class GradleFxPlugin extends AbstractGradleFxPlugin {
+    
+    @Override
     public void apply(Project project) {
-        this.project = project
-
-        project.apply(plugin: 'base')
-
-        GradleFxConvention pluginConvention = new GradleFxConvention(project)
-        project.convention.plugins.flex = pluginConvention
-
+        super.apply project
+        
         addDefaultConfigurations()
+        
+        project.afterEvaluate {
+            configureAntWithFlex()
+            addDependsOnOtherProjects()
+            addDefaultArtifact()
+        }
+    }
 
+    @Override
+    protected void addTasks() {
         addBuild()
         addCopyResources()
         addPublish()
@@ -56,14 +53,11 @@ class GradleFxPlugin implements Plugin<Project> {
         addCompile()
 
         //do these tasks in the afterEvaluate phase because they need property access
-        project.afterEvaluate {
-            configureAntWithFlex()
-            
-            addASDoc(pluginConvention)
-            addPackage(pluginConvention)
-            addHtmlWrapper(pluginConvention)
-            addDependsOnOtherProjects()
-            addDefaultArtifact()
+        project.afterEvaluate {           
+            addCompile flexConvention
+            addASDoc flexConvention
+            addPackage flexConvention
+            addHtmlWrapper flexConvention
         }
     }
 
@@ -81,45 +75,45 @@ class GradleFxPlugin implements Plugin<Project> {
     }
 
     private void addBuild() {
-        DefaultTask buildTask = project.tasks.add(Tasks.BUILD_TASK_NAME, DefaultTask)
+        DefaultTask buildTask = addTask Tasks.BUILD_TASK_NAME, DefaultTask
         buildTask.setDescription("Assembles and tests this project.")
         buildTask.dependsOn(Tasks.TEST_TASK_NAME)
     }
 
-    private void addCompile() {
-        project.tasks.add(Tasks.COMPILE_TASK_NAME, Compile)
+    private void addCompile(GradleFxConvention pluginConvention) {
+        addTask Tasks.COMPILE_TASK_NAME, Compile
     }
     
     private void addASDoc(GradleFxConvention pluginConvention) {
         if(pluginConvention.type.isLib()) {
-            project.tasks.add(Tasks.ASDOC_TASK_NAME, ASDoc)
+            addTask Tasks.ASDOC_TASK_NAME, ASDoc
         }
     }
 
     private void addPackage(GradleFxConvention pluginConvention) {
         if(pluginConvention.type.isNativeApp()) {
-            Task packageTask = project.tasks.add(Tasks.PACKAGE_TASK_NAME, AirPackage)
+            Task packageTask = addTask Tasks.PACKAGE_TASK_NAME, AirPackage
             packageTask.dependsOn(Tasks.COMPILE_TASK_NAME)
         }
     }
 	
 	private void addTest() {
-		Task test = project.tasks.add(Tasks.TEST_TASK_NAME, Test)
+		Task test = addTask Tasks.TEST_TASK_NAME, Test
 		test.description = 'Run the FlexUnit tests.'
 	}
 
     private void addHtmlWrapper(GradleFxConvention pluginConvention) {
         if (pluginConvention.type.isWebApp()) {
-            project.tasks.add(Tasks.CREATE_HTML_WRAPPER, HtmlWrapper)
+            addTask Tasks.CREATE_HTML_WRAPPER, HtmlWrapper
         }
     }
 
     private void addCopyResources() {
-        project.tasks.add(Tasks.COPY_RESOURCES_TASK_NAME, CopyResources)
+        addTask Tasks.COPY_RESOURCES_TASK_NAME, CopyResources
     }
 
     private void addPublish() {
-        project.tasks.add(Tasks.PUBLISH_TASK_NAME, Publish)
+        addTask Tasks.PUBLISH_TASK_NAME, Publish
     }
 
     private void addDependsOnOtherProjects() {

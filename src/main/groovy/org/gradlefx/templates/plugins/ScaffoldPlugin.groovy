@@ -16,18 +16,15 @@
 
 package org.gradlefx.templates.plugins
 
-import org.gradle.api.Plugin;
-import org.gradle.api.Project;
+import org.gradlefx.plugins.AbstractGradleFxPlugin;
 import org.gradlefx.templates.tasks.Scaffold;
 
 
-class ScaffoldPlugin implements Plugin<Project> {
+class ScaffoldPlugin extends AbstractGradleFxPlugin {
     
     @Override
-    public void apply(Project project) {
-        project.apply(plugin: 'base')
-        
-        project.tasks.add(Scaffold.NAME, Scaffold)
+    protected void addTasks() {
+        addTask Scaffold.NAME, Scaffold
     }
 
 }

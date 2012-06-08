@@ -14,23 +14,14 @@
 * limitations under the License.
 */
 
-package org.gradlefx.ide.plugins
-
-import org.gradlefx.ide.tasks.FlexBuilderProject;
-import org.gradlefx.plugins.AbstractGradleFxPlugin;
+package org.gradlefx.ide.tasks
 
 
-class FlexBuilderPlugin extends AbstractGradleFxPlugin {
-    
-    @Override
-    protected void applyPlugins() {
-        super.applyPlugins()
-        applyPlugin 'scaffold'
-    }
-    
-    @Override
-    protected void addTasks() {
-        addTask FlexBuilderProject.NAME, FlexBuilderProject
-    }
+public interface CleanTask {
+
+    /**
+     * Removes all IDE related files from this project
+     */
+    void cleanProject()
 
 }

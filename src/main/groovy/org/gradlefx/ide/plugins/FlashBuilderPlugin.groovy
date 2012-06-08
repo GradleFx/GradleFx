@@ -16,19 +16,25 @@
 
 package org.gradlefx.ide.plugins
 
-import org.gradle.api.Plugin;
-import org.gradle.api.Project;
+
+import org.gradlefx.ide.tasks.FlashBuilderClean;
 import org.gradlefx.ide.tasks.FlashBuilderProject;
+import org.gradlefx.plugins.AbstractGradleFxPlugin;
 
 
-class FlashBuilderPlugin implements Plugin<Project> {
+
+class FlashBuilderPlugin extends AbstractGradleFxPlugin {
     
     @Override
-    public void apply(Project project) {
-        project.apply(plugin: 'base')
-        project.apply(plugin: 'scaffold')
-        
-        project.tasks.add(FlashBuilderProject.NAME, FlashBuilderProject)
+    protected void applyPlugins() {
+        super.applyPlugins()
+        applyPlugin 'scaffold'
+    }
+    
+    @Override
+    protected void addTasks() {
+        addTask FlashBuilderProject.NAME, FlashBuilderProject
+        addTask FlashBuilderClean.NAME, FlashBuilderClean
     }
 
 }

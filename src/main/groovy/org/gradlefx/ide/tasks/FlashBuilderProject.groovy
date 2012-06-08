@@ -23,13 +23,9 @@ import org.gradlefx.configuration.Configurations;
 import org.gradlefx.templates.tasks.Scaffold;
 
 
+@Mixin(FlashBuilderUtil)
 class FlashBuilderProject extends AbstractIDEProject {
     public static final String NAME = 'flashbuilder'
-    
-    protected static String eclipseProject = '.project'
-    protected static String actionScriptProperties = '.actionScriptProperties'
-    protected static String flexLibProperties = '.flexLibProperties'
-    protected static String flexProperties = '.flexProperties'
     
     protected static int libtype_dir = 1
     protected static int libtype_swc = 3
@@ -47,6 +43,10 @@ class FlashBuilderProject extends AbstractIDEProject {
     
     protected String mainSrcDir
     
+    
+    /**
+    * Constructor
+    */
     public FlashBuilderProject() {
         super('FlashBuilder')
         mainSrcDir = flexConvention.srcDirs[0]
@@ -83,9 +83,7 @@ class FlashBuilderProject extends AbstractIDEProject {
         boolean isValid = true
         
         flexConvention.dependencyProjects.each {
-            def props = new XmlSlurper().parse(it.projectDir.path + '/' + actionScriptProperties)
-            
-            File buildDir = it.file props.compiler.@outputFolderPath.text()
+            File buildDir = it.file getOutputDir(it)
             if (!buildDir.exists()) {
                 isValid = false
                 
@@ -158,9 +156,9 @@ class FlashBuilderProject extends AbstractIDEProject {
      * if it's any other kind of Flex project we add a .flexProperties file
      */
     private void createConfigFiles() {
-        List extensions = [eclipseProject, actionScriptProperties]
-        if (flexConvention.type.isLib()) extensions.add flexLibProperties
-        else if (flexConvention.frameworkLinkage.usesFlex()) extensions.add flexProperties
+        List extensions = [FlashBuilderUtil.eclipseProject, FlashBuilderUtil.actionScriptProperties]
+        if (flexConvention.type.isLib()) extensions.add FlashBuilderUtil.flexLibProperties
+        else if (flexConvention.frameworkLinkage.usesFlex()) extensions.add FlashBuilderUtil.flexProperties
             
         extensions.each {
             LOG.info '\t' + it
@@ -172,7 +170,7 @@ class FlashBuilderProject extends AbstractIDEProject {
      * Adds all source dirs except the main source dir to the project's classpath
      */
     private void addSourceDirs() {
-        editXmlFile actionScriptProperties, { xml ->
+        editXmlFile FlashBuilderUtil.actionScriptProperties, { xml ->
             def parent = xml.compiler.compilerSourcePath[0]
             
             flexConvention.allSrcDirs.each {
@@ -193,7 +191,7 @@ class FlashBuilderProject extends AbstractIDEProject {
     private void addIncludedClasses() {
         if (flexConvention.includeClasses == null) return
 
-        editXmlFile flexLibProperties, { xml ->
+        editXmlFile FlashBuilderUtil.flexLibProperties, { xml ->
             def parent = xml.includeClasses[0]
             xml.@includeAllClasses = false
             
@@ -207,7 +205,7 @@ class FlashBuilderProject extends AbstractIDEProject {
      * Sets the framework linkage and creates dependency nodes for all defined dependencies
      */
     private void addDependencies() {       
-        editXmlFile actionScriptProperties, { xml ->
+        editXmlFile FlashBuilderUtil.actionScriptProperties, { xml ->
             Node libNode = xml.compiler.libraryPath[0]
             libNode.@defaultLinkType = flexConvention.frameworkLinkage.isCompilerDefault(flexConvention.type) ? 0 : 1
             
@@ -312,9 +310,8 @@ class FlashBuilderProject extends AbstractIDEProject {
        flexConvention.dependencyProjects.findAll {
            swcFile.path.startsWith it.projectDir.path
        }.each {
-           def props = new XmlSlurper().parse(it.projectDir.path + '/' + actionScriptProperties)
-           
-           File buildDir = it.file props.compiler.@outputFolderPath.text()
+           String buildDirPath = getOutputDir it
+           File buildDir = it.file buildDirPath
            swcFile = new File(buildDir, "${it.name}.${FlexType.swc}")
            
            if (!swcFile.exists()) {
@@ -324,7 +321,7 @@ class FlashBuilderProject extends AbstractIDEProject {
                if (alternative) swcFile = alternative
            }
            
-           path = "/${swcFile.name[0..-5]}/${props.compiler.@outputFolderPath}/${swcFile.name}"
+           path = "/${swcFile.name[0..-5]}/$buildDirPath/$swcFile.name"
        }
        
        return path
