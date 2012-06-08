@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
+@Mixin(FlashBuilderUtil)
 class FlashBuilderClean extends DefaultTask implements CleanTask {
     public static final String NAME = 'flashbuilderClean'
     
@@ -35,7 +36,7 @@ class FlashBuilderClean extends DefaultTask implements CleanTask {
      * Constructor
      */
     public FlashBuilderClean() {
-        this.ideName = 'FlashBuilder'
+        ideName = 'FlashBuilder'
         description = "Cleans $ideName project, i.e. removes $ideName configuration files and folders"
         
         logging.setLevel LogLevel.INFO
@@ -44,21 +45,15 @@ class FlashBuilderClean extends DefaultTask implements CleanTask {
     @Override
     @TaskAction
     public void cleanProject() {
-        LOG.info "Removing $ideName project files"
-        
-        String outputDir = project.convention.plugins.flex.type.isLib() ? 'bin' : 'bin-debug';
-        if (project.file(FlashBuilderProject.actionScriptProperties).exists()) {
-            def props = new XmlSlurper().parse(project.projectDir.path + '/' + FlashBuilderProject.actionScriptProperties)
-            outputDir = props.compiler.@outputFolderPath.text()
-        }      
+        LOG.info "Removing $ideName project files"    
              
         boolean filesDeleted = false
         [
-            FlashBuilderProject.eclipseProject,
-            FlashBuilderProject.actionScriptProperties,
-            FlashBuilderProject.flexProperties,
-            FlashBuilderProject.flexLibProperties,
-            outputDir,
+            FlashBuilderUtil.eclipseProject,
+            FlashBuilderUtil.actionScriptProperties,
+            FlashBuilderUtil.flexProperties,
+            FlashBuilderUtil.flexLibProperties,
+            getOutputDir(project),
             '.settings',
             'bin-release'
         ].each {
