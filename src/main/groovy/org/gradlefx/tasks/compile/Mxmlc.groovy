@@ -17,6 +17,7 @@
 package org.gradlefx.tasks.compile
 
 import java.util.List
+import org.gradle.api.Task;
 import org.gradle.api.tasks.TaskAction
 import org.gradlefx.FrameworkLinkage;
 import org.gradlefx.options.CompilerOption
@@ -28,7 +29,8 @@ class Mxmlc extends AbstractMxmlc {
 	private static final String ANT_RESULT_PROPERTY = 'mxmlcCompileResult'
 	private static final String ANT_OUTPUT_PROPERTY = 'mxmlcCompileOutput'
 	
-    public Mxmlc() {
+    public Mxmlc(Task task) {
+        super(task)
         task.description = 'Compiles Flex application/module (*.swf) using the mxmlc compiler'
         task.dependsOn(Tasks.COPY_RESOURCES_TASK_NAME)
     }

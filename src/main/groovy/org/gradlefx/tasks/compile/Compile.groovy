@@ -26,24 +26,20 @@ import org.gradlefx.conventions.GradleFxConvention;
 class Compile extends DefaultTask implements CompileTask {
     
     GradleFxConvention flexConvention
-    CompileTask delegate
 
     public Compile() {
         logging.setLevel(LogLevel.INFO)
-        
+    }
+
+    @Override
+    @TaskAction
+    public void compileFlex() {
         flexConvention = project.convention.plugins.flex
-        delegate = createDelegate(flexConvention.type)
         
         initInputDirectory()
         initOutputDirectory()
-    }
-    
-    private CompileTask createDelegate(FlexType type) {
-        if (type.isLib()) return new Compc(project)
-        if (type.isWebApp()) return new Mxmlc(project)
-        if (type.isNativeApp()) return new Amxmlc(project)
         
-        throw new Exception("Unhandled FlexType ($flexType)! This should never happen.")
+        createDelegate().compileFlex()
     }
     
     private void initInputDirectory() {
@@ -55,11 +51,15 @@ class Compile extends DefaultTask implements CompileTask {
     private void initOutputDirectory() {
         outputs.dir project.buildDir
     }
-
-    @Override
-    @TaskAction
-    public void compileFlex() {
-        delegate.compileFlex()
+    
+    private CompileTask createDelegate() {
+        FlexType type = flexConvention.type
+        
+        if (type.isLib()) return new Compc(this)
+        if (type.isWebApp()) return new Mxmlc(this)
+        if (type.isNativeApp()) return new Amxmlc(this)
+        
+        throw new Exception("Unhandled FlexType ($type)! This should never happen.")
     }
     
 }

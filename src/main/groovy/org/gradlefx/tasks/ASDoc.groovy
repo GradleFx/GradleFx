@@ -20,9 +20,7 @@ import org.gradle.api.tasks.TaskAction
 import org.gradlefx.tasks.compile.AbstractMxmlc
 import org.gradlefx.FrameworkLinkage
 import org.gradlefx.options.CompilerOption
-import org.gradle.api.Project
 import org.gradlefx.configuration.Configurations
-import org.gradle.api.internal.artifacts.dependencies.DefaultProjectDependency
 
 class ASDoc extends AbstractMxmlc {
 
@@ -50,12 +48,11 @@ class ASDoc extends AbstractMxmlc {
         outputs.dir flexConvention.asdoc.outputDir
     }
 
+    @Override
     @TaskAction
-    def compileFlex() {
+    public void compileFlex() {
         if(hasDocSources()) {
             super.compileFlex(ANT_RESULT_PROPERTY, ANT_OUTPUT_PROPERTY, 'asdoc', createCompilerArguments())
-
-
         }
     }
 

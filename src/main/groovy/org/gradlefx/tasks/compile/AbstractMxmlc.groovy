@@ -1,3 +1,5 @@
+
+
 /*
  * Copyright (c) 2011 the original author or authors
  *
@@ -16,6 +18,7 @@
 
 package org.gradlefx.tasks.compile
 
+import org.gradle.api.Task;
 import org.gradle.api.artifacts.ResolveException
 import org.gradlefx.options.CompilerOption
 
@@ -24,6 +27,10 @@ import org.gradlefx.options.CompilerOption
  */
 
 abstract class AbstractMxmlc extends AbstractCompileTask {
+    
+    protected AbstractMxmlc(Task task) {
+        super(task)
+    }
 
 	protected File findFile(dirs, fileName) {
 		for (String dirName : dirs) {

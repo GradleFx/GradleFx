@@ -27,6 +27,7 @@ import org.gradlefx.configuration.Configurations
 import org.gradlefx.configuration.FlexAntTasksConfigurator
 import org.gradlefx.conventions.GradleFxConvention
 import org.gradlefx.tasks.*
+import org.gradlefx.tasks.compile.Compile;
 
 class GradleFxPlugin extends AbstractGradleFxPlugin {
     
@@ -53,8 +54,7 @@ class GradleFxPlugin extends AbstractGradleFxPlugin {
         addCompile()
 
         //do these tasks in the afterEvaluate phase because they need property access
-        project.afterEvaluate {           
-            addCompile flexConvention
+        project.afterEvaluate {
             addASDoc flexConvention
             addPackage flexConvention
             addHtmlWrapper flexConvention
@@ -80,13 +80,13 @@ class GradleFxPlugin extends AbstractGradleFxPlugin {
         buildTask.dependsOn(Tasks.TEST_TASK_NAME)
     }
 
-    private void addCompile(GradleFxConvention pluginConvention) {
+    private void addCompile() {
         addTask Tasks.COMPILE_TASK_NAME, Compile
     }
     
     private void addASDoc(GradleFxConvention pluginConvention) {
         if(pluginConvention.type.isLib()) {
-            addTask Tasks.ASDOC_TASK_NAME, ASDoc
+            //addTask Tasks.ASDOC_TASK_NAME, ASDoc
         }
     }
 
@@ -118,7 +118,7 @@ class GradleFxPlugin extends AbstractGradleFxPlugin {
 
     private void addDependsOnOtherProjects() {
         // dependencies need to be added as a closure as we don't have the information at the moment to wire them up
-        project.tasks.compile.dependsOn {
+        project.tasks.compileFlex.dependsOn {
             Set dependentTasks = new HashSet()
             project.configurations.each { Configuration configuration ->
                 Set deps = project.configurations."${configuration.name}".getDependencies().withType(ProjectDependency)

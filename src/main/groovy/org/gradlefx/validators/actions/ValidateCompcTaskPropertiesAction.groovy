@@ -25,8 +25,8 @@ import org.gradlefx.validators.runner.FailOnErrorValidatorRunner
 
 class ValidateCompcTaskPropertiesAction implements Action<Compc> {
 
-    void execute(Compc task) {
-        new FailOnErrorValidatorRunner(task.project)
+    void execute(Compc delegate) {
+        new FailOnErrorValidatorRunner(delegate.task.project)
                 .add(new FlexSDKSpecifiedValidator())
                 .add(new FrameworkLinkageValidator())
                 .add(new CompcAdditionalPropertiesValidator())
