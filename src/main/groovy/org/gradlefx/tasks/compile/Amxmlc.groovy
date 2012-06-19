@@ -17,9 +17,14 @@
 package org.gradlefx.tasks.compile
 
 import java.util.List;
+import org.gradle.api.Task;
 import org.gradlefx.options.CompilerOption
 
 class Amxmlc extends Mxmlc {
+    
+    public Amxmlc(Task task) {
+        super(task)
+    }
 
      @Override
      protected List createCompilerArguments() {

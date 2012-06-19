@@ -33,8 +33,9 @@ class AirPackage extends DefaultTask {
 
     public AirPackage() {
         description = 'Packages the generated swf file into an .air package'
-
         flexConvention = project.convention.plugins.flex
+        
+        dependsOn(Tasks.COMPILE_TASK_NAME)
     }
 
     @TaskAction

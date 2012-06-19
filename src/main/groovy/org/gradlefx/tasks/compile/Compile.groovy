@@ -18,28 +18,37 @@ package org.gradlefx.tasks.compile
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.Task;
+import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.artifacts.ProjectDependency;
 import org.gradle.api.logging.LogLevel;
 import org.gradle.api.tasks.TaskAction;
 import org.gradlefx.FlexType;
 import org.gradlefx.conventions.GradleFxConvention;
+import org.gradlefx.tasks.Tasks;
 
 class Compile extends DefaultTask implements CompileTask {
     
+    CompileTask delegate
     GradleFxConvention flexConvention
 
     public Compile() {
         logging.setLevel(LogLevel.INFO)
+        
+        project.afterEvaluate {
+            flexConvention = project.convention.plugins.flex
+            
+            delegate = createDelegate()
+            addCompilationDependencies()
+        }
     }
 
     @Override
     @TaskAction
     public void compileFlex() {
-        flexConvention = project.convention.plugins.flex
-        
         initInputDirectory()
         initOutputDirectory()
         
-        createDelegate().compileFlex()
+        delegate.compileFlex()
     }
     
     private void initInputDirectory() {
@@ -52,7 +61,7 @@ class Compile extends DefaultTask implements CompileTask {
         outputs.dir project.buildDir
     }
     
-    private CompileTask createDelegate() {
+    protected CompileTask createDelegate() {
         FlexType type = flexConvention.type
         
         if (type.isLib()) return new Compc(this)
@@ -60,6 +69,18 @@ class Compile extends DefaultTask implements CompileTask {
         if (type.isNativeApp()) return new Amxmlc(this)
         
         throw new Exception("Unhandled FlexType ($type)! This should never happen.")
+    }
+    
+    protected void addCompilationDependencies() {
+        dependsOn {
+            Set dependentTasks = new HashSet()
+            project.configurations.each { Configuration configuration ->
+                configuration.getDependencies().withType(ProjectDependency).each { ProjectDependency dependency ->
+                    dependentTasks.add dependency.dependencyProject.path + ':' + name
+                }
+            }
+            dependentTasks
+        }
     }
     
 }
