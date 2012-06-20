@@ -20,9 +20,8 @@ import static java.util.UUID.randomUUID
 import java.io.File;
 import java.util.List;
 import org.gradle.api.artifacts.ProjectDependency;
-import org.gradlefx.FlexType;
 import org.gradlefx.FrameworkLinkage;
-import org.gradlefx.options.CompilerOption;
+import org.gradlefx.cli.CompilerOption;
 
 
 class GradleFxDerivedProperties {

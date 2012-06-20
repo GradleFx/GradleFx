@@ -16,7 +16,8 @@
 
 package org.gradlefx
 
-import org.gradlefx.options.CompilerOption;
+import org.gradlefx.cli.CompilerOption;
+
 
 public enum FrameworkLinkage {
     external(CompilerOption.EXTERNAL_LIBRARY_PATH),

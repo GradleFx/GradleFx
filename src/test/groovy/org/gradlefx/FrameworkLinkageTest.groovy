@@ -1,6 +1,6 @@
 package org.gradlefx
 
-import org.gradlefx.options.CompilerOption;
+import org.gradlefx.cli.CompilerOption;
 import spock.lang.Specification
 
 

@@ -16,7 +16,8 @@
 
 package org.gradlefx.validators
 
-import org.gradlefx.options.CompilerOption
+import org.gradlefx.cli.CompilerOption;
+
 
 class CompcAdditionalPropertiesValidator extends AbstractCompilerPropertiesValidator {
 

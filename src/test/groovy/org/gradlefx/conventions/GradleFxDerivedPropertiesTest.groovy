@@ -21,8 +21,8 @@ import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
 import org.gradlefx.FlexType;
 import org.gradlefx.FrameworkLinkage;
+import org.gradlefx.cli.CompilerOption;
 import org.gradlefx.conventions.GradleFxConvention
-import org.gradlefx.options.CompilerOption;
 import org.gradlefx.plugins.GradleFxPlugin;
 
 class GradleFxDerivedPropertiesTest extends Specification {

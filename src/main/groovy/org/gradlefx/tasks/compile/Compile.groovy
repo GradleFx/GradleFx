@@ -23,8 +23,8 @@ import org.gradle.api.artifacts.ProjectDependency;
 import org.gradle.api.logging.LogLevel;
 import org.gradle.api.tasks.TaskAction;
 import org.gradlefx.FlexType;
+import org.gradlefx.cli.CommandLineInstruction;
 import org.gradlefx.conventions.GradleFxConvention;
-import org.gradlefx.tasks.Tasks;
 
 class Compile extends DefaultTask implements CompileTask {
     
@@ -32,12 +32,13 @@ class Compile extends DefaultTask implements CompileTask {
     GradleFxConvention flexConvention
 
     public Compile() {
-        logging.setLevel(LogLevel.INFO)
+        logging.setLevel LogLevel.INFO
         
         project.afterEvaluate {
             flexConvention = project.convention.plugins.flex
             
-            delegate = createDelegate()
+            //delegate is also a default Closure argument, hence the explicit 'this' scope
+            this.delegate = createDelegate()
             addCompilationDependencies()
         }
     }
@@ -63,12 +64,8 @@ class Compile extends DefaultTask implements CompileTask {
     
     protected CompileTask createDelegate() {
         FlexType type = flexConvention.type
-        
-        if (type.isLib()) return new Compc(this)
-        if (type.isWebApp()) return new Mxmlc(this)
-        if (type.isNativeApp()) return new Amxmlc(this)
-        
-        throw new Exception("Unhandled FlexType ($type)! This should never happen.")
+        CommandLineInstruction cli = type.cliClass.newInstance project
+        return type.compileClass.newInstance(this, cli)
     }
     
     protected void addCompilationDependencies() {

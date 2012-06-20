@@ -16,21 +16,42 @@
 
 package org.gradlefx
 
+
+import org.gradlefx.cli.AIRCommandLineInstructionimport org.gradlefx.tasks.compile.Compc;
+import org.gradlefx.tasks.compile.Compile;
+import org.gradlefx.tasks.compile.Mxmlc;
+
+import org.gradlefx.cli.ApplicationCommandLineInstruction;
+import org.gradlefx.cli.CommandLineInstruction;
+import org.gradlefx.cli.LibraryCommandLineInstruction;
+
 enum FlexType {
-    swf('flex'),
-    swc('flex'),
-    air('air'),
-    mobile('airmobile')
+    swf('flex', Mxmlc, ApplicationCommandLineInstruction),
+    swc('flex', Compc, LibraryCommandLineInstruction),
+    air('air', Mxmlc, AIRCommandLineInstruction),
+    mobile('airmobile', Mxmlc, AIRCommandLineInstruction)
         
     private String configName
+    private Class<Compile> compileClass
+    private Class<CommandLineInstruction> cliClass
     
     
-    public FlexType(String configName) {
+    public FlexType(String configName, Class<Compile> compileClass, Class<CommandLineInstruction> cliClass) {
         this.configName = configName
+        this.compileClass = compileClass
+        this.cliClass = cliClass
     }
     
     public String getConfigName() {
         return configName
+    }
+    
+    public Class<Compile> getCompileClass() {
+        return compileClass
+    }
+    
+    public Class<CommandLineInstruction> getCLIClass() {
+        return cliClass
     }
     
     public boolean isApp() {
