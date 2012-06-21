@@ -18,9 +18,9 @@ package org.gradlefx.validators
 
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
-import org.gradlefx.FlexType;
-import org.gradlefx.FrameworkLinkage;
 import spock.lang.Specification
+import org.gradlefx.conventions.FlexType;
+import org.gradlefx.conventions.FrameworkLinkage;
 import org.gradlefx.conventions.GradleFxConvention
 
 class FrameworkLinkageValidatorTest extends Specification {

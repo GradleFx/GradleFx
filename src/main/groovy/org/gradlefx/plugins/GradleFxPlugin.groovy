@@ -20,9 +20,9 @@ import org.gradle.api.Project
 import org.gradle.api.artifacts.PublishArtifact;
 import org.gradle.api.artifacts.dsl.ArtifactHandler
 import org.gradle.api.internal.artifacts.publish.DefaultPublishArtifact
-import org.gradlefx.FlexType;
 import org.gradlefx.configuration.Configurations
 import org.gradlefx.configuration.FlexAntTasksConfigurator
+import org.gradlefx.conventions.FlexType;
 import org.gradlefx.tasks.ASDoc;
 import org.gradlefx.tasks.AirPackage
 import org.gradlefx.tasks.Build;

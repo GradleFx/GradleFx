@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.gradlefx
+package org.gradlefx.conventions
 
 
 import org.gradlefx.cli.AIRCommandLineInstructionimport org.gradlefx.tasks.compile.Compc;

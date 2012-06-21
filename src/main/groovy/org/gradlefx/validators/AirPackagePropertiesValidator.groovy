@@ -16,21 +16,27 @@
 
 package org.gradlefx.validators
 
+import org.gradlefx.conventions.AIRConvention
+
 class AirPackagePropertiesValidator extends AbstractProjectPropertyValidator {
+    
     void execute() {
         validateApplicationDescriptorSpecified()
         validateRequiredSigningOptionsSpecified()
     }
 
     private void validateApplicationDescriptorSpecified() {
-        if(flexConvention.air.applicationDescriptor == null || !project.file(flexConvention.air.applicationDescriptor).exists()) {
-            addError("No Application descriptor has been specified. This can be done as follows -> air.applicationDescriptor: '/src/main/flex/airdescriptor.xml'")
+        AIRConvention air = flexConvention.air
+        if (air.applicationDescriptor == null || !project.file(air.applicationDescriptor).exists()) {
+            addError "No Application descriptor has been specified. " + 
+                "This can be done as follows -> air.applicationDescriptor: '/src/main/flex/airdescriptor.xml'"
         }
     }
 
     private void validateRequiredSigningOptionsSpecified() {
-        if(flexConvention.air.keystore == null) {
-            addError("A certificate needs to be specified. This can be done as follows -> air.keystore: 'certificate.p12'")
+        if (flexConvention.air.keystore == null) {
+            addError "A certificate needs to be specified. " +
+                "This can be done as follows -> air.keystore: 'certificate.p12'"
         }
     }
 }

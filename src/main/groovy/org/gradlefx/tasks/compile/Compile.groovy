@@ -17,14 +17,14 @@
 package org.gradlefx.tasks.compile
 
 import org.gradle.api.DefaultTask
-import org.gradle.api.Task;
-import org.gradle.api.artifacts.Configuration;
-import org.gradle.api.artifacts.ProjectDependency;
-import org.gradle.api.logging.LogLevel;
-import org.gradle.api.tasks.TaskAction;
-import org.gradlefx.FlexType;
-import org.gradlefx.cli.CommandLineInstruction;
-import org.gradlefx.conventions.GradleFxConvention;
+import org.gradle.api.artifacts.Configuration
+import org.gradle.api.artifacts.ProjectDependency
+import org.gradle.api.logging.LogLevel
+import org.gradle.api.tasks.TaskAction
+import org.gradlefx.cli.CommandLineInstruction
+import org.gradlefx.conventions.FlexType
+import org.gradlefx.conventions.GradleFxConvention
+
 
 class Compile extends DefaultTask implements CompileTask {
     

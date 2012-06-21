@@ -16,12 +16,11 @@
 
 package org.gradlefx.cli
 
-import java.util.List;
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ResolveException
-import org.gradlefx.FlexType
-import org.gradlefx.FrameworkLinkage
+import org.gradlefx.conventions.FlexType
+import org.gradlefx.conventions.FrameworkLinkage
 import org.gradlefx.conventions.GradleFxConvention
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

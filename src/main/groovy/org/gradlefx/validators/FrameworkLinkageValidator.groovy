@@ -16,8 +16,8 @@
 
 package org.gradlefx.validators
 
-import org.gradlefx.FlexType
-import org.gradlefx.FrameworkLinkage
+import org.gradlefx.conventions.FlexType
+import org.gradlefx.conventions.FrameworkLinkage
 
 
 class FrameworkLinkageValidator extends AbstractProjectPropertyValidator {
@@ -25,8 +25,8 @@ class FrameworkLinkageValidator extends AbstractProjectPropertyValidator {
     @Override
     public void execute() {
         if (isLinkageIncompatibleWithFlexType()) {
-            addError("The frameworkLinkage '${flexConvention.frameworkLinkage}' is incompatible with " +
-                "Flex project type '${flexConvention.type}'")
+            addError("The frameworkLinkage '$flexConvention.frameworkLinkage' is incompatible with " +
+                "Flex project type '$flexConvention.type'")
         }
     }
     

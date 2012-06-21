@@ -16,13 +16,12 @@
 
 package org.gradlefx.tasks.compile
 
-import org.gradle.api.Task;
-import org.gradle.api.artifacts.Configuration;
-import org.gradlefx.FrameworkLinkage;
-import org.gradlefx.cli.CommandLineInstruction;
-import org.gradlefx.cli.CompilerOption;
+import org.gradle.api.Task
+import org.gradlefx.cli.CommandLineInstruction
+import org.gradlefx.conventions.FrameworkLinkage
 import org.gradlefx.tasks.Tasks
 import org.gradlefx.validators.actions.ValidateMxmlcTaskPropertiesAction
+
 
 class Mxmlc extends CompileTaskDelegate {
 	

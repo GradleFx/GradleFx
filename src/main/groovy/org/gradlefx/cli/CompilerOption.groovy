@@ -31,6 +31,7 @@ public enum CompilerOption {
     THEME("-theme"),
     OUTPUT("-output"),
     LOCALE("-locale"),
+    PACKAGE("-package"),
     DOC_SOURCES("-doc-sources"),
     KEEP_XML("-keep-xml");
 

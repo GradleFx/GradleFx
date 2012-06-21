@@ -1,5 +1,6 @@
 package org.gradlefx
 
+import org.gradlefx.conventions.FlexType;
 import spock.lang.Specification
 
 
