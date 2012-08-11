@@ -66,13 +66,21 @@ abstract class AbstractMxmlc extends AbstractCompileTask {
 			
 		showAntOutput ant.properties[antOutputProperty]
 	}
-	
-    def addRsls(List compilerArguments) {
-        project.configurations.rsl.files.each { dependency ->
-            if (!dependency.exists()) {
+	    
+	def addRsls(List compilerArguments) {
+        project.configurations.rsl.files.each { dependencyData ->
+	      def rslData=dependencyData.path.split(",")
+	      File dependency = new File(rslData[0])
+          if (!dependency.exists()) {
 				throw new ResolveException("Couldn't find the ${dependency.name} file - are you sure the path is correct?")
             }
-			compilerArguments.add("${CompilerOption.RUNTIME_SHARED_LIBRARY_PATH}+=${dependency.path},${dependency.name[0..-2]}f")
+            if (flexConvention.useDebugRSLSwfs == false && rslData.size() > 1 ) {
+				compilerArguments.add("${CompilerOption.RUNTIME_SHARED_LIBRARY_PATH}+=${dependencyData.path}")
+            } else {
+				compilerArguments.add("${CompilerOption.RUNTIME_SHARED_LIBRARY_PATH}+=${dependency.path},${dependency.name[0..-2]}f")
+            }
         }
     }
+    
+
 }
