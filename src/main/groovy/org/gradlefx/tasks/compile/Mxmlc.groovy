@@ -27,7 +27,7 @@ class Mxmlc extends AbstractMxmlc {
 
 	private static final String ANT_RESULT_PROPERTY = 'mxmlcCompileResult'
 	private static final String ANT_OUTPUT_PROPERTY = 'mxmlcCompileOutput'
-	
+		
     public Mxmlc() {
         description = 'Compiles Flex application/module (*.swf) using the mxmlc compiler'
         dependsOn(Tasks.COPY_RESOURCES_TASK_NAME)
@@ -92,17 +92,25 @@ class Mxmlc extends AbstractMxmlc {
         
         flexConfig['runtime-shared-library-path'].each {
             String swcName = it['path-element'].text()
-            String libName = it['rsl-url'][1].text()[0..-2] + 'f'
             File swc = new File("${flexConvention.flexHome}/frameworks/${swcName}")
-            
+ 
             if (swc.exists()) {
-                ant.unzip(src: swc.path, dest: swc.parent) {
-                    patternset(includes: 'library.swf')
-                }
-                ant.move(
-                    file: "${swc.parent}/library.swf", 
-                    tofile:"${project.buildDir}/${libName}"
-                )
+            	if (flexConvention.useDebugRSLSwfs==true) {
+	                String libName = it['rsl-url'][1].text()[0..-2] + 'f'
+                    ant.unzip(src: swc.path, dest: swc.parent) {
+                        patternset(includes: 'library.swf')
+                    }
+                    ant.move(
+                        file: "${swc.parent}/library.swf", 
+                       tofile:"${project.buildDir}/${libName}"
+                    )
+            	} else {
+	                String libName = it['rsl-url'][1].text()
+                    ant.copy(
+                        file: "${flexConvention.flexHome}/frameworks/rsls/${libName}", 
+                        tofile:"${project.buildDir}/${libName}"
+                    )
+            	}
             }
         }
     }
