@@ -66,7 +66,7 @@ abstract class AbstractMxmlc extends AbstractCompileTask {
 			
 		showAntOutput ant.properties[antOutputProperty]
 	}
-	
+
     def addRsls(List compilerArguments) {
         project.configurations.rsl.files.each { dependency ->
             if (!dependency.exists()) {
@@ -75,4 +75,24 @@ abstract class AbstractMxmlc extends AbstractCompileTask {
 			compilerArguments.add("${CompilerOption.RUNTIME_SHARED_LIBRARY_PATH}+=${dependency.path},${dependency.name[0..-2]}f")
         }
     }
+
+    def addFrameworkRsls(List compilerArguments) {     
+        if (flexConvention.useDebugRSLSwfs == true) {
+            def flexConfig = new XmlSlurper().parse(flexConvention.configPath)
+            flexConfig['runtime-shared-library-path'].each {
+			    String swcName = "${flexConvention.flexHome}/frameworks/" + it['path-element'].text()
+			    String libName =  it['rsl-url'][1].text()[0..-2] + 'f'
+
+	            File dependency = new File(swcName)
+                if (!dependency.exists()) {
+		            throw new ResolveException("Couldn't find the ${dependency.name} file - are you sure the path is correct?")
+		        } else {
+		            compilerArguments.add("${CompilerOption.RUNTIME_SHARED_LIBRARY_PATH}=${dependency.path},${libName}")
+		        }
+            }
+        }
+	}    
+
 }
+    
+
