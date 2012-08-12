@@ -17,6 +17,7 @@
 package org.gradlefx.tasks.compile
 
 import java.util.List
+import org.gradle.api.artifacts.ResolveException
 import org.gradle.api.tasks.TaskAction
 import org.gradlefx.FrameworkLinkage;
 import org.gradlefx.options.CompilerOption
@@ -27,7 +28,7 @@ class Mxmlc extends AbstractMxmlc {
 
 	private static final String ANT_RESULT_PROPERTY = 'mxmlcCompileResult'
 	private static final String ANT_OUTPUT_PROPERTY = 'mxmlcCompileOutput'
-	
+
     public Mxmlc() {
         description = 'Compiles Flex application/module (*.swf) using the mxmlc compiler'
         dependsOn(Tasks.COPY_RESOURCES_TASK_NAME)
@@ -57,6 +58,7 @@ class Mxmlc extends AbstractMxmlc {
         addLibraries(project.configurations.merged.files, project.configurations.merged, CompilerOption.LIBRARY_PATH, compilerArguments)
         addLibraries(project.configurations.theme.files, project.configurations.theme, CompilerOption.THEME, compilerArguments)
         addRsls(compilerArguments)
+        addFrameworkRsls(compilerArguments)
 
         //add all the other user specified compiler options
         flexConvention.additionalCompilerOptions.each { compilerOption ->
@@ -92,17 +94,16 @@ class Mxmlc extends AbstractMxmlc {
         
         flexConfig['runtime-shared-library-path'].each {
             String swcName = it['path-element'].text()
-            String libName = it['rsl-url'][1].text()[0..-2] + 'f'
             File swc = new File("${flexConvention.flexHome}/frameworks/${swcName}")
-            
+
             if (swc.exists()) {
-                ant.unzip(src: swc.path, dest: swc.parent) {
-                    patternset(includes: 'library.swf')
-                }
-                ant.move(
-                    file: "${swc.parent}/library.swf", 
+            	String libName = flexConvention.useDebugRSLSwfs==true ? it['rsl-url'][1].text()[0..-2] + 'f' : it['rsl-url'][1].text()
+                ant.copy(
+                    file: "${flexConvention.flexHome}/frameworks/rsls/${libName}", 
                     tofile:"${project.buildDir}/${libName}"
                 )
+            } else {
+                throw new ResolveException("Couldn't find the ${swc.name} file - are you sure the framework has all the files?")
             }
         }
     }
