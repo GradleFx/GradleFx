@@ -16,7 +16,7 @@
 			strict="true" 
 			targetPlayerVersion="${playerVersion}" 
 			useApolloConfig="false" 
-			useDebugRSLSwfs="true" 
+			useDebugRSLSwfs="${useDebugRSLSwfs}" 
 			verifyDigests="true"
 			warn="true">
 
