@@ -92,6 +92,9 @@ class GradleFxConvention {
     // player version
     def playerVersion = '10.0'
 
+    // To use debugRLS
+    def useDebugRSLSwfs = false
+
     // HTML wrapper options
     def htmlWrapper
 	

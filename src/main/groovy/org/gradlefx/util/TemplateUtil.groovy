@@ -33,6 +33,7 @@ class TemplateUtil {
     *  <li>${compilerArgs}: additional compiler arguments</li>
     *  <li>${mainSrc}: the main source folder</li>
     *  <li>${playerVersion}: the target Flash player version</li>
+    *  <li>${useDebugRSLSwfs}: to use debug RSL or not</li>
     *  <li>${uuid}: a generated unique identifier</li>
     *  <li>${applicationId}: a generated air/mobile application identifier</li>
     *  <li>${version}: the application's version number</li>
@@ -58,6 +59,7 @@ class TemplateUtil {
                              .replaceAll(/\$\{uuid\}/, flexConvention.uuid)
                              .replaceAll(/\$\{appId\}/, flexConvention.applicationId)
                              .replaceAll(/\$\{version\}/, flexConvention.version)
+                             .replaceAll(/\$\{useDebugRSLSwfs\}/, flexConvention.useDebugRSLSwfs.toString())
            }
        }
    }
