@@ -26,6 +26,24 @@ group = 'org.gradlefx'
 version = '0.5'
 ext.packaging = 'jar'
 
+def isDevBuild
+def isCiBuild
+def isReleaseBuild
+
+def sonatypeRepositoryUrl
+
+//set build variables based on build type (release, continuous integration, development)
+if(hasProperty("release")) {
+    isReleaseBuild = true
+    sonatypeRepositoryUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+} else if (hasProperty("ci")) {
+    isCiBuild = true
+    version += "-SNAPSHOT"
+    sonatypeRepositoryUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
+} else {
+    isDevBuild = true
+}
+
 repositories {
     mavenCentral()
 }
@@ -62,7 +80,7 @@ task wrapper(type: Wrapper) {
 }
 
 //********* artifact signing *********
-if(gradle.startParameter.taskNames.contains("uploadArchives")) {
+if(isReleaseBuild) {
     signing {
         sign configurations.archives
     }
@@ -74,14 +92,14 @@ if(gradle.startParameter.taskNames.contains("uploadArchives")) {
 
 uploadArchives {
     repositories {
-        if (version.contains("SNAPSHOT")) {
+        if (isDevBuild) {
             mavenLocal()
         }
         else {
             mavenDeployer {
                 beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
     
-                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                repository(url: sonatypeRepositoryUrl) {
                   authentication(userName: sonatypeUsername, password: sonatypePassword)
                 }
     
