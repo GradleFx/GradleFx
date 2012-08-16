@@ -97,7 +97,9 @@ uploadArchives {
         }
         else {
             mavenDeployer {
-                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+                if(isReleaseBuild) {
+                    beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+                }
     
                 repository(url: sonatypeRepositoryUrl) {
                   authentication(userName: sonatypeUsername, password: sonatypePassword)
