@@ -145,7 +145,7 @@ class GradleFxConvention {
         air = [
             keystore:               "${project.name}.p12",
             storepass:              null,
-            applicationDescriptor:  "/src/main/actionscript/${project.name}.xml",
+            applicationDescriptor:  "src/main/actionscript/${project.name}.xml",
             includeFileTrees:       null
         ]
 
