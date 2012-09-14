@@ -111,5 +111,21 @@ class GradleFxConvention {
         air         = new AIRConvention(project)
         asdoc       = new ASDocConvention()
     }
+
+    def htmlWrapper(Closure closure) {
+        htmlWrapper.configure(closure)
+    }
+
+    def air(Closure closure) {
+        air.configure(closure)
+    }
+
+    def flexUnit(Closure closure) {
+        flexUnit.configure(closure)
+    }
+
+    def asdoc(Closure closure) {
+        asdoc.configure(closure)
+    }
     
 }

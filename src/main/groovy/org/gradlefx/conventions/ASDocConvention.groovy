@@ -16,10 +16,31 @@
 
 package org.gradlefx.conventions
 
+import org.gradle.util.ConfigureUtil
+
 
 class ASDocConvention {
     
-    String outputDir = 'doc'
-    List <String> additionalASDocOptions = []
+    private String outputDir = 'doc'
+    private List <String> additionalASDocOptions = []
 
+    void configure(Closure closure) {
+        ConfigureUtil.configure(closure, this)
+    }
+
+    String getOutputDir() {
+        return outputDir
+    }
+
+    void outputDir(String outputDir) {
+        this.outputDir = outputDir
+    }
+
+    List<String> getAdditionalASDocOptions() {
+        return additionalASDocOptions
+    }
+
+    void additionalASDocOptions(List<String> additionalASDocOptions) {
+        this.additionalASDocOptions = additionalASDocOptions
+    }
 }

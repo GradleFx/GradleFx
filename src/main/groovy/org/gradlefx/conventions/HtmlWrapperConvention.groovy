@@ -17,20 +17,20 @@
 package org.gradlefx.conventions
 
 import org.gradle.api.Project
-
+import org.gradle.util.ConfigureUtil
 
 class HtmlWrapperConvention {
     
-    String title
-    String file
-    int percentWidth  = 100
-    int percentHeight = 100
-    String application
-    String swf
-    Boolean history          = true
-    Boolean expressInstall   = true
-    Boolean versionDetection = true
-    String output
+    private String title
+    private String file
+    private int percentWidth  = 100
+    private int percentHeight = 100
+    private String application
+    private String swf
+    private Boolean history          = true
+    private Boolean expressInstall   = true
+    private Boolean versionDetection = true
+    private String output
     
     public HtmlWrapperConvention(Project project) {
         title       = project.description
@@ -40,4 +40,91 @@ class HtmlWrapperConvention {
         output      = project.buildDir.path
     }
 
+    void configure(Closure closure) {
+        ConfigureUtil.configure(closure, this)
+    }
+
+    String getTitle() {
+        return title
+    }
+
+    void title(String title) {
+        this.title = title
+    }
+
+    String getFile() {
+        return file
+    }
+
+    void file(String file) {
+        this.file = file
+    }
+
+    int getPercentWidth() {
+        return percentWidth
+    }
+
+    void percentWidth(int percentWidth) {
+        this.percentWidth = percentWidth
+    }
+
+    int getPercentHeight() {
+        return percentHeight
+    }
+
+    void percentHeight(int percentHeight) {
+        this.percentHeight = percentHeight
+    }
+
+    String getApplication() {
+        return application
+    }
+
+    void application(String application) {
+        this.application = application
+    }
+
+    String getSwf() {
+        return swf
+    }
+
+    void swf(String swf) {
+        this.swf = swf
+    }
+
+    Boolean getHistory() {
+        return history
+    }
+
+    void history(Boolean history) {
+        this.history = history
+    }
+
+    Boolean getExpressInstall() {
+        return expressInstall
+    }
+
+    void expressInstall(Boolean expressInstall) {
+        this.expressInstall = expressInstall
+    }
+
+    Boolean getVersionDetection() {
+        return versionDetection
+    }
+
+    void versionDetection(Boolean versionDetection) {
+        this.versionDetection = versionDetection
+    }
+
+    String getOutput() {
+        return output
+    }
+
+    void output(String output) {
+        this.output = output
+    }
+
+    void output(File output) {
+        this.output = output
+    }
 }

@@ -17,18 +17,55 @@
 package org.gradlefx.conventions
 
 import org.gradle.api.Project
+import org.gradle.util.ConfigureUtil
+import org.gradle.api.file.ConfigurableFileTree
 
 
 class AIRConvention {
     
-    String keystore
-    String storepass = null
-    String applicationDescriptor
-    String includeFileTrees = null
+    private String keystore
+    private String storepass = null
+    private String applicationDescriptor
+    private List<ConfigurableFileTree> includeFileTrees = null
     
     public AIRConvention(Project project) {
         keystore = "${project.name}.p12"
         applicationDescriptor = "/src/main/actionscript/${project.name}.xml"
     }
 
+    void configure(Closure closure) {
+        ConfigureUtil.configure(closure, this)
+    }
+
+    String getKeystore() {
+        return keystore
+    }
+
+    void keystore(String keystore) {
+        this.keystore = keystore
+    }
+
+    String getStorepass() {
+        return storepass
+    }
+
+    void storepass(String storepass) {
+        this.storepass = storepass
+    }
+
+    String getApplicationDescriptor() {
+        return applicationDescriptor
+    }
+
+    void applicationDescriptor(String applicationDescriptor) {
+        this.applicationDescriptor = applicationDescriptor
+    }
+
+    List<ConfigurableFileTree> getIncludeFileTrees() {
+        return includeFileTrees
+    }
+
+    void includeFileTrees(List<ConfigurableFileTree> includeFileTrees) {
+        this.includeFileTrees = includeFileTrees
+    }
 }
