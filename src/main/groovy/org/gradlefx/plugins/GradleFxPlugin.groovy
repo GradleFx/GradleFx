@@ -16,151 +16,61 @@
 
 package org.gradlefx.plugins
 
-import org.gradle.api.DefaultTask
 import org.gradle.api.Project
-import org.gradle.api.Task
-import org.gradle.api.artifacts.Configuration
-import org.gradle.api.artifacts.ProjectDependency
+import org.gradle.api.artifacts.PublishArtifact;
 import org.gradle.api.artifacts.dsl.ArtifactHandler
 import org.gradle.api.internal.artifacts.publish.DefaultPublishArtifact
 import org.gradlefx.configuration.Configurations
 import org.gradlefx.configuration.FlexAntTasksConfigurator
-import org.gradlefx.conventions.GradleFxConvention
-import org.gradlefx.tasks.compile.factory.CompileTaskClassFactoryImpl
-import org.gradlefx.tasks.*
+import org.gradlefx.conventions.FlexType;
+import org.gradlefx.tasks.ASDoc;
+import org.gradlefx.tasks.AirPackage
+import org.gradlefx.tasks.Build;
+import org.gradlefx.tasks.CopyResources;
+import org.gradlefx.tasks.HtmlWrapper
+import org.gradlefx.tasks.Publish;
+import org.gradlefx.tasks.Tasks;
+import org.gradlefx.tasks.Test;
+import org.gradlefx.tasks.compile.Compile;
 
 class GradleFxPlugin extends AbstractGradleFxPlugin {
-    
-    @Override
-    public void apply(Project project) {
-        super.apply project
-        
-        addDefaultConfigurations()
-        
-        project.afterEvaluate {
-            configureAntWithFlex()
-            addDependsOnOtherProjects()
-            addDefaultArtifact()
-        }
-    }
 
     @Override
     protected void addTasks() {
-        addBuild()
-        addCopyResources()
-        addPublish()
-		addTest()
-
-        //do these tasks in the afterEvaluate phase because they need property access
-        project.afterEvaluate {           
-            addCompile flexConvention
-            addASDoc flexConvention
-            addPackage flexConvention
-            addHtmlWrapper flexConvention           
-        }
-    }
-
-    private void configureAntWithFlex() {
-        new FlexAntTasksConfigurator(project).configure()
-    }
-	
-    private void addDefaultConfigurations() {
-        project.configurations.add(Configurations.INTERNAL_CONFIGURATION_NAME)
-        project.configurations.add(Configurations.EXTERNAL_CONFIGURATION_NAME)
-        project.configurations.add(Configurations.MERGE_CONFIGURATION_NAME)
-        project.configurations.add(Configurations.RSL_CONFIGURATION_NAME)
-        project.configurations.add(Configurations.TEST_CONFIGURATION_NAME)
-        project.configurations.add(Configurations.THEME_CONFIGURATION_NAME)
-    }
-
-    private void addBuild() {
-        DefaultTask buildTask = addTask Tasks.BUILD_TASK_NAME, DefaultTask
-        buildTask.setDescription("Assembles and tests this project.")
-        buildTask.dependsOn(Tasks.TEST_TASK_NAME)
-    }
-
-    private void addCompile(GradleFxConvention pluginConvention) {
-        Class<Task> compileClass = new CompileTaskClassFactoryImpl().createCompileTaskClass(pluginConvention.type)
-        addTask Tasks.COMPILE_TASK_NAME, compileClass
+        //generic tasks
+        addTask Tasks.BUILD_TASK_NAME, Build
+        addTask Tasks.COPY_RESOURCES_TASK_NAME, CopyResources
+        addTask Tasks.PUBLISH_TASK_NAME, Publish
+        addTask Tasks.TEST_TASK_NAME, Test
+        addTask Tasks.COMPILE_TASK_NAME, Compile
+        
+        //conditional tasks
+        addTask Tasks.ASDOC_TASK_NAME, ASDoc, { flexConvention.type.isLib() }
+        addTask Tasks.PACKAGE_TASK_NAME, AirPackage, { flexConvention.type.isNativeApp() }
+        addTask Tasks.CREATE_HTML_WRAPPER, HtmlWrapper, { flexConvention.type.isWebApp() }
     }
     
-    private void addASDoc(GradleFxConvention pluginConvention) {
-        if(pluginConvention.type.isLib()) {
-            addTask Tasks.ASDOC_TASK_NAME, ASDoc
-        }
-    }
-
-    private void addPackage(GradleFxConvention pluginConvention) {
-        if(pluginConvention.type.isNativeApp()) {
-            Task packageTask = addTask Tasks.PACKAGE_TASK_NAME, AirPackage
-            packageTask.dependsOn(Tasks.COMPILE_TASK_NAME)
-        }
-    }
-	
-	private void addTest() {
-		Task test = addTask Tasks.TEST_TASK_NAME, Test
-		test.description = 'Run the FlexUnit tests.'
-	}
-
-    private void addHtmlWrapper(GradleFxConvention pluginConvention) {
-        if (pluginConvention.type.isWebApp()) {
-            addTask Tasks.CREATE_HTML_WRAPPER, HtmlWrapper
-        }
-    }
-
-    private void addCopyResources() {
-        addTask Tasks.COPY_RESOURCES_TASK_NAME, CopyResources
-    }
-
-    private void addPublish() {
-        addTask Tasks.PUBLISH_TASK_NAME, Publish
-    }
-
-    private void addDependsOnOtherProjects() {
-        // dependencies need to be added as a closure as we don't have the information at the moment to wire them up
-        project.tasks.compile.dependsOn {
-            Set dependentTasks = new HashSet()
-            project.configurations.each { Configuration configuration ->
-                Set deps = project.configurations."${configuration.name}".getDependencies().withType(ProjectDependency)
-                deps.each { projectDependency ->
-                    //def projectDependency = (ProjectDependency) dependency
-                    println "path to dependency: ${projectDependency.dependencyProject.path}"
-                    dependentTasks.add(projectDependency.dependencyProject.path + ':compile')
-                }
-            }
-            dependentTasks
-        }
+    @Override
+    protected void configure(Project project) {
+        new FlexAntTasksConfigurator(project).configure()
+        
+        if (!flexConvention.type.isNativeApp())
+            addArtifactsToDefaultConfiguration project
     }
 
     /**
-     * If this is an implementation project (compiles a swc of swf), it adds an artifact
-     * of the given project to the default configuration.
+     * Adds artifacts to the default configuration
      * @param project
      */
-    private void addDefaultArtifact() {
-        if (isImplementationProject()) {
-            addProjectArtifactToDefaultConfiguration()
-        }
-    }
-
-    /**
-     * This project is an implementation project when its type is filled in.
-     * @return
-     */
-    private Boolean isImplementationProject() {
-        return project.type != null;
-    }
-
-    /**
-     * Adds an artifact to the default configuration.
-     * @param project
-     */
-    private void addProjectArtifactToDefaultConfiguration() {
+    private void addArtifactsToDefaultConfiguration(Project project) {
+        String type = flexConvention.type.toString()
+        File artifactFile = project.file project.buildDir.name + "/" + flexConvention.output + "." + type
+        PublishArtifact artifact = new DefaultPublishArtifact(project.name, type, type, null, new Date(), artifactFile)
+        
         project.artifacts { ArtifactHandler artifactHandler ->
-            File artifactFile = new File(project.buildDir.path + "/" + project.output + "." + project.type)
-            def artifact = new DefaultPublishArtifact(project.name, project.type.toString(), project.type.toString(), null, new Date(), artifactFile)
-            artifactHandler."${Configurations.ARCHIVES_CONFIGURATION_NAME}" artifact
-            artifactHandler."${Configurations.DEFAULT_CONFIGURATION_NAME}" artifact
+            Configurations.ARTIFACT_CONFIGURATIONS.each {
+                artifactHandler."$it" artifact
+            }
         }
     }
 

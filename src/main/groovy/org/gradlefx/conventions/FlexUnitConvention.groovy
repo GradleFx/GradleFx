@@ -1,0 +1,169 @@
+/*
+* Copyright (c) 2011 the original author or authors
+*
+* Licensed under the Apache License Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http =//www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing software
+* distributed under the License is distributed on an "AS IS" BASIS
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+
+package org.gradlefx.conventions
+
+import org.gradle.api.Project
+import org.gradle.util.ConfigureUtil
+
+
+class FlexUnitConvention {
+    
+    private String player           = 'flash'
+    private String command          = System.getenv()['FLASH_PLAYER_EXE']
+    private String toDir
+    private String workingDir
+    private Boolean haltOnFailure   = false
+    private Boolean verbose         = false
+    private Boolean localTrusted    = true
+    private int port                = 1024
+    private int buffer              = 262144
+    private int timeout             = 60000 //60 seconds
+    private String failureProperty  = 'flexUnitFailed'
+    private Boolean headless        = false
+    private int display             = 99
+    private List <String> includes  = ['**/*Test.as']
+    private List <String> excludes  = []
+    
+    public FlexUnitConvention(Project project) {
+        toDir       = "${project.buildDir}/reports"
+        workingDir  = project.buildDir.path
+    }
+
+    void configure(Closure closure) {
+        ConfigureUtil.configure(closure, this)
+    }
+
+    String getPlayer() {
+        return player
+    }
+
+    void player(String player) {
+        this.player = player
+    }
+
+    String getCommand() {
+        return command
+    }
+
+    void command(String command) {
+        this.command = command
+    }
+
+    String getToDir() {
+        return toDir
+    }
+
+    void toDir(String toDir) {
+        this.toDir = toDir
+    }
+
+    String getWorkingDir() {
+        return workingDir
+    }
+
+    void workingDir(String workingDir) {
+        this.workingDir = workingDir
+    }
+
+    Boolean getHaltOnFailure() {
+        return haltOnFailure
+    }
+
+    void haltOnFailure(Boolean haltOnFailure) {
+        this.haltOnFailure = haltOnFailure
+    }
+
+    Boolean getVerbose() {
+        return verbose
+    }
+
+    void verbose(Boolean verbose) {
+        this.verbose = verbose
+    }
+
+    Boolean getLocalTrusted() {
+        return localTrusted
+    }
+
+    void localTrusted(Boolean localTrusted) {
+        this.localTrusted = localTrusted
+    }
+
+    int getPort() {
+        return port
+    }
+
+    void port(int port) {
+        this.port = port
+    }
+
+    int getBuffer() {
+        return buffer
+    }
+
+    void buffer(int buffer) {
+        this.buffer = buffer
+    }
+
+    int getTimeout() {
+        return timeout
+    }
+
+    void timeout(int timeout) {
+        this.timeout = timeout
+    }
+
+    String getFailureProperty() {
+        return failureProperty
+    }
+
+    void failureProperty(String failureProperty) {
+        this.failureProperty = failureProperty
+    }
+
+    Boolean getHeadless() {
+        return headless
+    }
+
+    void headless(Boolean headless) {
+        this.headless = headless
+    }
+
+    int getDisplay() {
+        return display
+    }
+
+    void display(int display) {
+        this.display = display
+    }
+
+    List<String> getIncludes() {
+        return includes
+    }
+
+    void includes(List<String> includes) {
+        this.includes = includes
+    }
+
+    List<String> getExcludes() {
+        return excludes
+    }
+
+    void excludes(List<String> excludes) {
+        this.excludes = excludes
+    }
+}

@@ -1,6 +1,8 @@
 package org.gradlefx
 
-import org.gradlefx.options.CompilerOption;
+import org.gradlefx.cli.CompilerOption;
+import org.gradlefx.conventions.FlexType;
+import org.gradlefx.conventions.FrameworkLinkage;
 import spock.lang.Specification
 
 

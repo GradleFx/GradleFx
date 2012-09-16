@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package org.gradlefx
+package org.gradlefx.conventions
 
-import org.gradlefx.options.CompilerOption;
+import org.gradlefx.cli.CompilerOption;
+
 
 public enum FrameworkLinkage {
     external(CompilerOption.EXTERNAL_LIBRARY_PATH),

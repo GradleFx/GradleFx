@@ -16,11 +16,9 @@
 
 package org.gradlefx.tasks.compile
 
-import org.gradle.api.DefaultTask
 
-class NullCompileTask extends DefaultTask {
+public interface CompileTask {
 
-    public NullCompileTask() {
-        description = "Oops - we couldn't figure out if ${project.name} is a Flex component or a Flex application/module project."
-    }
+    void compileFlex()
+    
 }

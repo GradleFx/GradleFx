@@ -19,6 +19,8 @@ package org.gradlefx.plugins
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.gradle.api.artifacts.Configuration;
+import org.gradlefx.configuration.Configurations;
 import org.gradlefx.conventions.GradleFxConvention;
 
 
@@ -33,6 +35,7 @@ abstract class AbstractGradleFxPlugin implements Plugin<Project> {
         this.project = project
         
         applyPlugins()
+        addDefaultConfigurations()
         
         if (!project.convention.plugins.flex) {
             GradleFxConvention pluginConvention = new GradleFxConvention(project)
@@ -42,6 +45,9 @@ abstract class AbstractGradleFxPlugin implements Plugin<Project> {
         flexConvention = project.convention.plugins.flex
         
         addTasks()
+        project.afterEvaluate {
+            configure(project)
+        }
     }
     
     protected void applyPlugins() {
@@ -52,10 +58,36 @@ abstract class AbstractGradleFxPlugin implements Plugin<Project> {
         project.apply(plugin: name)
     }
     
+    protected void addDefaultConfigurations() {
+        List names = project.configurations.collect { it.name }
+        
+        Configurations.DEPENDENCY_CONFIGURATIONS.each {
+            if (!names.contains(it)) addConfiguration it
+        }
+    }
+    
     abstract protected void addTasks()
     
-    protected Task addTask(String name, Class task) {
-        return project.tasks.add(name, task)
+    protected void configure(Project project) {}
+    
+    protected Task addTask(String name, Class taskClass) {
+        return project.tasks.add(name, taskClass)
+    }
+    
+    protected Task addTask(String name, Class taskClass, Closure condition) {
+        //always add tasks to make sure they are immediately on the task graph,
+        //but remove them after evaluation if it turns out we don't need them
+        Task task = project.tasks.add name, taskClass
+        
+        project.afterEvaluate {
+            if (!condition()) project.tasks.remove task
+        }
+        
+        return task
+    }
+    
+    protected Configuration addConfiguration(String name) {
+        return project.configurations.add(name)
     }
 
 }

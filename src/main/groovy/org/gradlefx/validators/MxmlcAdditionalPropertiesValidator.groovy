@@ -16,7 +16,7 @@
 
 package org.gradlefx.validators
 
-import org.gradlefx.options.CompilerOption
+import org.gradlefx.cli.CompilerOption;
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 

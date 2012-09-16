@@ -14,39 +14,15 @@
  * limitations under the License.
  */
 
-package org.gradlefx
+package org.gradlefx.tasks
 
-enum FlexType {
-    swf('flex'),
-    swc('flex'),
-    air('air'),
-    mobile('airmobile')
-        
-    private String configName
-    
-    
-    public FlexType(String configName) {
-        this.configName = configName
-    }
-    
-    public String getConfigName() {
-        return configName
-    }
-    
-    public boolean isApp() {
-        return isWebApp() || isNativeApp()
-    }
-    
-    public boolean isLib() {
-        return this == swc
-    }
-    
-    public boolean isWebApp() {
-        return this == swf
-    }
-    
-    public boolean isNativeApp() {
-        return this == air || this == mobile
+import org.gradle.api.DefaultTask
+
+class Build extends DefaultTask {
+
+    public Build() {
+        description = 'Assembles and tests this project.'
+        dependsOn(Tasks.TEST_TASK_NAME)
     }
     
 }

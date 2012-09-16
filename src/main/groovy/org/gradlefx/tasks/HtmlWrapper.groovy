@@ -16,47 +16,38 @@
  
 package org.gradlefx.tasks
 
-import org.gradle.api.artifacts.Configuration
-import org.gradle.api.artifacts.ResolveException
-import org.gradle.api.internal.AbstractTask
 import org.gradle.api.tasks.TaskAction
-import org.gradlefx.FlexType
 import org.gradle.api.DefaultTask
-import org.gradlefx.conventions.GradleFxConvention
+import org.gradlefx.conventions.HtmlWrapperConvention;
 
 class HtmlWrapper extends DefaultTask {
 
-    GradleFxConvention flexConvention;
-
     public HtmlWrapper() {
         description = 'Creates an HTML wrapper for the generated swf'
-
-        flexConvention = project.convention.plugins.flex
     }
 
 	@TaskAction
 	def generateHtmlWrapper() {
-        createOutputDirectoryIfNotExists()
+        HtmlWrapperConvention wrapper = project.convention.plugins.flex.htmlWrapper
+        createOutputDirectoryIfNotExists wrapper.output
 
 		ant.'html-wrapper'(
-			title:               flexConvention.htmlWrapper.title,
-			file:                flexConvention.htmlWrapper.file,
-			height:              flexConvention.htmlWrapper.height,
-			width:               flexConvention.htmlWrapper.width,
-			application:         flexConvention.htmlWrapper.application,
-			swf:                 flexConvention.htmlWrapper.swf,
-			history:             flexConvention.htmlWrapper.history,
-			'express-install':   flexConvention.htmlWrapper.'express-install',
-			'version-detection': flexConvention.htmlWrapper.'version-detection',
-			output:              flexConvention.htmlWrapper.output
+			title:               wrapper.title,
+			file:                wrapper.file,
+			height:              "$wrapper.percentHeight%",
+			width:               "$wrapper.percentWidth%",
+			application:         wrapper.application,
+			swf:                 wrapper.swf,
+			history:             wrapper.history.toString(),
+			'express-install':   wrapper.expressInstall.toString(),
+			'version-detection': wrapper.versionDetection.toString(),
+			output:              wrapper.output
 		)
 	}
 
-    private def createOutputDirectoryIfNotExists() {
-        if(!flexConvention.htmlWrapper.output.exists()) {
-            flexConvention.htmlWrapper.output.mkdir()
-        }
+    private def createOutputDirectoryIfNotExists(String outputPath) {
+        File output = project.file outputPath
+        if (!output.exists()) output.mkdir()
     }
+    
 }
-
-

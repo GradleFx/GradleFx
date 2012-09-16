@@ -17,9 +17,9 @@
 package org.gradlefx.ide.tasks
 
 import org.gradle.api.Project;
-import org.gradlefx.FlexType
-import org.gradlefx.FrameworkLinkage
 import org.gradlefx.configuration.Configurations;
+import org.gradlefx.conventions.FlexType;
+import org.gradlefx.conventions.FrameworkLinkage;
 import org.gradlefx.templates.tasks.Scaffold;
 
 

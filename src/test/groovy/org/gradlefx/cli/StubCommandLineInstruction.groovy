@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 
-package org.gradlefx.tasks
+package org.gradlefx.cli
 
-class Tasks {
-    public static final String COMPILE_TASK_NAME = 'compileFlex'
-    public static final String ASDOC_TASK_NAME = 'asdoc'
-    public static final String BUILD_TASK_NAME = 'build'
-    public static final String PACKAGE_TASK_NAME = 'package'
-    public static final String TEST_TASK_NAME = 'test'
-    public static final String PUBLISH_TASK_NAME = 'publish'
-    public static final String COPY_RESOURCES_TASK_NAME = 'copyresources'
-    public static final String CREATE_HTML_WRAPPER = 'createHtmlWrapper'
+import org.gradle.api.Project
+
+class StubCommandLineInstruction extends CommandLineInstruction {
+
+    public StubCommandLineInstruction(Project project) {
+        super(project)
+    }
+
+    @Override
+    void setConventionArguments() {
+        //do nothing
+    }
 }

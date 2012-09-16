@@ -14,12 +14,22 @@
  * limitations under the License.
  */
 
-package org.gradlefx.tasks.compile.factory
+package org.gradlefx.tasks.compile
 
-import org.gradle.api.Task
-import org.gradlefx.FlexType
+import org.gradlefx.cli.CommandLineInstruction;
+import org.gradlefx.conventions.GradleFxConvention
+import org.gradle.api.Task;
 
-public interface CompileTaskClassFactory {
+abstract class CompileTaskDelegate implements CompileTask {
 
-    Class<Task> createCompileTaskClass(FlexType flexType);
+    Task task
+    GradleFxConvention flexConvention
+    CommandLineInstruction cli
+
+    protected CompileTaskDelegate(Task task, CommandLineInstruction cli) {
+        this.task = task
+        this.cli = cli
+        flexConvention = task.project.convention.plugins.flex
+    }
+
 }
