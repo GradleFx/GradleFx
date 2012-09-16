@@ -56,7 +56,7 @@ class LibraryCommandLineInstruction extends CommandLineInstruction {
                     String relativePath = resourceDir.toURI().relativize(file.toURI()).getPath()
 
                     add CompilerOption.INCLUDE_FILE
-                    addAll [relativePath, file.path]
+                    addAll new ArrayList<String>([relativePath, file.path])
                 }
             }
         }

@@ -64,7 +64,7 @@ class ASDocCommandLineInstruction extends CommandLineInstruction {
     }
     
     public void keepXML() {
-        set CompilerOption.KEEP_XML, true
+        set CompilerOption.KEEP_XML, "true"
     }
     
     public void addOutput() {

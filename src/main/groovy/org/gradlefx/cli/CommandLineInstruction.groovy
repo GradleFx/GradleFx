@@ -130,7 +130,7 @@ abstract class CommandLineInstruction {
         validateFilesExist files, configuration
         
         Collection paths = files.collect { it.path }
-        add compilerOption, paths
+        addAll compilerOption, paths
     }
     
     /** Adds the <code>-runtime-shared-library-path</code> argument based on RSL dependencies */

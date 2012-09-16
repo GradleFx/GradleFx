@@ -91,14 +91,14 @@ class AirPackage extends DefaultTask {
     }
 
     private void addAirSigningOptions(List compilerOptions) {
-        compilerOptions.addAll [
+        compilerOptions.addAll ([
                 "-storetype",
                 "pkcs12",
                 "-keystore",
                 flexConvention.air.keystore,
                 "-storepass",
                 flexConvention.air.storepass
-        ]
+        ])
     }
 
     def handlePackageIfFailed(antResultProperty, antOutputProperty) {
