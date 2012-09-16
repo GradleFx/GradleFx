@@ -153,7 +153,7 @@ abstract class CommandLineInstruction {
                 if (!dependency.exists()) {
                     throw new ResolveException("Couldn't find the ${dependency.name} file - are you sure the path is correct?")
                 } else {
-                    set CompilerOption.RUNTIME_SHARED_LIBRARY_PATH, "${dependency.path},${libName}"
+                    add CompilerOption.RUNTIME_SHARED_LIBRARY_PATH, "${dependency.path},${libName}"
                 }
             }
         }
