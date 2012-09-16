@@ -30,7 +30,7 @@ class AIRConvention {
     
     public AIRConvention(Project project) {
         keystore = "${project.name}.p12"
-        applicationDescriptor = "/src/main/actionscript/${project.name}.xml"
+        applicationDescriptor = "src/main/actionscript/${project.name}.xml"
     }
 
     void configure(Closure closure) {
