@@ -31,7 +31,9 @@ import org.gradlefx.tasks.HtmlWrapper
 import org.gradlefx.tasks.Publish;
 import org.gradlefx.tasks.Tasks;
 import org.gradlefx.tasks.Test;
-import org.gradlefx.tasks.compile.Compile;
+import org.gradlefx.tasks.compile.Compile
+import org.gradlefx.configuration.sdk.DefaultSdkInitialisationContext
+import org.gradlefx.configuration.sdk.states.DetermineFlexSdkDeclarationTypeState;
 
 class GradleFxPlugin extends AbstractGradleFxPlugin {
 
@@ -52,10 +54,16 @@ class GradleFxPlugin extends AbstractGradleFxPlugin {
     
     @Override
     protected void configure(Project project) {
+        initializeSDKs()
+
         new FlexAntTasksConfigurator(project).configure()
         
         if (!flexConvention.type.isNativeApp())
             addArtifactsToDefaultConfiguration project
+    }
+
+    private void initializeSDKs() {
+        new DefaultSdkInitialisationContext(project, new DetermineFlexSdkDeclarationTypeState()).initSdk()
     }
 
     /**

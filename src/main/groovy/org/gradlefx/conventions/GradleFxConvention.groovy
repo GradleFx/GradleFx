@@ -17,12 +17,17 @@
 package org.gradlefx.conventions
 
 import org.gradle.api.Project
+import org.gradle.api.internal.file.FileResolver
+import org.gradle.api.internal.file.BaseDirFileResolver
+import org.gradle.internal.nativeplatform.filesystem.FileSystems
 
 
 @Mixin(GradleFxDerivedProperties)
 class GradleFxConvention {
     
     private Project project
+
+    File gradleFxUserHomeDir
 
     String output
     
@@ -108,6 +113,9 @@ class GradleFxConvention {
 
     def GradleFxConvention(Project project) {
         this.project = project
+
+        FileResolver gradleFxUserHomeDirResolver = new BaseDirFileResolver(FileSystems.default, project.gradle.gradleUserHomeDir)
+        gradleFxUserHomeDir = gradleFxUserHomeDirResolver.resolve("gradleFx")
         
         htmlWrapper = new HtmlWrapperConvention(project)
         flexUnit    = new FlexUnitConvention(project)

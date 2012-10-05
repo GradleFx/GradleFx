@@ -25,14 +25,18 @@ class Configurations {
     public static final String RSL_CONFIGURATION_NAME = 'rsl'
     public static final String TEST_CONFIGURATION_NAME = 'test'
     public static final String THEME_CONFIGURATION_NAME = 'theme'
-    
+    public static final String FLEXSDK_CONFIGURATION_NAME = 'flexSDK'
+    public static final String AIRSDK_CONFIGURATION_NAME = 'airSDK'
+
     public static final List DEPENDENCY_CONFIGURATIONS = [
         INTERNAL_CONFIGURATION_NAME,
         EXTERNAL_CONFIGURATION_NAME,
         MERGE_CONFIGURATION_NAME,
         RSL_CONFIGURATION_NAME,
         TEST_CONFIGURATION_NAME,
-        THEME_CONFIGURATION_NAME
+        THEME_CONFIGURATION_NAME,
+        FLEXSDK_CONFIGURATION_NAME,
+        AIRSDK_CONFIGURATION_NAME
     ]
     
     public static final List ARTIFACT_CONFIGURATIONS = [
