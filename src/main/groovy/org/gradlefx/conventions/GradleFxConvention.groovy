@@ -110,6 +110,9 @@ class GradleFxConvention {
     // ASDoc properties
     ASDocConvention asdoc
 
+    //SDK autoinstall properties
+    SdkAutoInstallConvention sdkAutoInstall
+
 
     def GradleFxConvention(Project project) {
         this.project = project
@@ -117,10 +120,11 @@ class GradleFxConvention {
         FileResolver gradleFxUserHomeDirResolver = new BaseDirFileResolver(FileSystems.default, project.gradle.gradleUserHomeDir)
         gradleFxUserHomeDir = gradleFxUserHomeDirResolver.resolve("gradleFx")
         
-        htmlWrapper = new HtmlWrapperConvention(project)
-        flexUnit    = new FlexUnitConvention(project)
-        air         = new AIRConvention(project)
-        asdoc       = new ASDocConvention()
+        htmlWrapper     = new HtmlWrapperConvention(project)
+        flexUnit        = new FlexUnitConvention(project)
+        air             = new AIRConvention(project)
+        asdoc           = new ASDocConvention()
+        sdkAutoInstall  = new SdkAutoInstallConvention()
     }
 
     def htmlWrapper(Closure closure) {
@@ -137,6 +141,10 @@ class GradleFxConvention {
 
     def asdoc(Closure closure) {
         asdoc.configure(closure)
+    }
+
+    def sdkAutoInstall(Closure closure) {
+        sdkAutoInstall.configure(closure)
     }
     
 }

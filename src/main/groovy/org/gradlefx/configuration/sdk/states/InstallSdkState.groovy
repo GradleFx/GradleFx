@@ -24,13 +24,17 @@ import org.slf4j.LoggerFactory
 import org.gradle.api.internal.file.FileResolver
 import org.gradle.api.internal.file.BaseDirFileResolver
 import org.gradle.internal.nativeplatform.filesystem.FileSystems
+import org.gradle.api.Project
+import org.gradlefx.conventions.GradleFxConvention
 
 class InstallSdkState implements SdkInitState {
 
-    protected static final Logger LOG = LoggerFactory.getLogger 'gradlefx'
+    private static final Logger LOG = LoggerFactory.getLogger 'gradlefx'
+    private static final String SDK_INSTALLER_CONFIG_URL = 'http://incubator.apache.org/flex/sdk-installer-config.xml'
 
     SdkInstallLocation sdkInstallLocation
     File packagedSdkFile
+    Project project
 
     InstallSdkState(SdkInstallLocation sdkInstallLocation, File packagedSdkFile) {
         this.sdkInstallLocation = sdkInstallLocation
@@ -38,10 +42,19 @@ class InstallSdkState implements SdkInitState {
     }
 
     void process(SdkInitialisationContext context) {
-        unpackSdk()
-        downloadSdkDependencies()
+        this.project = context.project
+
+        try {
+            unpackSdk()
+            downloadSdkDependencies()
+        } catch (Exception e) {
+            revertInstall()
+
+            throw e; //fail on purpose
+        }
 
         context.processNextState(new SetFlexHomeBasedOnSdkInstallLocationState(sdkInstallLocation))
+
     }
 
     private void unpackSdk() {
@@ -72,9 +85,24 @@ class InstallSdkState implements SdkInitState {
      */
     private void downloadSdkDependencies() {
          if(sdkRequiresAdditionalDownloads()) {
-             AntBuilder ant = new AntBuilder()
-             ant.ant antfile: getAdditionalDownloadsAntScriptFile(), dir: getAdditionalDownloadsAntScriptDirectory()
+             executeSdkDownloadsScript()
+             downloadPlayerGlobalSwc()
+             updateFrameworkConfigFiles()
          }
+    }
+
+    /**
+     * Copies the flashbuilder ide config files to the framework folder because these files contain the correct
+     * path to playerglobal (it points to the playerglobal.swc installed in the flex install directory)
+     */
+    private void updateFrameworkConfigFiles() {
+        FileResolver sdkInstallDirectoryResolver = new BaseDirFileResolver(FileSystems.default, sdkInstallLocation.directory)
+        File ideConfigDir = sdkInstallDirectoryResolver.resolve("ide/flashbuilder/config")
+        File frameworksDir = sdkInstallDirectoryResolver.resolve("frameworks")
+
+        new AntBuilder().copy(toDir: frameworksDir) {
+            fileset(dir: ideConfigDir)
+        }
     }
 
     private boolean sdkRequiresAdditionalDownloads() {
@@ -86,8 +114,50 @@ class InstallSdkState implements SdkInitState {
         return sdkInstallDirectoryResolver.resolve("frameworks/downloads.xml")
     }
 
+    private void executeSdkDownloadsScript() {
+        boolean showPrompts = ((GradleFxConvention) project.convention.plugins.flex).sdkAutoInstall.showPrompts
+
+        AntBuilder ant = new AntBuilder()
+        ant.ant(antfile: getAdditionalDownloadsAntScriptFile(), dir: getAdditionalDownloadsAntScriptDirectory()) {
+            property(name: 'build.noprompt', value: showPrompts)
+        }
+    }
+
     private File getAdditionalDownloadsAntScriptDirectory() {
         FileResolver sdkInstallDirectoryResolver = new BaseDirFileResolver(FileSystems.default, sdkInstallLocation.directory)
         return sdkInstallDirectoryResolver.resolve("frameworks")
+    }
+
+    private void downloadPlayerGlobalSwc() {
+        FileResolver sdkInstallDirectoryResolver = new BaseDirFileResolver(FileSystems.default, sdkInstallLocation.directory)
+        File playerGlobalSwcInstallLocation = sdkInstallDirectoryResolver.resolve("frameworks/libs/player/11.1")
+        FileResolver playerGlobalSwcInstallLocationResolver = new BaseDirFileResolver(FileSystems.default, playerGlobalSwcInstallLocation)
+        File playerGlobalSwcInstallFile = playerGlobalSwcInstallLocationResolver.resolve("playerglobal.swc")
+        String playerGlobalSwcDownloadUrl = getPlayerGlobalSwcDownloadUrl()
+
+        playerGlobalSwcInstallLocation.mkdirs()
+        playerGlobalSwcInstallFile.createNewFile()
+        playerGlobalSwcInstallFile.withOutputStream { out ->
+            out << new URL(playerGlobalSwcDownloadUrl).openStream()
+        }
+
+    }
+
+    private String getPlayerGlobalSwcDownloadUrl() {
+        def sdkInstallerConfig = new XmlSlurper().parse(SDK_INSTALLER_CONFIG_URL)
+
+        LOG.error(sdkInstallerConfig.toString())
+
+        String playerGlobalBaseUrl =  sdkInstallerConfig.files.file.find{ it -> it.@name.text() == 'FlashPlayer' }.@path
+        String playerGlobalFileUrl =  sdkInstallerConfig.files.file.find{ it -> it.@name.text() == 'FlashPlayer' }.@file
+
+        LOG.error("player global url: " + playerGlobalBaseUrl + playerGlobalFileUrl)
+
+        return playerGlobalBaseUrl + playerGlobalFileUrl
+    }
+
+    private void revertInstall() {
+        LOG.info("reverting SDK installation")
+        sdkInstallLocation.directory.deleteDir()
     }
 }
