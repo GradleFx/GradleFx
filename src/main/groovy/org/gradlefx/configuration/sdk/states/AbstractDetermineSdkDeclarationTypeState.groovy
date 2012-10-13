@@ -41,8 +41,6 @@ abstract class AbstractDetermineSdkDeclarationTypeState implements SdkInitState 
         }
     }
 
-    abstract SdkInitState nextState();
-
     boolean hasDeclaredSdkAsDependency(Project project) {
         Configuration flexSdkConfiguration = project.configurations.getByName(sdkConfigurationName.configName());
         return flexSdkConfiguration.files.size() > 0

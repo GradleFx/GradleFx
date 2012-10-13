@@ -20,8 +20,12 @@ import org.gradle.api.Project
 import org.gradlefx.configuration.sdk.SdkInitState
 import org.gradlefx.configuration.sdk.SdkInitialisationContext
 import org.gradlefx.configuration.sdk.SdkInstallLocation
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 abstract class AbstractInstallSdkState implements SdkInitState {
+
+    protected static final Logger LOG = LoggerFactory.getLogger 'gradlefx'
 
     SdkInstallLocation sdkInstallLocation
     File packagedSdkFile
@@ -45,7 +49,27 @@ abstract class AbstractInstallSdkState implements SdkInitState {
         }
     }
 
-    abstract void unpackSdk()
+    void unpackSdk() {
+        if (packagedSdkFile.name.endsWith(".zip")) {
+            LOG.info("Unpacking SDK...")
+
+            AntBuilder ant = new AntBuilder()
+            ant.unzip(src: packagedSdkFile.absolutePath, dest: sdkInstallLocation.directory.absolutePath, overwrite: "true")
+        } else if (packagedSdkFile.name.endsWith("tar.gz")) {
+            LOG.info("Unpacking SDK...")
+
+            AntBuilder ant = new AntBuilder()
+            ant.gunzip(src: packagedSdkFile.absolutePath)
+
+            String tarFile = packagedSdkFile.absolutePath.replaceFirst(".gz", "")
+            ant.untar(src: tarFile, dest: sdkInstallLocation.directory.absolutePath)
+
+            //cleanup by removing the temporary tar archive
+            new File(tarFile).delete()
+        } else {
+            throw new RuntimeException("Unsupported sdk packaging type. Supported formats are zip or tar.gz")
+        }
+    }
 
     void revertInstall() {
         LOG.info("reverting SDK installation")

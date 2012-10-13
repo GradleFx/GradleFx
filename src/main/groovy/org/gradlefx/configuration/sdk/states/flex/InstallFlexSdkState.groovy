@@ -35,28 +35,9 @@ class InstallFlexSdkState extends AbstractInstallSdkState {
         super(sdkInstallLocation, packagedSdkFile)
     }
 
-    void unpackSdk() {
-        if (packagedSdkFile.name.endsWith(".zip")) {
-            LOG.info("Unpacking SDK...")
-
-            AntBuilder ant = new AntBuilder()
-            ant.unzip(src: packagedSdkFile.absolutePath, dest: sdkInstallLocation.directory.absolutePath, overwrite: "true")
-        } else if (packagedSdkFile.name.endsWith("tar.gz")) {
-            LOG.info("Unpacking SDK...")
-
-            AntBuilder ant = new AntBuilder()
-            ant.gunzip(src: packagedSdkFile.absolutePath)
-
-            String tarFile = packagedSdkFile.absolutePath.replaceFirst(".gz", "")
-            ant.untar(src: tarFile, dest: sdkInstallLocation.directory.absolutePath)
-
-            //cleanup by removing the temporary tar archive
-            new File(tarFile).delete()
-        } else {
-            throw new RuntimeException("Unsupported sdk packaging type. Supported formats are zip or tar.gz")
-        }
+    SdkInitState nextState() {
+        return new SetFlexHomeBasedOnSdkInstallLocationState(sdkInstallLocation)
     }
-
 
     /**
      * Starting from Apache Flex 4.8 additional dependencies are required
@@ -69,10 +50,6 @@ class InstallFlexSdkState extends AbstractInstallSdkState {
             downloadPlayerGlobalSwc()
             updateFrameworkConfigFiles()
         }
-    }
-
-    SdkInitState nextState() {
-        return new SetFlexHomeBasedOnSdkInstallLocationState(sdkInstallLocation)
     }
 
     /**

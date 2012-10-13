@@ -33,7 +33,8 @@ import org.gradlefx.tasks.Tasks;
 import org.gradlefx.tasks.Test;
 import org.gradlefx.tasks.compile.Compile
 import org.gradlefx.configuration.sdk.DefaultSdkInitialisationContext
-import org.gradlefx.configuration.sdk.states.flex.DetermineFlexSdkDeclarationTypeState;
+import org.gradlefx.configuration.sdk.states.flex.DetermineFlexSdkDeclarationTypeState
+import org.gradlefx.configuration.sdk.states.air.DetermineAirSdkDeclarationTypeState;
 
 class GradleFxPlugin extends AbstractGradleFxPlugin {
 
@@ -64,6 +65,7 @@ class GradleFxPlugin extends AbstractGradleFxPlugin {
 
     private void initializeSDKs() {
         new DefaultSdkInitialisationContext(project, new DetermineFlexSdkDeclarationTypeState()).initSdk()
+        new DefaultSdkInitialisationContext(project, new DetermineAirSdkDeclarationTypeState()).initSdk()
     }
 
     /**

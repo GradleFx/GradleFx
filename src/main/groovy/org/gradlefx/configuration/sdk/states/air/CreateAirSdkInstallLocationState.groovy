@@ -16,25 +16,24 @@
 
 package org.gradlefx.configuration.sdk.states.air
 
-import org.gradlefx.configuration.Configurations
 import org.gradlefx.configuration.sdk.SdkInitState
-import org.gradlefx.configuration.sdk.states.AbstractDetermineSdkDeclarationTypeState
+import org.gradlefx.configuration.sdk.SdkType
+import org.gradlefx.configuration.sdk.states.AbstractCreateSdkInstallLocationState
+import org.gradlefx.configuration.sdk.states.flex.InstallFlexSdkState
+import org.gradlefx.configuration.sdk.states.flex.SetFlexHomeBasedOnSdkInstallLocationState
 
-class DetermineAirSdkDeclarationTypeState extends AbstractDetermineSdkDeclarationTypeState {
+class CreateAirSdkInstallLocationState extends AbstractCreateSdkInstallLocationState {
 
-    DetermineAirSdkDeclarationTypeState() {
-        super(Configurations.AIRSDK_CONFIGURATION_NAME)
+    CreateAirSdkInstallLocationState(File packageSdkFile) {
+        super(packageSdkFile, SdkType.AIR)
     }
 
     @Override
     SdkInitState nextState() {
-        if(packagedSdkFile) {
-            LOG.info("Using the Air SDK dependency")
-            return new CreateAirSdkInstallLocationState(packagedSdkFile)
+        if (installLocation.exists()) {
+            return new SetAirHomeBasedOnSdkInstallLocationState(installLocation)
         } else {
-            LOG.info("Using the airHome convention")
-            //use the default airHome convention in case the sdk isn't specified as a dependency.
-            return null;
+            return new InstallAirSdkState(installLocation, packagedSdkFile)
         }
     }
 }
