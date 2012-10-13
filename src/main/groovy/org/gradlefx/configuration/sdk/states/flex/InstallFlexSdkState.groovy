@@ -14,56 +14,34 @@
  * limitations under the License.
  */
 
-package org.gradlefx.configuration.sdk.states
+package org.gradlefx.configuration.sdk.states.flex
 
+import org.gradle.api.internal.file.BaseDirFileResolver
+import org.gradle.api.internal.file.FileResolver
+import org.gradle.internal.nativeplatform.filesystem.FileSystems
 import org.gradlefx.configuration.sdk.SdkInitState
-import org.gradlefx.configuration.sdk.SdkInitialisationContext
-import org.gradlefx.configuration.sdk.SdkInstallLocation
+import org.gradlefx.configuration.sdk.states.AbstractInstallSdkState
+import org.gradlefx.conventions.GradleFxConvention
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.gradle.api.internal.file.FileResolver
-import org.gradle.api.internal.file.BaseDirFileResolver
-import org.gradle.internal.nativeplatform.filesystem.FileSystems
-import org.gradle.api.Project
-import org.gradlefx.conventions.GradleFxConvention
+import org.gradlefx.configuration.sdk.SdkInstallLocation
 
-class InstallSdkState implements SdkInitState {
+class InstallFlexSdkState extends AbstractInstallSdkState {
 
     private static final Logger LOG = LoggerFactory.getLogger 'gradlefx'
     private static final String SDK_INSTALLER_CONFIG_URL = 'http://incubator.apache.org/flex/sdk-installer-config.xml'
 
-    SdkInstallLocation sdkInstallLocation
-    File packagedSdkFile
-    Project project
-
-    InstallSdkState(SdkInstallLocation sdkInstallLocation, File packagedSdkFile) {
-        this.sdkInstallLocation = sdkInstallLocation
-        this.packagedSdkFile = packagedSdkFile
+    InstallFlexSdkState(SdkInstallLocation sdkInstallLocation, File packagedSdkFile) {
+        super(sdkInstallLocation, packagedSdkFile)
     }
 
-    void process(SdkInitialisationContext context) {
-        this.project = context.project
-
-        try {
-            unpackSdk()
-            downloadSdkDependencies()
-        } catch (Exception e) {
-            revertInstall()
-
-            throw e; //fail on purpose
-        }
-
-        context.processNextState(new SetFlexHomeBasedOnSdkInstallLocationState(sdkInstallLocation))
-
-    }
-
-    private void unpackSdk() {
-        if(packagedSdkFile.name.endsWith(".zip")) {
+    void unpackSdk() {
+        if (packagedSdkFile.name.endsWith(".zip")) {
             LOG.info("Unpacking SDK...")
 
             AntBuilder ant = new AntBuilder()
-            ant.unzip(src: packagedSdkFile.absolutePath, dest: sdkInstallLocation.directory.absolutePath,  overwrite:"true")
-        } else if(packagedSdkFile.name.endsWith("tar.gz")) {
+            ant.unzip(src: packagedSdkFile.absolutePath, dest: sdkInstallLocation.directory.absolutePath, overwrite: "true")
+        } else if (packagedSdkFile.name.endsWith("tar.gz")) {
             LOG.info("Unpacking SDK...")
 
             AntBuilder ant = new AntBuilder()
@@ -79,16 +57,22 @@ class InstallSdkState implements SdkInitState {
         }
     }
 
+
     /**
      * Starting from Apache Flex 4.8 additional dependencies are required
      * which can be downloaded by executing the %FLEX_HOME%/frameworks/downloads.xml ant script.
      */
-    private void downloadSdkDependencies() {
-         if(sdkRequiresAdditionalDownloads()) {
-             executeSdkDownloadsScript()
-             downloadPlayerGlobalSwc()
-             updateFrameworkConfigFiles()
-         }
+    @Override
+    void downloadSdkDependencies() {
+        if (sdkRequiresAdditionalDownloads()) {
+            executeSdkDownloadsScript()
+            downloadPlayerGlobalSwc()
+            updateFrameworkConfigFiles()
+        }
+    }
+
+    SdkInitState nextState() {
+        return new SetFlexHomeBasedOnSdkInstallLocationState(sdkInstallLocation)
     }
 
     /**
@@ -148,16 +132,12 @@ class InstallSdkState implements SdkInitState {
 
         LOG.error(sdkInstallerConfig.toString())
 
-        String playerGlobalBaseUrl =  sdkInstallerConfig.files.file.find{ it -> it.@name.text() == 'FlashPlayer' }.@path
-        String playerGlobalFileUrl =  sdkInstallerConfig.files.file.find{ it -> it.@name.text() == 'FlashPlayer' }.@file
+        String playerGlobalBaseUrl = sdkInstallerConfig.files.file.find { it -> it.@name.text() == 'FlashPlayer' }.@path
+        String playerGlobalFileUrl = sdkInstallerConfig.files.file.find { it -> it.@name.text() == 'FlashPlayer' }.@file
 
         LOG.error("player global url: " + playerGlobalBaseUrl + playerGlobalFileUrl)
 
         return playerGlobalBaseUrl + playerGlobalFileUrl
     }
 
-    private void revertInstall() {
-        LOG.info("reverting SDK installation")
-        sdkInstallLocation.directory.deleteDir()
-    }
 }

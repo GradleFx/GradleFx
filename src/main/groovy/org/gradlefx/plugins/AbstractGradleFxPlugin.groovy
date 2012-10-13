@@ -61,8 +61,8 @@ abstract class AbstractGradleFxPlugin implements Plugin<Project> {
     protected void addDefaultConfigurations() {
         List names = project.configurations.collect { it.name }
         
-        Configurations.DEPENDENCY_CONFIGURATIONS.each {
-            if (!names.contains(it)) addConfiguration it
+        Configurations.DEPENDENCY_CONFIGURATIONS.each { Configurations configuration ->
+            if (!names.contains(configuration.configName())) addConfiguration configuration.configName()
         }
     }
     

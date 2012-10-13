@@ -25,11 +25,5 @@ interface SdkInitialisationContext {
      */
     void initSdk();
 
-    /**
-     * process the next state
-     * @param state
-     */
-    void processNextState(SdkInitState state);
-
     Project getProject();
 }

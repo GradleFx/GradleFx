@@ -16,28 +16,47 @@
 
 package org.gradlefx.configuration.sdk.states
 
+import org.gradle.api.Project
 import org.gradlefx.configuration.sdk.SdkInitState
 import org.gradlefx.configuration.sdk.SdkInitialisationContext
 import org.gradlefx.configuration.sdk.SdkInstallLocation
-import org.gradlefx.conventions.GradleFxConvention
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 
-class SetFlexHomeBasedOnSdkInstallLocationState implements SdkInitState {
-
-    protected static final Logger LOG = LoggerFactory.getLogger 'gradlefx'
+abstract class AbstractInstallSdkState implements SdkInitState {
 
     SdkInstallLocation sdkInstallLocation
+    File packagedSdkFile
+    Project project
 
-    SetFlexHomeBasedOnSdkInstallLocationState(SdkInstallLocation sdkInstallLocation) {
+    AbstractInstallSdkState(SdkInstallLocation sdkInstallLocation, File packagedSdkFile) {
         this.sdkInstallLocation = sdkInstallLocation
+        this.packagedSdkFile = packagedSdkFile
     }
 
     void process(SdkInitialisationContext context) {
-        LOG.info("Setting flexHome to " + sdkInstallLocation.directory.absolutePath)
+        this.project = context.project
 
-        GradleFxConvention flexConvention = (GradleFxConvention) context.project.convention.plugins.flex
+        try {
+            unpackSdk()
+            downloadSdkDependencies()
+        } catch (Exception e) {
+            revertInstall()
 
-        flexConvention.flexHome = sdkInstallLocation.directory.absolutePath
+            throw e; //fail on purpose
+        }
     }
+
+    abstract void unpackSdk()
+
+    void revertInstall() {
+        LOG.info("reverting SDK installation")
+        sdkInstallLocation.directory.deleteDir()
+    }
+
+
+    /**
+     * Override this method when addition dependencies are required for the SDK.
+     */
+    protected void downloadSdkDependencies() {
+    }
+
 }

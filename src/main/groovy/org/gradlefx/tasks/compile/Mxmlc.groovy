@@ -56,7 +56,7 @@ class Mxmlc extends CompileTaskDelegate {
             File swc = new File("${flexConvention.flexHome}/frameworks/${swcName}")
 
             if (swc.exists()) {
-            	String libName = flexConvention.useDebugRSLSwfs==true ? it['rsl-url'][1].text()[0..-2] + 'f' : it['rsl-url'][1].text()
+            	String libName = flexConvention.useDebugRSLSwfs ? it['rsl-url'][1].text()[0..-2] + 'f' : it['rsl-url'][1].text()
                 ant.copy(
                     file: "${flexConvention.flexHome}/frameworks/rsls/${libName}", 
                     tofile:"${task.project.buildDir}/${libName}"

@@ -34,9 +34,9 @@ class ASDoc extends DefaultTask {
         flexConvention = project.convention.plugins.flex
 
         [
-            Configurations.MERGE_CONFIGURATION_NAME, 
-            Configurations.EXTERNAL_CONFIGURATION_NAME, 
-            Configurations.INTERNAL_CONFIGURATION_NAME
+            Configurations.MERGE_CONFIGURATION_NAME.configName(),
+            Configurations.EXTERNAL_CONFIGURATION_NAME.configName(),
+            Configurations.INTERNAL_CONFIGURATION_NAME.configName()
         ].each {
             addDependsOnTaskInOtherProjects Tasks.COMPILE_TASK_NAME, it
         }

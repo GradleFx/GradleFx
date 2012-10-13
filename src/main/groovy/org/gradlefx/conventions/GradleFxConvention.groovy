@@ -37,6 +37,8 @@ class GradleFxConvention {
 
     // the home directory of the Flex SDK
     String flexHome = System.getenv()['FLEX_HOME'] //default to FLEX_HOME environment variable
+
+    String airHome = {flexHome}
     
     public void setFlexHome(String flexHome) {
         //convert relative paths to absolute ones to prevent ANT from freaking out
@@ -119,7 +121,7 @@ class GradleFxConvention {
 
         FileResolver gradleFxUserHomeDirResolver = new BaseDirFileResolver(FileSystems.default, project.gradle.gradleUserHomeDir)
         gradleFxUserHomeDir = gradleFxUserHomeDirResolver.resolve("gradleFx")
-        
+
         htmlWrapper     = new HtmlWrapperConvention(project)
         flexUnit        = new FlexUnitConvention(project)
         air             = new AIRConvention(project)

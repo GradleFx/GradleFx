@@ -20,26 +20,25 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.gradlefx.configuration.sdk.*
 
-class CreateSdkInstallLocationState implements SdkInitState {
+abstract class AbstractCreateSdkInstallLocationState implements SdkInitState {
 
     protected static final Logger LOG = LoggerFactory.getLogger 'gradlefx'
 
     File packagedSdkFile
+    SdkType sdkType
+    SdkInstallLocation installLocation
 
-    CreateSdkInstallLocationState(File packageSdkFile) {
+    AbstractCreateSdkInstallLocationState(File packageSdkFile, SdkType sdkType) {
         this.packagedSdkFile = packageSdkFile
+        this.sdkType = sdkType
     }
 
     void process(SdkInitialisationContext context) {
         LOG.info("Determining SDK install location")
 
         SdkInstallLocationFactory locationFactory = new SdkInstallLocationFactory(context.project)
-        SdkInstallLocation installLocation = locationFactory.createFromPackagedSdkFile(SdkType.Flex, packagedSdkFile)
-
-        if(installLocation.exists()) {
-            context.processNextState(new SetFlexHomeBasedOnSdkInstallLocationState(installLocation))
-        } else {
-            context.processNextState(new InstallSdkState(installLocation, packagedSdkFile))
-        }
+        installLocation = locationFactory.createFromPackagedSdkFile(sdkType, packagedSdkFile)
     }
+
+    abstract SdkInitState nextState();
 }

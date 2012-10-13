@@ -45,7 +45,7 @@ class AirPackage extends DefaultTask {
 
         List compilerArguments = createCompilerArguments()
 
-        ant.java(jar: flexConvention.flexHome + '/lib/adt.jar',
+        ant.java(jar: flexConvention.airHome + '/lib/adt.jar',
                 fork: true,
                 timeout: 10000,
                 resultproperty: ANT_RESULT_PROPERTY,

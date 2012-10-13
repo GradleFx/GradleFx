@@ -98,11 +98,11 @@ abstract class AbstractIDEProject extends DefaultTask implements ProjectTask {
      */
     protected void eachDependencyFile(Closure closure) {
         [
-            Configurations.INTERNAL_CONFIGURATION_NAME,
-            Configurations.EXTERNAL_CONFIGURATION_NAME,
-            Configurations.MERGE_CONFIGURATION_NAME,
-            Configurations.RSL_CONFIGURATION_NAME,
-            Configurations.THEME_CONFIGURATION_NAME
+            Configurations.INTERNAL_CONFIGURATION_NAME.configName(),
+            Configurations.EXTERNAL_CONFIGURATION_NAME.configName(),
+            Configurations.MERGE_CONFIGURATION_NAME.configName(),
+            Configurations.RSL_CONFIGURATION_NAME.configName(),
+            Configurations.THEME_CONFIGURATION_NAME.configName()
         ].each() { type ->
             project.configurations[type].files.each() {
                 closure it, type

@@ -29,12 +29,12 @@ class DefaultSdkInitialisationContext implements SdkInitialisationContext {
     }
 
     void initSdk() {
-        currentState.process(this)
-    }
+        while (true) {
+            currentState.process(this)
+            currentState = currentState.nextState()
 
-    void processNextState(SdkInitState state) {
-        currentState = state
-        currentState.process(this)
+            if(currentState == null) break
+        }
     }
 
     Project getProject() {

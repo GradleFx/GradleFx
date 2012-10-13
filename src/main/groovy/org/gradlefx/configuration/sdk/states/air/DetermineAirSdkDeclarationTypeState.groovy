@@ -14,16 +14,20 @@
  * limitations under the License.
  */
 
-package org.gradlefx.initializers
+package org.gradlefx.configuration.sdk.states.air
 
-import org.gradle.api.artifacts.Dependency
-import org.gradlefx.initializers.installers.SdkInstaller
+import org.gradlefx.configuration.sdk.states.AbstractDetermineSdkDeclarationTypeState
+import org.gradlefx.configuration.sdk.SdkInitState
+import org.gradlefx.configuration.Configurations
 
-class SdkInstallerSpy implements SdkInstaller {
+class DetermineAirSdkDeclarationTypeState extends AbstractDetermineSdkDeclarationTypeState {
 
-    public boolean installerHasRun = false;
+    DetermineAirSdkDeclarationTypeState() {
+        super(Configurations.AIRSDK_CONFIGURATION_NAME)
+    }
 
-    void install(Dependency dependency, File packagedSdkFile) {
-        installerHasRun = true
+    @Override
+    SdkInitState nextState() {
+        return null
     }
 }

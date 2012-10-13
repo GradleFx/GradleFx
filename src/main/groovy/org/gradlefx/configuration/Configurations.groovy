@@ -16,17 +16,27 @@
 
 package org.gradlefx.configuration
 
-class Configurations {
-    public static final String DEFAULT_CONFIGURATION_NAME = 'default'
-    public static final String ARCHIVES_CONFIGURATION_NAME = 'archives'
-    public static final String INTERNAL_CONFIGURATION_NAME = 'internal'
-    public static final String EXTERNAL_CONFIGURATION_NAME = 'external'
-    public static final String MERGE_CONFIGURATION_NAME = 'merged'
-    public static final String RSL_CONFIGURATION_NAME = 'rsl'
-    public static final String TEST_CONFIGURATION_NAME = 'test'
-    public static final String THEME_CONFIGURATION_NAME = 'theme'
-    public static final String FLEXSDK_CONFIGURATION_NAME = 'flexSDK'
-    public static final String AIRSDK_CONFIGURATION_NAME = 'airSDK'
+enum Configurations {
+    DEFAULT_CONFIGURATION_NAME('default'),
+    ARCHIVES_CONFIGURATION_NAME('archives'),
+    INTERNAL_CONFIGURATION_NAME('internal'),
+    EXTERNAL_CONFIGURATION_NAME('external'),
+    MERGE_CONFIGURATION_NAME('merged'),
+    RSL_CONFIGURATION_NAME('rsl'),
+    TEST_CONFIGURATION_NAME('test'),
+    THEME_CONFIGURATION_NAME('theme'),
+    FLEXSDK_CONFIGURATION_NAME('flexSDK'),
+    AIRSDK_CONFIGURATION_NAME('airSDK');
+
+    private String configName;
+
+    Configurations(String configName) {
+        this.configName = configName
+    }
+
+    public String configName() {
+        return configName
+    }
 
     public static final List DEPENDENCY_CONFIGURATIONS = [
         INTERNAL_CONFIGURATION_NAME,

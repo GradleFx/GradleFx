@@ -22,4 +22,10 @@ interface SdkInitState {
      * @param context
      */
     void process(SdkInitialisationContext context);
+
+    /**
+     * Call this method when you want to get the next state after processing this one.
+     * @return
+     */
+    SdkInitState nextState();
 }

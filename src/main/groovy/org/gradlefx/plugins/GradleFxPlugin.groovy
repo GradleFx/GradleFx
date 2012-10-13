@@ -22,7 +22,7 @@ import org.gradle.api.artifacts.dsl.ArtifactHandler
 import org.gradle.api.internal.artifacts.publish.DefaultPublishArtifact
 import org.gradlefx.configuration.Configurations
 import org.gradlefx.configuration.FlexAntTasksConfigurator
-import org.gradlefx.conventions.FlexType;
+
 import org.gradlefx.tasks.ASDoc;
 import org.gradlefx.tasks.AirPackage
 import org.gradlefx.tasks.Build;
@@ -33,7 +33,7 @@ import org.gradlefx.tasks.Tasks;
 import org.gradlefx.tasks.Test;
 import org.gradlefx.tasks.compile.Compile
 import org.gradlefx.configuration.sdk.DefaultSdkInitialisationContext
-import org.gradlefx.configuration.sdk.states.DetermineFlexSdkDeclarationTypeState;
+import org.gradlefx.configuration.sdk.states.flex.DetermineFlexSdkDeclarationTypeState;
 
 class GradleFxPlugin extends AbstractGradleFxPlugin {
 
@@ -76,8 +76,9 @@ class GradleFxPlugin extends AbstractGradleFxPlugin {
         PublishArtifact artifact = new DefaultPublishArtifact(project.name, type, type, null, new Date(), artifactFile)
         
         project.artifacts { ArtifactHandler artifactHandler ->
-            Configurations.ARTIFACT_CONFIGURATIONS.each {
-                artifactHandler."$it" artifact
+            Configurations.ARTIFACT_CONFIGURATIONS.each { Configurations configuration ->
+                String configName = configuration.configName()
+                artifactHandler."$configName" artifact
             }
         }
     }
