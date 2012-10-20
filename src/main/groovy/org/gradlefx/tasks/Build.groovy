@@ -22,6 +22,7 @@ class Build extends DefaultTask {
 
     public Build() {
         description = 'Assembles and tests this project.'
+        dependsOn(Tasks.COMPILE_TASK_NAME)
         dependsOn(Tasks.TEST_TASK_NAME)
     }
     
