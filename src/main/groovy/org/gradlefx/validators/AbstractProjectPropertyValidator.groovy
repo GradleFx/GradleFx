@@ -29,7 +29,7 @@ abstract class AbstractProjectPropertyValidator implements ProjectPropertyValida
 
     void setProject(Project project) {
         this.project = project
-        flexConvention = project.convention.plugins.flex
+        flexConvention = (GradleFxConvention) project.convention.plugins.flex
     }
 
     boolean hasErrors() {

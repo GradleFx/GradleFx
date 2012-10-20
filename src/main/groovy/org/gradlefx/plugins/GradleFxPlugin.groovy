@@ -22,7 +22,7 @@ import org.gradle.api.artifacts.dsl.ArtifactHandler
 import org.gradle.api.internal.artifacts.publish.DefaultPublishArtifact
 import org.gradlefx.configuration.Configurations
 import org.gradlefx.configuration.FlexAntTasksConfigurator
-import org.gradlefx.conventions.FlexType;
+
 import org.gradlefx.tasks.ASDoc;
 import org.gradlefx.tasks.AirPackage
 import org.gradlefx.tasks.Build;
@@ -31,7 +31,10 @@ import org.gradlefx.tasks.HtmlWrapper
 import org.gradlefx.tasks.Publish;
 import org.gradlefx.tasks.Tasks;
 import org.gradlefx.tasks.Test;
-import org.gradlefx.tasks.compile.Compile;
+import org.gradlefx.tasks.compile.Compile
+import org.gradlefx.configuration.sdk.DefaultSdkInitialisationContext
+import org.gradlefx.configuration.sdk.states.flex.DetermineFlexSdkDeclarationTypeState
+import org.gradlefx.configuration.sdk.states.air.DetermineAirSdkDeclarationTypeState;
 
 class GradleFxPlugin extends AbstractGradleFxPlugin {
 
@@ -52,10 +55,17 @@ class GradleFxPlugin extends AbstractGradleFxPlugin {
     
     @Override
     protected void configure(Project project) {
+        initializeSDKs()
+
         new FlexAntTasksConfigurator(project).configure()
         
         if (!flexConvention.type.isNativeApp())
             addArtifactsToDefaultConfiguration project
+    }
+
+    private void initializeSDKs() {
+        new DefaultSdkInitialisationContext(project, new DetermineFlexSdkDeclarationTypeState()).initSdk()
+        new DefaultSdkInitialisationContext(project, new DetermineAirSdkDeclarationTypeState()).initSdk()
     }
 
     /**
@@ -68,8 +78,9 @@ class GradleFxPlugin extends AbstractGradleFxPlugin {
         PublishArtifact artifact = new DefaultPublishArtifact(project.name, type, type, null, new Date(), artifactFile)
         
         project.artifacts { ArtifactHandler artifactHandler ->
-            Configurations.ARTIFACT_CONFIGURATIONS.each {
-                artifactHandler."$it" artifact
+            Configurations.ARTIFACT_CONFIGURATIONS.each { Configurations configuration ->
+                String configName = configuration.configName()
+                artifactHandler."$configName" artifact
             }
         }
     }
