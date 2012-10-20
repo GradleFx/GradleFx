@@ -22,6 +22,7 @@ import org.gradlefx.cli.CommandLineInstruction
 import org.gradlefx.conventions.FrameworkLinkage
 import org.gradlefx.tasks.Tasks
 import org.gradlefx.validators.actions.ValidateMxmlcTaskPropertiesAction
+import org.apache.commons.lang.StringUtils
 
 class Mxmlc extends CompileTaskDelegate {
 	
@@ -56,11 +57,15 @@ class Mxmlc extends CompileTaskDelegate {
             File swc = new File("${flexConvention.flexHome}/frameworks/${swcName}")
 
             if (swc.exists()) {
-            	String libName = flexConvention.useDebugRSLSwfs ? it['rsl-url'][1].text()[0..-2] + 'f' : it['rsl-url'][1].text()
-                ant.copy(
-                    file: "${flexConvention.flexHome}/frameworks/rsls/${libName}", 
-                    tofile:"${task.project.buildDir}/${libName}"
-                )
+                String rslUrl = StringUtils.isBlank(it['rsl-url'][1].text())? it['rsl-url'][0].text() : it['rsl-url'][1].text();
+                String libName = flexConvention.useDebugRSLSwfs ? rslUrl[0..-2] + 'f' : rslUrl
+
+                if(new File("${flexConvention.flexHome}/frameworks/rsls/${libName}").exists()) {
+                    ant.copy(
+                        file: "${flexConvention.flexHome}/frameworks/rsls/${libName}",
+                        tofile:"${task.project.buildDir}/${libName}"
+                    )
+                }
             } else {
                 throw new ResolveException("Couldn't find the ${swc.name} file - are you sure the framework has all the files?")
             }
