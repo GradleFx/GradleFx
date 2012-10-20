@@ -36,13 +36,13 @@ abstract class AbstractGradleFxPlugin implements Plugin<Project> {
         
         applyPlugins()
         addDefaultConfigurations()
-        
+
         if (!project.convention.plugins.flex) {
             GradleFxConvention pluginConvention = new GradleFxConvention(project)
             project.convention.plugins.flex = pluginConvention
         }
-        
-        flexConvention = project.convention.plugins.flex
+
+        flexConvention = (GradleFxConvention) project.convention.plugins.flex
         
         addTasks()
         project.afterEvaluate {

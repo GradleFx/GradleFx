@@ -19,21 +19,41 @@ package org.gradlefx.configuration.sdk.states.air
 import org.gradlefx.configuration.sdk.SdkInitState
 import org.gradlefx.configuration.sdk.SdkType
 import org.gradlefx.configuration.sdk.states.AbstractCreateSdkInstallLocationState
-import org.gradlefx.configuration.sdk.states.flex.InstallFlexSdkState
-import org.gradlefx.configuration.sdk.states.flex.SetFlexHomeBasedOnSdkInstallLocationState
+import org.gradle.api.internal.file.FileResolver
+import org.gradle.api.internal.file.BaseDirFileResolver
+import org.gradle.internal.nativeplatform.filesystem.FileSystems
+import org.gradle.api.artifacts.Configuration
+import org.gradlefx.configuration.sdk.SdkInitialisationContext
+import org.gradle.api.Project
+import org.gradlefx.configuration.Configurations
 
 class CreateAirSdkInstallLocationState extends AbstractCreateSdkInstallLocationState {
 
-    CreateAirSdkInstallLocationState(File packageSdkFile) {
-        super(packageSdkFile, SdkType.AIR)
+    Project project
+
+    CreateAirSdkInstallLocationState() {
+        super(SdkType.AIR)
+    }
+
+    @Override
+    void process(SdkInitialisationContext context) {
+        super.process(context)
+
+        project = context.project
     }
 
     @Override
     SdkInitState nextState() {
-        if (installLocation.exists()) {
-            return new SetAirHomeBasedOnSdkInstallLocationState(installLocation)
+        if (!isAirSdkInstalled()) {
+            Configuration flexSdkConfiguration = project.configurations.getByName(Configurations.AIRSDK_CONFIGURATION_NAME.configName())
+            return new InstallAirSdkState(installLocation, flexSdkConfiguration.singleFile)
         } else {
-            return new InstallAirSdkState(installLocation, packagedSdkFile)
+            return null; //it's already installed
         }
+    }
+
+    private Boolean isAirSdkInstalled() {
+        FileResolver sdkInstallDirectoryResolver = new BaseDirFileResolver(FileSystems.default, installLocation.directory)
+        return sdkInstallDirectoryResolver.resolve("lib/adt.jar").exists()
     }
 }

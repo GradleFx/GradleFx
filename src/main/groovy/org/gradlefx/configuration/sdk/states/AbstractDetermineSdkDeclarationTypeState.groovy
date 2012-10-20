@@ -28,21 +28,14 @@ abstract class AbstractDetermineSdkDeclarationTypeState implements SdkInitState 
     protected static final Logger LOG = LoggerFactory.getLogger 'gradlefx'
 
     Configurations sdkConfigurationName
-    File packagedSdkFile
+    Boolean hasDeclaredSdkAsDependency;
 
     AbstractDetermineSdkDeclarationTypeState(Configurations sdkConfigurationName) {
         this.sdkConfigurationName = sdkConfigurationName
     }
 
     void process(SdkInitialisationContext context) {
-        if (hasDeclaredSdkAsDependency(context.project)) {
-            Configuration sdkConfiguration = context.project.configurations.getByName(sdkConfigurationName.configName());
-            packagedSdkFile = sdkConfiguration.singleFile
-        }
-    }
-
-    boolean hasDeclaredSdkAsDependency(Project project) {
-        Configuration flexSdkConfiguration = project.configurations.getByName(sdkConfigurationName.configName());
-        return flexSdkConfiguration.files.size() > 0
+        Configuration flexSdkConfiguration = context.project.configurations.getByName(sdkConfigurationName.configName())
+        hasDeclaredSdkAsDependency = flexSdkConfiguration.files.size() > 0
     }
 }

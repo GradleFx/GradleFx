@@ -17,41 +17,81 @@
 package org.gradlefx.configuration.sdk
 
 import org.gradle.api.Project
+import org.gradle.api.artifacts.Configuration
 import org.gradle.api.internal.file.BaseDirFileResolver
 import org.gradle.api.internal.file.FileResolver
 import org.gradle.internal.nativeplatform.filesystem.FileSystems
+import org.gradlefx.configuration.Configurations
 import org.gradlefx.conventions.GradleFxConvention
 
 import java.security.MessageDigest
 
 class SdkInstallLocationFactory {
 
-    private static final String SDKS_BASE_DIR_NAME = "sdks"
+    private static final String SDKS_BASE_DIR_NAME = "sdks/"
 
+    GradleFxConvention gradleFxConvention
     File sdksInstallBaseDirectory
+    Project project
 
     SdkInstallLocationFactory(Project project) {
-        File gradleFxUserHomeDir = ((GradleFxConvention) project.convention.plugins.flex).gradleFxUserHomeDir
+        this.project = project
+        gradleFxConvention = (GradleFxConvention) project.convention.plugins.flex
+        File gradleFxUserHomeDir = gradleFxConvention.gradleFxUserHomeDir
         FileResolver sdksBaseDirResolver = new BaseDirFileResolver(FileSystems.default, gradleFxUserHomeDir)
         sdksInstallBaseDirectory = sdksBaseDirResolver.resolve(SDKS_BASE_DIR_NAME)
     }
 
-    SdkInstallLocation createFromPackagedSdkFile(SdkType type, File packagedSdkFile) {
-        FileResolver sdkTypeDirResolver = new BaseDirFileResolver(FileSystems.default, sdksInstallBaseDirectory)
-        File sdkTypeDirectory = sdkTypeDirResolver.resolve(type.name().toLowerCase());
+    SdkInstallLocation createSdkLocation(SdkType sdkType) {
+        Boolean isFlexSdkDeclaredAsDependency = isFlexSdkDeclaredAsDependency()
+        Boolean isAirSdkDeclaredAsDependency = isAirSdkDeclaredAsDependency()
 
-        FileResolver installBaseDirResolver = new BaseDirFileResolver(FileSystems.default, sdkTypeDirectory)
-        String hashedSdkDirectoryName = fileToHash(packagedSdkFile)
-        File sdkInstallDirectory = installBaseDirResolver.resolve(hashedSdkDirectoryName)
+        File flexSdkArchive = getSdkArchiveForConfiguration(Configurations.FLEXSDK_CONFIGURATION_NAME)
+        File airSdkArchive = getSdkArchiveForConfiguration(Configurations.FLEXSDK_CONFIGURATION_NAME)
 
-        SdkInstallLocation location = new SdkInstallLocation(type, sdkInstallDirectory)
+        FileResolver installBaseDirResolver = new BaseDirFileResolver(FileSystems.default, sdksInstallBaseDirectory)
+        File sdkInstallDirectory = null
+        if(isFlexSdkDeclaredAsDependency && isAirSdkDeclaredAsDependency) {
+            //hash of both flex and air sdk archives define the directory name
+            String hashedSdkDirectoryName = filesToHash(flexSdkArchive, airSdkArchive)
+            sdkInstallDirectory = installBaseDirResolver.resolve(hashedSdkDirectoryName)
+        } else if (isFlexSdkDeclaredAsDependency && !isAirSdkDeclaredAsDependency) {
+            //air SDK is assumed to be in the flex sdk archive
+            String hashedSdkDirectoryName = filesToHash(flexSdkArchive)
+            sdkInstallDirectory = installBaseDirResolver.resolve(hashedSdkDirectoryName)
+        } else if (!isFlexSdkDeclaredAsDependency) {
+            //install the air sdk in the flexHome location
+            sdkInstallDirectory = new File(gradleFxConvention.flexHome)
+        }
 
-        return location
+        return new SdkInstallLocation(sdkType, sdkInstallDirectory)
     }
 
-    private String fileToHash(File file) {
+    private Boolean isFlexSdkDeclaredAsDependency() {
+        return getSdkArchiveForConfiguration(Configurations.FLEXSDK_CONFIGURATION_NAME) != null
+    }
+
+    private Boolean isAirSdkDeclaredAsDependency() {
+        return getSdkArchiveForConfiguration(Configurations.AIRSDK_CONFIGURATION_NAME) != null
+    }
+
+    private File getSdkArchiveForConfiguration(Configurations configurationName) {
+        Configuration sdkConfiguration = project.configurations.getByName(configurationName.configName())
+        if(!sdkConfiguration.files.empty){
+            return sdkConfiguration.singleFile
+        } else {
+            return null;
+        }
+    }
+
+    private String filesToHash(File ...files) {
+        String filePathsCombined = ""
+        files.each {
+            filePathsCombined += it.absolutePath
+        }
+
         def messageDigest = MessageDigest.getInstance("SHA1")
-        messageDigest.update( file.absolutePath.getBytes() );
+        messageDigest.update( filePathsCombined.getBytes() );
 
         return new BigInteger(1, messageDigest.digest()).toString(16).padLeft(40, '0')
     }

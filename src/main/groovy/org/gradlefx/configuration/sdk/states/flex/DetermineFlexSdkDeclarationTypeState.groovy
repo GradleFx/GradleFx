@@ -32,9 +32,9 @@ class DetermineFlexSdkDeclarationTypeState extends AbstractDetermineSdkDeclarati
 
     @Override
     SdkInitState nextState() {
-        if(packagedSdkFile) {
+        if(hasDeclaredSdkAsDependency) {
             LOG.info("Using the Flex SDK dependency")
-            return new CreateFlexSdkInstallLocationState(packagedSdkFile)
+            return new CreateFlexSdkInstallLocationState()
         } else {
             LOG.info("Using the flexHome convention")
             //use the default flexHome convention in case the sdk isn't specified as a dependency.

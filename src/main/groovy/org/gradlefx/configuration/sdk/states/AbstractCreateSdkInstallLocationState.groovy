@@ -19,17 +19,16 @@ package org.gradlefx.configuration.sdk.states
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.gradlefx.configuration.sdk.*
+import org.gradle.api.artifacts.Configuration
 
 abstract class AbstractCreateSdkInstallLocationState implements SdkInitState {
 
     protected static final Logger LOG = LoggerFactory.getLogger 'gradlefx'
 
-    File packagedSdkFile
     SdkType sdkType
     SdkInstallLocation installLocation
 
-    AbstractCreateSdkInstallLocationState(File packageSdkFile, SdkType sdkType) {
-        this.packagedSdkFile = packageSdkFile
+    AbstractCreateSdkInstallLocationState(SdkType sdkType) {
         this.sdkType = sdkType
     }
 
@@ -37,6 +36,6 @@ abstract class AbstractCreateSdkInstallLocationState implements SdkInitState {
         LOG.info("Determining SDK install location")
 
         SdkInstallLocationFactory locationFactory = new SdkInstallLocationFactory(context.project)
-        installLocation = locationFactory.createFromPackagedSdkFile(sdkType, packagedSdkFile)
+        installLocation = locationFactory.createSdkLocation(sdkType)
     }
 }

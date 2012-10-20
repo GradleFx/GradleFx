@@ -27,6 +27,6 @@ class InstallAirSdkState extends AbstractInstallSdkState {
     }
 
     SdkInitState nextState() {
-        return new SetAirHomeBasedOnSdkInstallLocationState(sdkInstallLocation)
+        return null //the end
     }
 }

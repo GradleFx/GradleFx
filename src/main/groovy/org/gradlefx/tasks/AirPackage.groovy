@@ -34,7 +34,7 @@ class AirPackage extends DefaultTask {
 
     public AirPackage() {
         description = 'Packages the generated swf file into an .air package'
-        flexConvention = project.convention.plugins.flex
+        flexConvention = (GradleFxConvention) project.convention.plugins.flex
         
         dependsOn Tasks.COMPILE_TASK_NAME
     }
@@ -45,7 +45,7 @@ class AirPackage extends DefaultTask {
 
         List compilerArguments = createCompilerArguments()
 
-        ant.java(jar: flexConvention.airHome + '/lib/adt.jar',
+        ant.java(jar: flexConvention.flexHome + '/lib/adt.jar',
                 fork: true,
                 timeout: 10000,
                 resultproperty: ANT_RESULT_PROPERTY,

@@ -21,19 +21,41 @@ import org.gradlefx.configuration.sdk.SdkType
 import org.gradlefx.configuration.sdk.states.AbstractCreateSdkInstallLocationState
 
 import org.gradlefx.configuration.sdk.states.AbstractInstallSdkState
+import org.gradle.api.internal.file.FileResolver
+import org.gradle.api.internal.file.BaseDirFileResolver
+import org.gradle.internal.nativeplatform.filesystem.FileSystems
+import org.gradle.api.artifacts.Configuration
+import org.gradlefx.configuration.Configurations
+import org.gradlefx.configuration.sdk.SdkInitialisationContext
+import org.gradle.api.Project
 
 class CreateFlexSdkInstallLocationState extends AbstractCreateSdkInstallLocationState {
 
-    CreateFlexSdkInstallLocationState(File packageSdkFile) {
-        super(packageSdkFile, SdkType.Flex)
+    Project project
+
+    CreateFlexSdkInstallLocationState() {
+        super(SdkType.Flex)
+    }
+
+    @Override
+    void process(SdkInitialisationContext context) {
+        super.process(context)
+
+        project = context.project
     }
 
     @Override
     SdkInitState nextState() {
-        if (installLocation.exists()) {
+        if (isFlexSdkInstalled()) {
             return new SetFlexHomeBasedOnSdkInstallLocationState(installLocation)
         } else {
-            return new InstallFlexSdkState(installLocation, packagedSdkFile)
+            Configuration flexSdkConfiguration = project.configurations.getByName(Configurations.FLEXSDK_CONFIGURATION_NAME.configName())
+            return new InstallFlexSdkState(installLocation, flexSdkConfiguration.singleFile)
         }
+    }
+
+    private Boolean isFlexSdkInstalled() {
+        FileResolver sdkInstallDirectoryResolver = new BaseDirFileResolver(FileSystems.default, installLocation.directory)
+        return sdkInstallDirectoryResolver.resolve("lib/mxmlc.jar").exists()
     }
 }
