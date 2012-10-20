@@ -20,7 +20,7 @@ import org.gradle.util.ConfigureUtil
 
 class SdkAutoInstallConvention {
 
-    private boolean showPrompts     = false
+    private boolean showPrompts     = true
 
     void configure(Closure closure) {
         ConfigureUtil.configure(closure, this)

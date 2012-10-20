@@ -80,7 +80,9 @@ class InstallFlexSdkState extends AbstractInstallSdkState {
 
         AntBuilder ant = new AntBuilder()
         ant.ant(antfile: getAdditionalDownloadsAntScriptFile(), dir: getAdditionalDownloadsAntScriptDirectory()) {
-            property(name: 'build.noprompt', value: showPrompts)
+            if(!showPrompts) {
+                property(name: 'build.noprompt', value: true)
+            }
         }
     }
 
