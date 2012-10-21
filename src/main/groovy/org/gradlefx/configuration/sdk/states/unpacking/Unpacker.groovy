@@ -14,21 +14,8 @@
  * limitations under the License.
  */
 
-package org.gradlefx.configuration.sdk.states.air
+package org.gradlefx.configuration.sdk.states.unpacking
 
-import org.gradlefx.configuration.sdk.SdkInitState
-import org.gradlefx.configuration.sdk.SdkInstallLocation
-import org.gradlefx.configuration.sdk.states.AbstractInstallSdkState
-
-class InstallAirSdkState extends AbstractInstallSdkState {
-
-    private static final String SOME_AIR_SDK_ROOT_DIRECTORY = "frameworks"
-
-    InstallAirSdkState(SdkInstallLocation sdkInstallLocation, File packagedSdkFile) {
-        super(sdkInstallLocation, packagedSdkFile, SOME_AIR_SDK_ROOT_DIRECTORY)
-    }
-
-    SdkInitState nextState() {
-        return null //the end
-    }
+interface Unpacker {
+    void unpack()
 }

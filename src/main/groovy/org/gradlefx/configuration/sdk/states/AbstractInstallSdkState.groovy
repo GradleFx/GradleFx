@@ -22,6 +22,11 @@ import org.gradlefx.configuration.sdk.SdkInitialisationContext
 import org.gradlefx.configuration.sdk.SdkInstallLocation
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.gradle.api.file.FileTree
+import org.gradle.api.file.FileVisitDetails
+import org.gradlefx.configuration.sdk.states.unpacking.SdkZipUnpacker
+import org.gradlefx.configuration.sdk.states.unpacking.SdkTarGzUnpacker
+import org.gradlefx.configuration.sdk.states.unpacking.SdkTbz2Unpacker
 
 abstract class AbstractInstallSdkState implements SdkInitState {
 
@@ -30,10 +35,19 @@ abstract class AbstractInstallSdkState implements SdkInitState {
     SdkInstallLocation sdkInstallLocation
     File packagedSdkFile
     Project project
+    String someSdkRootDirectoryName
 
-    AbstractInstallSdkState(SdkInstallLocation sdkInstallLocation, File packagedSdkFile) {
+    /**
+     *
+     * @param sdkInstallLocation
+     * @param packagedSdkFile
+     * @param someSdkRootDirectoryName This should be the name of a directory which is located at the root of the SDK.
+     *                             This is being used to determine the relative location of the SDK within the archive
+     */
+    AbstractInstallSdkState(SdkInstallLocation sdkInstallLocation, File packagedSdkFile, String someSdkRootDirectoryName) {
         this.sdkInstallLocation = sdkInstallLocation
         this.packagedSdkFile = packagedSdkFile
+        this.someSdkRootDirectoryName = someSdkRootDirectoryName
     }
 
     void process(SdkInitialisationContext context) {
@@ -52,22 +66,15 @@ abstract class AbstractInstallSdkState implements SdkInitState {
     void unpackSdk() {
         if (packagedSdkFile.name.endsWith(".zip")) {
             LOG.info("Unpacking SDK...")
-
-            AntBuilder ant = new AntBuilder()
-            ant.unzip(src: packagedSdkFile.absolutePath, dest: sdkInstallLocation.directory.absolutePath, overwrite: "true")
+            new SdkZipUnpacker(project, sdkInstallLocation, packagedSdkFile, someSdkRootDirectoryName).unpack()
         } else if (packagedSdkFile.name.endsWith("tar.gz")) {
             LOG.info("Unpacking SDK...")
-
-            AntBuilder ant = new AntBuilder()
-            ant.gunzip(src: packagedSdkFile.absolutePath)
-
-            String tarFile = packagedSdkFile.absolutePath.replaceFirst(".gz", "")
-            ant.untar(src: tarFile, dest: sdkInstallLocation.directory.absolutePath)
-
-            //cleanup by removing the temporary tar archive
-            new File(tarFile).delete()
+            new SdkTarGzUnpacker(project, sdkInstallLocation, packagedSdkFile, someSdkRootDirectoryName).unpack()
+        } else if (packagedSdkFile.name.endsWith("tbz2")) {
+            LOG.info("Unpacking SDK...")
+            new SdkTbz2Unpacker(project, sdkInstallLocation, packagedSdkFile, someSdkRootDirectoryName).unpack()
         } else {
-            throw new RuntimeException("Unsupported sdk packaging type. Supported formats are zip or tar.gz")
+            throw new RuntimeException("Unsupported sdk packaging type. Supported formats are zip, tar.gz and tbz2")
         }
     }
 
