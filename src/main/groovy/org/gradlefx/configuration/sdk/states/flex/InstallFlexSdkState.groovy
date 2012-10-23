@@ -30,9 +30,10 @@ class InstallFlexSdkState extends AbstractInstallSdkState {
 
     private static final Logger LOG = LoggerFactory.getLogger 'gradlefx'
     private static final String SDK_INSTALLER_CONFIG_URL = 'http://incubator.apache.org/flex/sdk-installer-config.xml'
+    private static final String SOME_FLEX_SDK_ROOT_DIRECTORY = "frameworks"
 
     InstallFlexSdkState(SdkInstallLocation sdkInstallLocation, File packagedSdkFile) {
-        super(sdkInstallLocation, packagedSdkFile)
+        super(sdkInstallLocation, packagedSdkFile, SOME_FLEX_SDK_ROOT_DIRECTORY)
     }
 
     SdkInitState nextState() {

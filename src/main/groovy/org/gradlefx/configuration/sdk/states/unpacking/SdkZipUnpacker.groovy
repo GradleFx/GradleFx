@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-package org.gradlefx.configuration.sdk.states.air
+package org.gradlefx.configuration.sdk.states.unpacking
 
-import org.gradlefx.configuration.sdk.SdkInitState
 import org.gradlefx.configuration.sdk.SdkInstallLocation
-import org.gradlefx.configuration.sdk.states.AbstractInstallSdkState
+import org.gradle.api.Project
 
-class InstallAirSdkState extends AbstractInstallSdkState {
+class SdkZipUnpacker extends AbstractSdkUnpacker {
 
-    private static final String SOME_AIR_SDK_ROOT_DIRECTORY = "frameworks"
-
-    InstallAirSdkState(SdkInstallLocation sdkInstallLocation, File packagedSdkFile) {
-        super(sdkInstallLocation, packagedSdkFile, SOME_AIR_SDK_ROOT_DIRECTORY)
+    SdkZipUnpacker(Project project, SdkInstallLocation sdkInstallLocation, File packagedSdkFile, String someSdkRootDirectoryName) {
+        super(project, sdkInstallLocation, packagedSdkFile, someSdkRootDirectoryName)
     }
 
-    SdkInitState nextState() {
-        return null //the end
+    void unpackArchive() {
+        AntBuilder ant = new AntBuilder()
+        ant.unzip(src: packagedSdkFile.absolutePath, dest: sdkInstallLocation.directory.absolutePath, overwrite: "true")
     }
 }
