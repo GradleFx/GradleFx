@@ -56,8 +56,8 @@ abstract class CommandLineInstruction {
         //ii's a pure AS project: we don't want to load the Flex configuration
         if (!linkage.usesFlex())
             reset CompilerOption.LOAD_CONFIG
-        //when FrameworkLinkage is the default for this compiler, we don't have to do anything
-        else if (!linkage.isCompilerDefault(flexConvention.type)) {
+        //when FrameworkLinkage is the default for this compiler and it's not a swc, we don't have to do anything
+        else if (!linkage.isCompilerDefault(flexConvention.type) || (flexConvention.type == FlexType.swc)) {
             //remove RSL's defined in config.xml
             reset CompilerOption.RUNTIME_SHARED_LIBRARY_PATH
             
