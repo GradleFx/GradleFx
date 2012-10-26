@@ -34,7 +34,8 @@ import org.gradlefx.tasks.Test;
 import org.gradlefx.tasks.compile.Compile
 import org.gradlefx.configuration.sdk.DefaultSdkInitialisationContext
 import org.gradlefx.configuration.sdk.states.flex.DetermineFlexSdkDeclarationTypeState
-import org.gradlefx.configuration.sdk.states.air.DetermineAirSdkDeclarationTypeState;
+import org.gradlefx.configuration.sdk.states.air.DetermineAirSdkDeclarationTypeState
+import org.gradlefx.tasks.CleanSdks;
 
 class GradleFxPlugin extends AbstractGradleFxPlugin {
 
@@ -46,7 +47,8 @@ class GradleFxPlugin extends AbstractGradleFxPlugin {
         addTask Tasks.PUBLISH_TASK_NAME, Publish
         addTask Tasks.TEST_TASK_NAME, Test
         addTask Tasks.COMPILE_TASK_NAME, Compile
-        
+        addTask Tasks.CLEAN_SDKS, CleanSdks
+
         //conditional tasks
         addTask Tasks.ASDOC_TASK_NAME, ASDoc, { flexConvention.type.isLib() }
         addTask Tasks.PACKAGE_TASK_NAME, AirPackage, { flexConvention.type.isNativeApp() }
@@ -57,10 +59,18 @@ class GradleFxPlugin extends AbstractGradleFxPlugin {
     protected void configure(Project project) {
         initializeSDKs()
 
-        new FlexAntTasksConfigurator(project).configure()
+        project.gradle.taskGraph.whenReady {
+            if(!isCleanSdksGoingToRun()) {
+                new FlexAntTasksConfigurator(project).configure()
+            }
+        }
         
         if (!flexConvention.type.isNativeApp())
             addArtifactsToDefaultConfiguration project
+    }
+
+    private Boolean isCleanSdksGoingToRun() {
+        project.gradle.taskGraph.hasTask((CleanSdks)project[Tasks.CLEAN_SDKS]);
     }
 
     private void initializeSDKs() {

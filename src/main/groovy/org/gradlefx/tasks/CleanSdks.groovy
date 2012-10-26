@@ -16,14 +16,21 @@
 
 package org.gradlefx.tasks
 
-class Tasks {
-    public static final String COMPILE_TASK_NAME = 'compileFlex'
-    public static final String ASDOC_TASK_NAME = 'asdoc'
-    public static final String BUILD_TASK_NAME = 'build'
-    public static final String PACKAGE_TASK_NAME = 'package'
-    public static final String TEST_TASK_NAME = 'test'
-    public static final String PUBLISH_TASK_NAME = 'publish'
-    public static final String COPY_RESOURCES_TASK_NAME = 'copyresources'
-    public static final String CREATE_HTML_WRAPPER = 'createHtmlWrapper'
-    public static final String CLEAN_SDKS = 'cleanSdks'
+import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.TaskAction
+import org.gradlefx.configuration.sdk.SdkInstallLocationFactory
+import org.gradlefx.configuration.sdk.SdkInstallLocation
+import org.gradlefx.configuration.sdk.SdkType
+
+class CleanSdks extends DefaultTask {
+
+    @TaskAction
+    public void deleteSdksDir() {
+        SdkInstallLocationFactory locationFactory = new SdkInstallLocationFactory(project)
+        SdkInstallLocation installLocation = locationFactory.createSdkLocation(SdkType.Flex)
+
+        if(installLocation.directory.exists()) {
+            installLocation.directory.deleteDir()
+        }
+    }
 }
