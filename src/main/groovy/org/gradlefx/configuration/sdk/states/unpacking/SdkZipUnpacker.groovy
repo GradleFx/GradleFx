@@ -14,12 +14,19 @@
  * limitations under the License.
  */
 
-package org.gradlefx.tasks.compile.factory
+package org.gradlefx.configuration.sdk.states.unpacking
 
-import org.gradle.api.Task
-import org.gradlefx.FlexType
+import org.gradlefx.configuration.sdk.SdkInstallLocation
+import org.gradle.api.Project
 
-public interface CompileTaskClassFactory {
+class SdkZipUnpacker extends AbstractSdkUnpacker {
 
-    Class<Task> createCompileTaskClass(FlexType flexType);
+    SdkZipUnpacker(Project project, SdkInstallLocation sdkInstallLocation, File packagedSdkFile, String someSdkRootDirectoryName) {
+        super(project, sdkInstallLocation, packagedSdkFile, someSdkRootDirectoryName)
+    }
+
+    void unpackArchive() {
+        AntBuilder ant = new AntBuilder()
+        ant.unzip(src: packagedSdkFile.absolutePath, dest: sdkInstallLocation.directory.absolutePath, overwrite: "true")
+    }
 }

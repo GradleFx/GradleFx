@@ -1,5 +1,26 @@
 h2. GradleFx changelog
 
+h3. v0.6
+
+h5. New features
+* Added Flex/AIR auto-installation feature. This allows you to define the Flex/AIR SDK as a dependency which GradleFx will then download and install. (see documentation)
+* Added option useDebugRSLSwfs that can be set to true or false to allow the use for framework unsigned SWF files or using signed SWZ files.
+
+h5. Improvements
+* issue 36: Create the compile task immediately. This should remove the need to use afterEvaluate when extending GradleFx tasks.
+* showing compiler options in the logging
+
+h5. Bug fixes
+* issue 64: Project type swc still uses RSL linking for the flex SDK
+* issue 62: The build task should depend on compile
+* issue 55: AIR descriptor file not found on linux
+
+h5. Breaking changes
+* renamed the compile task to compileFlex (you can still use 'gradle compile' in command-line, just not in your script)
+* renamed htmlWrapper.width and htmlWrapper.height properties to percentWidth and percentHeight
+* renamed htmlWrapper.express-install and htmlWrapper.version-detection to expressInstall and versionDetection
+* issue 59: complex properties now use curly brackers instead of square brackets (e.g. air {} instead of air [])
+
 h3. v0.5
 
 h5. New features

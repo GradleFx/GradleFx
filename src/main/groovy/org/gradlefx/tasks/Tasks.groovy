@@ -17,7 +17,7 @@
 package org.gradlefx.tasks
 
 class Tasks {
-    public static final String COMPILE_TASK_NAME = 'compile'
+    public static final String COMPILE_TASK_NAME = 'compileFlex'
     public static final String ASDOC_TASK_NAME = 'asdoc'
     public static final String BUILD_TASK_NAME = 'build'
     public static final String PACKAGE_TASK_NAME = 'package'
@@ -25,4 +25,5 @@ class Tasks {
     public static final String PUBLISH_TASK_NAME = 'publish'
     public static final String COPY_RESOURCES_TASK_NAME = 'copyresources'
     public static final String CREATE_HTML_WRAPPER = 'createHtmlWrapper'
+    public static final String CLEAN_SDKS = 'cleanSdks'
 }

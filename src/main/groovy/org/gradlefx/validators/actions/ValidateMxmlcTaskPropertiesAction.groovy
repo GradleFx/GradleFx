@@ -25,8 +25,8 @@ import org.gradlefx.validators.runner.FailOnErrorValidatorRunner
 
 class ValidateMxmlcTaskPropertiesAction implements Action<Mxmlc> {
 
-    void execute(Mxmlc task) {
-        new FailOnErrorValidatorRunner(task.project)
+    void execute(Mxmlc delegate) {
+        new FailOnErrorValidatorRunner(delegate.task.project)
             .add(new FlexSDKSpecifiedValidator())
             .add(new FrameworkLinkageValidator())
             .add(new MxmlcAdditionalPropertiesValidator())

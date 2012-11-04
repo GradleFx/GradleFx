@@ -23,8 +23,26 @@ apply plugin: 'signing'
 apply plugin: 'idea'
 
 group = 'org.gradlefx'
-version = '0.5'
+version = '0.6'
 ext.packaging = 'jar'
+
+def isDevBuild
+def isCiBuild
+def isReleaseBuild
+
+def sonatypeRepositoryUrl
+
+//set build variables based on build type (release, continuous integration, development)
+if(hasProperty("release")) {
+    isReleaseBuild = true
+    sonatypeRepositoryUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+} else if (hasProperty("ci")) {
+    isCiBuild = true
+    version += "-SNAPSHOT"
+    sonatypeRepositoryUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
+} else {
+    isDevBuild = true
+}
 
 repositories {
     mavenCentral()
@@ -56,13 +74,13 @@ artifacts {
 task wrapper(type: Wrapper) {
     group = 'Buildmaster'
     description = 'Generates gradlew and gradlew.bat bootstrap scripts'
-    gradleVersion = '1.0-rc-3'
+    gradleVersion = '1.1'
     // place jar file and properties into a subdirectory to avoid root dir clutter
     jarFile = 'buildSrc/wrapper/gradle.jar'
 }
 
 //********* artifact signing *********
-if(gradle.startParameter.taskNames.contains("uploadArchives")) {
+if(isReleaseBuild) {
     signing {
         sign configurations.archives
     }
@@ -74,14 +92,16 @@ if(gradle.startParameter.taskNames.contains("uploadArchives")) {
 
 uploadArchives {
     repositories {
-        if (version.contains("SNAPSHOT")) {
+        if (isDevBuild) {
             mavenLocal()
         }
         else {
             mavenDeployer {
-                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+                if(isReleaseBuild) {
+                    beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+                }
     
-                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                repository(url: sonatypeRepositoryUrl) {
                   authentication(userName: sonatypeUsername, password: sonatypePassword)
                 }
     

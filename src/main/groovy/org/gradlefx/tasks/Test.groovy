@@ -17,28 +17,29 @@
 package org.gradlefx.tasks
 
 import org.gradle.api.DefaultTask
-import org.gradle.api.tasks.TaskAction
-import org.gradle.api.logging.LogLevel
 import org.gradle.api.file.FileTree
 import org.gradle.api.file.FileTreeElement
+import org.gradle.api.logging.LogLevel
+import org.gradle.api.tasks.TaskAction
+import org.gradlefx.configuration.FlexUnitAntTasksConfigurator
+import org.gradlefx.conventions.FlexUnitConvention
+import org.gradlefx.conventions.GradleFxConvention
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.gradlefx.configuration.FlexUnitAntTasksConfigurator
-import org.gradlefx.conventions.GradleFxConvention
+
 
 /*
  * A Gradle task to execute FlexUnit tests.
  */
-
 class Test extends DefaultTask {
 
-    private static final Logger log = LoggerFactory.getLogger(Test)
+    private static final Logger LOG = LoggerFactory.getLogger Test
 
     GradleFxConvention flexConvention;
 
     public Test() {
         description = "Run the FlexUnit tests."
-        logging.setLevel(LogLevel.INFO)
+        logging.setLevel LogLevel.INFO
 
         flexConvention = project.convention.plugins.flex
     }
@@ -49,7 +50,7 @@ class Test extends DefaultTask {
             configureAntWithFlexUnit()
             runTests()
         } else {
-            log.info("Skipping tests since no tests exist")
+            LOG.info "Skipping tests since no tests exist"
         }
     }
 
@@ -70,30 +71,31 @@ class Test extends DefaultTask {
     }
 
     private void runTests() {
-        def reportDir = project.file(flexConvention.flexUnit.toDir)
+        FlexUnitConvention flexUnit = flexConvention.flexUnit
+        File reportDir = project.file flexUnit.toDir
 
         // you can't write to a directory that doesn't exist
-        if(!reportDir.exists()) reportDir.mkdirs()
+        if (!reportDir.exists()) reportDir.mkdirs()
 
         Set<File> libraries = project.configurations.internal.files +
                 project.configurations.external.files +
                 project.configurations.merged.files +
                 project.configurations.test.files
 
-        ant.flexunit(
-            player:          flexConvention.flexUnit.player,
-            command:         flexConvention.flexUnit.command,
-            toDir:           flexConvention.flexUnit.toDir,
-            workingDir:      flexConvention.flexUnit.workingDir,
-            haltonfailure:   flexConvention.flexUnit.haltOnFailure,
-            verbose:         flexConvention.flexUnit.verbose,
-            localTrusted:    flexConvention.flexUnit.localTrusted,
-            port:            flexConvention.flexUnit.port,
-            buffer:          flexConvention.flexUnit.buffer,
-            timeout:         flexConvention.flexUnit.timeout,
-            failureproperty: flexConvention.flexUnit.failureproperty,
-            headless:        flexConvention.flexUnit.headless,
-            display:         flexConvention.flexUnit.display) {
+        ant.flexunit (
+            player:          flexUnit.player,
+            command:         flexUnit.command,
+            toDir:           flexUnit.toDir,
+            workingDir:      flexUnit.workingDir,
+            haltonfailure:   flexUnit.haltOnFailure,
+            verbose:         flexUnit.verbose,
+            localTrusted:    flexUnit.localTrusted,
+            port:            flexUnit.port,
+            buffer:          flexUnit.buffer,
+            timeout:         flexUnit.timeout,
+            failureproperty: flexUnit.failureProperty,
+            headless:        flexUnit.headless,
+            display:         flexUnit.display) {
 
             flexConvention.srcDirs.each { String srcDir ->
                 source(dir: project.file(srcDir).path)
@@ -107,8 +109,8 @@ class Test extends DefaultTask {
 
             flexConvention.testDirs.each { String testDir ->
                 FileTree fileTree = project.fileTree(testDir)
-                fileTree.includes = flexConvention.flexUnit.includes
-                fileTree.excludes = flexConvention.flexUnit.excludes
+                fileTree.includes = flexUnit.includes
+                fileTree.excludes = flexUnit.excludes
 
                 fileTree.visit { FileTreeElement includedFile ->
                     testSource(dir: project.file(testDir).path) {
@@ -125,7 +127,7 @@ class Test extends DefaultTask {
 
         }
 
-        if(ant.properties[flexConvention.flexUnit.failureproperty] == "true") {
+        if (ant.properties[flexUnit.failureProperty] == "true") {
             throw new Exception("Tests failed");
         }
     }
@@ -133,4 +135,5 @@ class Test extends DefaultTask {
     private void configureAntWithFlexUnit() {
         new FlexUnitAntTasksConfigurator(project).configure()
     }
+    
 }

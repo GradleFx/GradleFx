@@ -16,9 +16,10 @@ Features:
 * AsDoc support
 * Adobe Flash Builder project generation
 * project scaffolding
+* Automatic Flex/AIR SDK installation
 
 h2. Useful links
-* Documentation: "https://github.com/GradleFx/GradleFx/wiki":https://github.com/GradleFx/GradleFx/wiki
+* Documentation: "http://doc.gradlefx.org":http://doc.gradlefx.org
 * Examples: "https://github.com/GradleFx/GradleFx-Examples":https://github.com/GradleFx/GradleFx-Examples
 * Help & Support: "http://gradlefx.tenderapp.com/home":http://gradlefx.tenderapp.com/home
 * Bug Tracking: "https://github.com/GradleFx/GradleFx/issues":https://github.com/GradleFx/GradleFx/issues
@@ -27,4 +28,3 @@ h2. Useful links
 h2. Upcoming features
 * IDEA project generation support
 * Mobile support
-* Automatic downloading of the Flex SDK

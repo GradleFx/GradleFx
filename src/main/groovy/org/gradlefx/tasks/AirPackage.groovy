@@ -20,8 +20,9 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileTree
 import org.gradle.api.file.FileTreeElement
 import org.gradle.api.tasks.TaskAction
-import org.gradlefx.FlexType
 import org.gradlefx.validators.actions.ValidateAirPackageTaskPropertiesAction
+import org.gradlefx.cli.CompilerOption;
+import org.gradlefx.conventions.FlexType;
 import org.gradlefx.conventions.GradleFxConvention
 
 class AirPackage extends DefaultTask {
@@ -33,8 +34,9 @@ class AirPackage extends DefaultTask {
 
     public AirPackage() {
         description = 'Packages the generated swf file into an .air package'
-
-        flexConvention = project.convention.plugins.flex
+        flexConvention = (GradleFxConvention) project.convention.plugins.flex
+        
+        dependsOn Tasks.COMPILE_TASK_NAME
     }
 
     @TaskAction
@@ -60,12 +62,12 @@ class AirPackage extends DefaultTask {
     }
 
     private List createCompilerArguments() {
-        List airOptions = ["-package"]
+        List airOptions = [CompilerOption.PACKAGE]
 
-        addAirSigningOptions(airOptions)
+        addAirSigningOptions airOptions
 
         airOptions.addAll([
-            new File(project.buildDir.absolutePath, flexConvention.output).absolutePath,
+            project.file(project.buildDir.name + '/' + flexConvention.output).absolutePath,
             project.relativePath(flexConvention.air.applicationDescriptor),
             project.relativePath("${project.buildDir}/${flexConvention.output}.${FlexType.swf}")
         ])
@@ -77,19 +79,19 @@ class AirPackage extends DefaultTask {
 
     private void addFiles(List compilerOptions) {
         flexConvention.air.includeFileTrees.each { ConfigurableFileTree fileTree ->
-            compilerOptions.add("-C")
-            compilerOptions.add(fileTree.dir.absolutePath)
+            compilerOptions.add "-C"
+            compilerOptions.add fileTree.dir.absolutePath
 
             fileTree.visit { FileTreeElement file ->
-                if(!file.isDirectory()) {
-                    compilerOptions.add(file.relativePath)
+                if (!file.isDirectory()) {
+                    compilerOptions.add file.relativePath
                 }
             }
         }
     }
 
     private void addAirSigningOptions(List compilerOptions) {
-        compilerOptions.addAll([
+        compilerOptions.addAll ([
                 "-storetype",
                 "pkcs12",
                 "-keystore",
@@ -108,4 +110,5 @@ class AirPackage extends DefaultTask {
     def showAntOutput(antOutput) {
         println antOutput
     }
+    
 }

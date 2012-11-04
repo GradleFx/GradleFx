@@ -16,67 +16,29 @@
 
 package org.gradlefx.tasks.compile
 
-import java.util.List
-import org.gradle.api.tasks.TaskAction
-import org.gradlefx.FrameworkLinkage;
-import org.gradlefx.options.CompilerOption
+import org.gradle.api.Task
+import org.gradle.api.artifacts.ResolveException
+import org.gradlefx.cli.CommandLineInstruction
+import org.gradlefx.conventions.FrameworkLinkage
 import org.gradlefx.tasks.Tasks
 import org.gradlefx.validators.actions.ValidateMxmlcTaskPropertiesAction
+import org.apache.commons.lang.StringUtils
 
-class Mxmlc extends AbstractMxmlc {
-
-	private static final String ANT_RESULT_PROPERTY = 'mxmlcCompileResult'
-	private static final String ANT_OUTPUT_PROPERTY = 'mxmlcCompileOutput'
+class Mxmlc extends CompileTaskDelegate {
 	
-    public Mxmlc() {
-        description = 'Compiles Flex application/module (*.swf) using the mxmlc compiler'
-        dependsOn(Tasks.COPY_RESOURCES_TASK_NAME)
+    public Mxmlc(Task task, CommandLineInstruction cli) {
+        super(task, cli)
+        task.description = 'Compiles Flex application/module (*.swf) using the mxmlc compiler'
+        task.dependsOn Tasks.COPY_RESOURCES_TASK_NAME
     }
 
-    @TaskAction
-    def compileFlex() {
+    void compileFlex() {
         new ValidateMxmlcTaskPropertiesAction().execute(this)
 
-		super.compileFlex(ANT_RESULT_PROPERTY, ANT_OUTPUT_PROPERTY, 'Mxmlc', createCompilerArguments())
-    }
-
-    protected List createCompilerArguments() {
-        List compilerArguments = []
+		cli.setConventionArguments()
+        cli.execute task.ant, 'mxmlc'
         
-        //add framework
-        addPlayerLibrary(compilerArguments)
-        addFramework(compilerArguments)
-
-        //add every source directory
-        addSourcePaths(compilerArguments)
-        addLocales(compilerArguments)
-
-        //add dependencies
-        addLibraries(project.configurations.internal.files, project.configurations.internal, CompilerOption.INCLUDE_LIBRARIES, compilerArguments)
-		addLibraries(project.configurations.external.files - project.configurations.internal.files - project.configurations.merged.files, project.configurations.external, CompilerOption.EXTERNAL_LIBRARY_PATH, compilerArguments)
-        addLibraries(project.configurations.merged.files, project.configurations.merged, CompilerOption.LIBRARY_PATH, compilerArguments)
-        addLibraries(project.configurations.theme.files, project.configurations.theme, CompilerOption.THEME, compilerArguments)
-        addRsls(compilerArguments)
-
-        //add all the other user specified compiler options
-        flexConvention.additionalCompilerOptions.each { compilerOption ->
-            compilerArguments.add(compilerOption)
-        }
-
-        compilerArguments.add("${CompilerOption.OUTPUT}=${project.buildDir.path}/${flexConvention.output}.swf" )
-
-        //add the target file
-        File mainClassFile = findFile(flexConvention.srcDirs, flexConvention.mainClassPath)
-        compilerArguments.add(mainClassFile.absolutePath)
-
-        return compilerArguments
-    }
-    
-    @Override
-    protected void addFramework(List compilerArguments) {
-        super.addFramework(compilerArguments)
-        
-        if (flexConvention.frameworkLinkage == FrameworkLinkage.rsl) 
+        if (flexConvention.frameworkLinkage == FrameworkLinkage.rsl)
             copyFrameworkRSLs()
     }
     
@@ -92,17 +54,20 @@ class Mxmlc extends AbstractMxmlc {
         
         flexConfig['runtime-shared-library-path'].each {
             String swcName = it['path-element'].text()
-            String libName = it['rsl-url'][1].text()[0..-2] + 'f'
             File swc = new File("${flexConvention.flexHome}/frameworks/${swcName}")
-            
+
             if (swc.exists()) {
-                ant.unzip(src: swc.path, dest: swc.parent) {
-                    patternset(includes: 'library.swf')
+                String rslUrl = StringUtils.isBlank(it['rsl-url'][1].text())? it['rsl-url'][0].text() : it['rsl-url'][1].text();
+                String libName = flexConvention.useDebugRSLSwfs ? rslUrl[0..-2] + 'f' : rslUrl
+
+                if(new File("${flexConvention.flexHome}/frameworks/rsls/${libName}").exists()) {
+                    ant.copy(
+                        file: "${flexConvention.flexHome}/frameworks/rsls/${libName}",
+                        tofile:"${task.project.buildDir}/${libName}"
+                    )
                 }
-                ant.move(
-                    file: "${swc.parent}/library.swf", 
-                    tofile:"${project.buildDir}/${libName}"
-                )
+            } else {
+                throw new ResolveException("Couldn't find the ${swc.name} file - are you sure the framework has all the files?")
             }
         }
     }

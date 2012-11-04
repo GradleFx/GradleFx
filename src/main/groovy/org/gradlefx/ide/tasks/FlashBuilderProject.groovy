@@ -17,9 +17,9 @@
 package org.gradlefx.ide.tasks
 
 import org.gradle.api.Project;
-import org.gradlefx.FlexType
-import org.gradlefx.FrameworkLinkage
 import org.gradlefx.configuration.Configurations;
+import org.gradlefx.conventions.FlexType;
+import org.gradlefx.conventions.FrameworkLinkage;
 import org.gradlefx.templates.tasks.Scaffold;
 
 
@@ -211,14 +211,14 @@ class FlashBuilderProject extends AbstractIDEProject {
             
             eachDependencyFile { file, type ->
                 switch (type) {
-                    case Configurations.INTERNAL_CONFIGURATION_NAME:
-                    case Configurations.MERGE_CONFIGURATION_NAME:
+                    case Configurations.INTERNAL_CONFIGURATION_NAME.configName():
+                    case Configurations.MERGE_CONFIGURATION_NAME.configName():
                         createDependencyNode libNode, file, FrameworkLinkage.merged
                         break
-                    case Configurations.EXTERNAL_CONFIGURATION_NAME:
+                    case Configurations.EXTERNAL_CONFIGURATION_NAME.configName():
                         createDependencyNode libNode, file, FrameworkLinkage.external
                         break                       
-                    case Configurations.RSL_CONFIGURATION_NAME:
+                    case Configurations.RSL_CONFIGURATION_NAME.configName():
                         Node node = createDependencyNode libNode, file, FrameworkLinkage.rsl
                         node.@applicationDomain = 'default'
                         node.@forceLoad = false
@@ -230,7 +230,7 @@ class FlashBuilderProject extends AbstractIDEProject {
                             rslUrl: file.name[0..-2] + 'f'
                         ])
                         break
-                    case Configurations.THEME_CONFIGURATION_NAME:
+                    case Configurations.THEME_CONFIGURATION_NAME.configName():
                         String themeName = file.name[0..-5]
                         
                         if (!themeName.matches(/(\d|_|\w)+/)) {

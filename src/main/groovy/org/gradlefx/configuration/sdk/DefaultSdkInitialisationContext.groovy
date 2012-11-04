@@ -14,39 +14,30 @@
  * limitations under the License.
  */
 
-package org.gradlefx
+package org.gradlefx.configuration.sdk
 
-enum FlexType {
-    swf('flex'),
-    swc('flex'),
-    air('air'),
-    mobile('airmobile')
-        
-    private String configName
-    
-    
-    public FlexType(String configName) {
-        this.configName = configName
+import org.gradle.api.Project
+
+class DefaultSdkInitialisationContext implements SdkInitialisationContext {
+
+    private Project project
+    private SdkInitState currentState;
+
+    DefaultSdkInitialisationContext(Project project, SdkInitState state) {
+        this.project = project
+        currentState = state
     }
-    
-    public String getConfigName() {
-        return configName
+
+    void initSdk() {
+        while (true) {
+            currentState.process(this)
+            currentState = currentState.nextState()
+
+            if(currentState == null) break
+        }
     }
-    
-    public boolean isApp() {
-        return isWebApp() || isNativeApp()
+
+    Project getProject() {
+        return project
     }
-    
-    public boolean isLib() {
-        return this == swc
-    }
-    
-    public boolean isWebApp() {
-        return this == swf
-    }
-    
-    public boolean isNativeApp() {
-        return this == air || this == mobile
-    }
-    
 }

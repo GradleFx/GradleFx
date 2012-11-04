@@ -16,22 +16,20 @@
 
 package org.gradlefx.tasks.compile
 
-import java.util.List;
-import org.gradlefx.options.CompilerOption
+import org.gradlefx.cli.CommandLineInstruction;
+import org.gradlefx.conventions.GradleFxConvention
+import org.gradle.api.Task;
 
-class Amxmlc extends Mxmlc {
+abstract class CompileTaskDelegate implements CompileTask {
 
-     @Override
-     protected List createCompilerArguments() {
-         List arguments = super.createCompilerArguments()
-         arguments.add(0, '+configname=' + flexConvention.type.configName)
-         return arguments
-     }
-     
-     @Override
-     protected void addPlayerLibrary(List compilerArguments) {
-         String libPath = "${flexConvention.flexHome}/frameworks/libs/air/airglobal.swc"
-         compilerArguments.add("${CompilerOption.EXTERNAL_LIBRARY_PATH}+=${libPath}");
-     }
-     
+    Task task
+    GradleFxConvention flexConvention
+    CommandLineInstruction cli
+
+    protected CompileTaskDelegate(Task task, CommandLineInstruction cli) {
+        this.task = task
+        this.cli = cli
+        flexConvention = task.project.convention.plugins.flex
+    }
+
 }
