@@ -4,7 +4,7 @@
 .classpath
 bin
 build
-GradleFx.iml
+*.iml
 gradlefx.ipr
 gradlefx.iws
 /target
