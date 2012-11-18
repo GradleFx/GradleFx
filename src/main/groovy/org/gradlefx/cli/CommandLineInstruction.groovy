@@ -37,7 +37,7 @@ abstract class CommandLineInstruction {
 
     public CommandLineInstruction(Project project) {
         this.project = project
-        flexConvention = project.convention.plugins.flex
+        flexConvention = project.convention.plugins.flex as GradleFxConvention
         arguments = []
     }
 
@@ -53,7 +53,7 @@ abstract class CommandLineInstruction {
     public void addFramework() {
         FrameworkLinkage linkage = flexConvention.frameworkLinkage
 
-        //ii's a pure AS project: we don't want to load the Flex configuration
+        //it's a pure AS project: we don't want to load the Flex configuration
         if (!linkage.usesFlex())
             reset CompilerOption.LOAD_CONFIG
         //when FrameworkLinkage is the default for this compiler and it's not a swc, we don't have to do anything
@@ -65,7 +65,7 @@ abstract class CommandLineInstruction {
             def flexConfig = new XmlSlurper().parse(flexConvention.configPath)
             def relativeSwcPaths = flexConfig['runtime-shared-library-path']['path-element']
 
-            Collection paths = relativeSwcPaths.collect { "$flexConvention.flexHome/frameworks/$it" }
+            Collection<String> paths = relativeSwcPaths.collect { "$flexConvention.flexHome/frameworks/$it" }
             addAll linkage.getCompilerOption(), paths
         }
     }
@@ -80,7 +80,7 @@ abstract class CommandLineInstruction {
         }
     }
 
-    protected Collection<List> getValidSourcePaths() {
+    protected Collection<String> getValidSourcePaths() {
         //don't allow non existing source paths unless they contain a token (e.g. {locale})
         //TODO {} tokens can be validated earlier: locale paths should be in localeDir property
         return flexConvention.srcDirs
@@ -138,11 +138,11 @@ abstract class CommandLineInstruction {
         Configuration rsl = project.configurations.rsl
         validateFilesExist rsl.files, rsl
 
-        Collection paths = rsl.files.collect { "$it.path,${it.name[0..-2]}f" }
+        Collection<String> paths = rsl.files.collect { "$it.path,${it.name[0..-2]}f" }
         addAll CompilerOption.RUNTIME_SHARED_LIBRARY_PATH, paths
     }
 
-    def addFrameworkRsls(List compilerArguments) {
+    def addFrameworkRsls() {
         if (flexConvention.useDebugRSLSwfs) {
             def flexConfig = new XmlSlurper().parse(flexConvention.configPath)
             flexConfig['runtime-shared-library-path'].each {
@@ -151,7 +151,9 @@ abstract class CommandLineInstruction {
 
                 File dependency = new File(swcName)
                 if (!dependency.exists()) {
-                    throw new ResolveException("Couldn't find the ${dependency.name} file - are you sure the path is correct?")
+                    Configuration rsl = project.configurations.rsl
+                    String errorMsg = "Couldn't find the ${dependency.name} file - are you sure the path is correct?"
+                    throw new ResolveException(rsl, new Throwable(errorMsg))
                 } else {
                     add CompilerOption.RUNTIME_SHARED_LIBRARY_PATH, "${dependency.path},${libName}"
                 }
