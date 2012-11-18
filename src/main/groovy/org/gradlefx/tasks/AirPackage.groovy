@@ -47,7 +47,6 @@ class AirPackage extends DefaultTask {
 
         ant.java(jar: flexConvention.flexHome + '/lib/adt.jar',
                 fork: true,
-                timeout: 10000,
                 resultproperty: ANT_RESULT_PROPERTY,
                 outputproperty: ANT_OUTPUT_PROPERTY) {
 
