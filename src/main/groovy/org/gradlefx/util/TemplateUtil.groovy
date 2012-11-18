@@ -49,17 +49,17 @@ class TemplateUtil {
        
        target.withWriter { out ->
            source.eachLine {
-               out.println it.replaceAll(/\$\{class\}/, flexConvention.className)
-                             .replaceAll(/\$\{package\}/, flexConvention.packageName)
-                             .replaceAll(/\$\{project\}/, project.name)
-                             .replaceAll(/\$\{mainClass\}/, flexConvention.mainClassPath)
-                             .replaceAll(/\$\{compilerArgs\}/, flexConvention.compilerArgs.join('&#13;&#10;'))
-                             .replaceAll(/\$\{mainSrc\}/, flexConvention.srcDirs[0])
-                             .replaceAll(/\$\{playerVersion\}/, flexConvention.playerVersion)
-                             .replaceAll(/\$\{uuid\}/, flexConvention.uuid)
-                             .replaceAll(/\$\{appId\}/, flexConvention.applicationId)
-                             .replaceAll(/\$\{version\}/, flexConvention.version)
-                             .replaceAll(/\$\{useDebugRSLSwfs\}/, flexConvention.useDebugRSLSwfs.toString())
+               out.println it.replaceAll(/\$\{class\}/, {flexConvention.className})
+                             .replaceAll(/\$\{package\}/, {flexConvention.packageName})
+                             .replaceAll(/\$\{project\}/, {project.name})
+                             .replaceAll(/\$\{mainClass\}/, {flexConvention.mainClassPath})
+                             .replaceAll(/\$\{compilerArgs\}/, {flexConvention.compilerArgs.join('&#13;&#10;')})
+                             .replaceAll(/\$\{mainSrc\}/, {flexConvention.srcDirs[0]})
+                             .replaceAll(/\$\{playerVersion\}/, {flexConvention.playerVersion})
+                             .replaceAll(/\$\{uuid\}/, {flexConvention.uuid})
+                             .replaceAll(/\$\{appId\}/, {flexConvention.applicationId})
+                             .replaceAll(/\$\{version\}/, {flexConvention.version})
+                             .replaceAll(/\$\{useDebugRSLSwfs\}/, {flexConvention.useDebugRSLSwfs.toString()})
            }
        }
    }
