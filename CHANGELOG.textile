@@ -1,5 +1,15 @@
 h2. GradleFx changelog
 
+h3. v0.6.1
+
+h5. Improvements
+* issue 57: Proper error message for issue with FlexUnitApplication.mxml
+* issue 58: removed the Air packager timeout which caused problems with bigger projects.
+* flashbuilderClean now removes .FlexUnitSettings which is created when running test through FB
+
+h5. Bug fixes
+* issue 66: Backslashes thrown out during Flash Builder actionscriptProperties file generation
+
 h3. v0.6
 
 h5. New features
