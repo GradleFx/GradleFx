@@ -1,4 +1,4 @@
-package org.gradlefx
+package org.gradlefx.conventions
 
 import org.gradlefx.cli.CompilerOption;
 import org.gradlefx.conventions.FlexType;

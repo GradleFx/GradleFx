@@ -1,4 +1,4 @@
-package org.gradlefx
+package org.gradlefx.conventions
 
 import org.gradlefx.conventions.FlexType;
 import spock.lang.Specification
