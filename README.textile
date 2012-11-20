@@ -21,7 +21,7 @@ Features:
 h2. Useful links
 * Documentation: "http://doc.gradlefx.org":http://doc.gradlefx.org
 * Examples: "https://github.com/GradleFx/GradleFx-Examples":https://github.com/GradleFx/GradleFx-Examples
-* Help & Support: "http://gradlefx.tenderapp.com/home":http://gradlefx.tenderapp.com/home
+* Help & Support: "http://support.gradlefx.org/":http://support.gradlefx.org/
 * Bug Tracking: "https://github.com/GradleFx/GradleFx/issues":https://github.com/GradleFx/GradleFx/issues
 * Changelog: "https://github.com/GradleFx/GradleFx/blob/master/CHANGELOG.textile":https://github.com/GradleFx/GradleFx/blob/master/CHANGELOG.textile
 

@@ -17,45 +17,45 @@
 package org.gradlefx.ide.tasks
 
 import org.gradle.api.DefaultTask
-import org.gradle.api.logging.LogLevel;
-import org.gradle.api.tasks.TaskAction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import org.gradle.api.logging.LogLevel
+import org.gradle.api.tasks.TaskAction
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 @Mixin(FlashBuilderUtil)
 class FlashBuilderClean extends DefaultTask implements CleanTask {
     public static final String NAME = 'flashbuilderClean'
-    
+
     protected static final Logger LOG = LoggerFactory.getLogger 'gradlefx'
-    
+
     /** The name of the targeted IDE */
     protected String ideName
-    
+
     /**
      * Constructor
      */
     public FlashBuilderClean() {
         ideName = 'FlashBuilder'
         description = "Cleans $ideName project, i.e. removes $ideName configuration files and folders"
-        
+
         logging.setLevel LogLevel.INFO
     }
 
     @Override
     @TaskAction
     public void cleanProject() {
-        LOG.info "Removing $ideName project files"    
-             
+        LOG.info "Removing $ideName project files"
+
         boolean filesDeleted = false
         [
-            FlashBuilderUtil.eclipseProject,
-            FlashBuilderUtil.actionScriptProperties,
-            FlashBuilderUtil.flexProperties,
-            FlashBuilderUtil.flexLibProperties,
-            getOutputDir(project),
-            '.settings',
-            'bin-release'
+                FlashBuilderUtil.eclipseProject,
+                FlashBuilderUtil.actionScriptProperties,
+                FlashBuilderUtil.flexProperties,
+                FlashBuilderUtil.flexLibProperties,
+                FlashBuilderUtil.flexUnitSettings,
+                getOutputDir(project),
+                '.settings',
+                'bin-release'
         ].each {
             File file = project.file it
             if (file.exists()) {
@@ -64,8 +64,8 @@ class FlashBuilderClean extends DefaultTask implements CleanTask {
                 file.isFile() ? file.delete() : file.deleteDir()
             }
         }
-        
+
         if (!filesDeleted) LOG.info "\tNothing to remove"
     }
-    
+
 }
