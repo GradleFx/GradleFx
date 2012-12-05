@@ -36,6 +36,9 @@ class Compile extends DefaultTask implements CompileTask {
         
         project.afterEvaluate {
             flexConvention = project.convention.plugins.flex
+
+            initInputDirectory()
+            initOutputDirectory()
             
             //delegate is also a default Closure argument, hence the explicit 'this' scope
             this.delegate = createDelegate()
@@ -46,19 +49,16 @@ class Compile extends DefaultTask implements CompileTask {
     @Override
     @TaskAction
     public void compileFlex() {
-        initInputDirectory()
-        initOutputDirectory()
-        
         delegate.compileFlex()
     }
     
-    private void initInputDirectory() {
+    protected void initInputDirectory() {
         flexConvention.srcDirs.each { sourceDirectory ->
             inputs.dir sourceDirectory
         }
     }
 
-    private void initOutputDirectory() {
+    protected void initOutputDirectory() {
         outputs.dir project.buildDir
     }
     
