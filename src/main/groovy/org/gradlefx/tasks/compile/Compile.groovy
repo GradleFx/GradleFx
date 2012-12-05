@@ -32,7 +32,7 @@ class Compile extends DefaultTask implements CompileTask {
     GradleFxConvention flexConvention
 
     public Compile() {
-        logging.setLevel LogLevel.INFO
+        logging.captureStandardOutput LogLevel.INFO
         
         project.afterEvaluate {
             flexConvention = project.convention.plugins.flex
