@@ -53,6 +53,7 @@ class FlashBuilderClean extends DefaultTask implements CleanTask {
                 FlashBuilderUtil.flexProperties,
                 FlashBuilderUtil.flexLibProperties,
                 FlashBuilderUtil.flexUnitSettings,
+                FlashBuilderUtil.externalToolBuilders,
                 getOutputDir(project),
                 '.settings',
                 'bin-release'
