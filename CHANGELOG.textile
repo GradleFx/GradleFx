@@ -1,5 +1,14 @@
 h2. GradleFx changelog
 
+h3. v0.6.2
+
+h5. Improvements
+* issue 68: Do not show compiler options by default
+* flashbuilderClean task now also removes the .externalToolBuilders file
+
+h5. Bugfixes
+* issue 69: Compile task should only recompile on source changes
+
 h3. v0.6.1
 
 h5. Improvements
