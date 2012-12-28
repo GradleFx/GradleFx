@@ -24,6 +24,7 @@ class FlashBuilderUtil {
     public static final String flexLibProperties = '.flexLibProperties'
     public static final String flexProperties = '.flexProperties'
     public static final String flexUnitSettings = '.FlexUnitSettings'
+    public static final String externalToolBuilders = '.externalToolBuilders'
 
     public String getOutputDir(Project project) {
         String outputDir = project.convention.plugins.flex.type.isLib() ? 'bin' : 'bin-debug';
