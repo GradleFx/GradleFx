@@ -117,8 +117,8 @@ class Test extends DefaultTask {
                 fileTree.includes = flexUnit.includes
                 fileTree.excludes = flexUnit.excludes
 
-                fileTree.visit { FileTreeElement includedFile ->
-                    testSource(dir: project.file(testDir).path) {
+                testSource(dir: project.file(testDir).path) {
+                    fileTree.visit { FileTreeElement includedFile ->
                         include(name: includedFile.relativePath)
                     }
                 }
