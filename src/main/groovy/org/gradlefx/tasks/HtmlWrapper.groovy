@@ -29,25 +29,59 @@ class HtmlWrapper extends DefaultTask {
 	@TaskAction
 	def generateHtmlWrapper() {
         HtmlWrapperConvention wrapper = project.convention.plugins.flex.htmlWrapper
+        
         createOutputDirectoryIfNotExists wrapper.output
-
-		ant.'html-wrapper'(
-			title:               wrapper.title,
-			file:                wrapper.file,
-			height:              "$wrapper.percentHeight%",
-			width:               "$wrapper.percentWidth%",
-			application:         wrapper.application,
-			swf:                 wrapper.swf,
-			history:             wrapper.history.toString(),
-			'express-install':   wrapper.expressInstall.toString(),
-			'version-detection': wrapper.versionDetection.toString(),
-			output:              wrapper.output
-		)
+        
+        File source = wrapper.source ? project.file(wrapper.source) : null
+        
+        if(source && source.exists()) {
+            generateCustomWrapper(source, wrapper)
+        }
+        else {
+            generateDefaultWrapper(wrapper)
+        }
 	}
-
+    
+    private def generateDefaultWrapper(HtmlWrapperConvention wrapper) {
+        ant.'html-wrapper'(
+            title:               wrapper.title,
+            file:                wrapper.file,
+            height:              "$wrapper.percentHeight%",
+            width:               "$wrapper.percentWidth%",
+            application:         wrapper.application,
+            swf:                 wrapper.swf,
+            history:             wrapper.history.toString(),
+            'express-install':   wrapper.expressInstall.toString(),
+            'version-detection': wrapper.versionDetection.toString(),
+            output:              wrapper.output
+        )
+    }
+    
+    private def generateCustomWrapper(File source, HtmlWrapperConvention wrapper) {
+        Map tokens = [
+            application:    wrapper.application,
+            percentHeight:  "$wrapper.percentHeight%",
+            percentWidth:   "$wrapper.percentWidth%",
+            swf:            wrapper.swf,
+            title:          wrapper.title
+        ]
+        
+        ant.copy(file: source, tofile: "${wrapper.output}/${wrapper.file}") {
+            filterchain() {
+                tokenfilter() {
+                    replacestring(from: '${', to: '{')
+                }
+                replacetokens(begintoken: '{', endtoken: '}') {
+                    tokens.each { key, value ->
+                        token(key: key, value: value)
+                    }
+                }
+            }
+        }
+    }
+    
     private def createOutputDirectoryIfNotExists(String outputPath) {
         File output = project.file outputPath
         if (!output.exists()) output.mkdir()
     }
-    
 }
