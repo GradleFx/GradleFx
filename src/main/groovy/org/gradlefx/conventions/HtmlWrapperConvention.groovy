@@ -31,6 +31,7 @@ class HtmlWrapperConvention {
     private Boolean expressInstall   = true
     private Boolean versionDetection = true
     private String output
+    private String source
     
     public HtmlWrapperConvention(Project project) {
         title       = project.description
@@ -126,5 +127,17 @@ class HtmlWrapperConvention {
 
     void output(File output) {
         this.output = output
+    }
+
+    String getSource() {
+        return source
+    }
+
+    void source(String source) {
+        this.source = source
+    }
+    
+    void source(File source) {
+        this.source = source
     }
 }
