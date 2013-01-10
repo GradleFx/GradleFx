@@ -58,13 +58,15 @@ class HtmlWrapper extends DefaultTask {
     }
     
     private def generateCustomWrapper(File source, HtmlWrapperConvention wrapper) {
-        Map tokens = [
+        def defaultTokens = [
             application:    wrapper.application,
             percentHeight:  "$wrapper.percentHeight%",
             percentWidth:   "$wrapper.percentWidth%",
             swf:            wrapper.swf,
             title:          wrapper.title
         ]
+        
+        def tokens = defaultTokens + wrapper.tokenReplacements
         
         ant.copy(file: source, tofile: "${wrapper.output}/${wrapper.file}") {
             filterchain() {

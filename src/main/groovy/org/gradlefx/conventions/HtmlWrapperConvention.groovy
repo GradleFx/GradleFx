@@ -32,6 +32,7 @@ class HtmlWrapperConvention {
     private Boolean versionDetection = true
     private String output
     private String source
+    private Map tokenReplacements = [:]
     
     public HtmlWrapperConvention(Project project) {
         title       = project.description
@@ -139,5 +140,13 @@ class HtmlWrapperConvention {
     
     void source(File source) {
         this.source = source
+    }
+    
+    Map getTokenReplacements() {
+        return tokenReplacements
+    }
+
+    void tokenReplacements(Map tokenReplacements) {
+        this.tokenReplacements = tokenReplacements
     }
 }
