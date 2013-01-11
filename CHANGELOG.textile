@@ -1,5 +1,14 @@
 h2. GradleFx changelog
 
+h3. v0.6.3
+
+h5. Bugfixes
+* issue 70: Locales aren't taken into account when executing FlexUnit tests
+
+h5. New features
+* You can now provide your own source file for the html wrapper. See the new htmlWrapper.source and htmlWrapper.tokenReplacements convention properties
+* Added htmlWrapper documentation
+
 h3. v0.6.2
 
 h5. Improvements
