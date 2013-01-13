@@ -19,6 +19,8 @@ Features:
 * Automatic Flex/AIR SDK installation
 
 h2. Useful links
+
+* Follow us on Twitter for the latest updates: https://twitter.com/GradleFx
 * Documentation: "http://doc.gradlefx.org":http://doc.gradlefx.org
 * Examples: "https://github.com/GradleFx/GradleFx-Examples":https://github.com/GradleFx/GradleFx-Examples
 * Help & Support: "http://support.gradlefx.org/":http://support.gradlefx.org/

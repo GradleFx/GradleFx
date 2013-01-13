@@ -21,6 +21,7 @@ import org.gradle.api.file.FileTree
 import org.gradle.api.file.FileTreeElement
 import org.gradle.api.logging.LogLevel
 import org.gradle.api.tasks.TaskAction
+import org.gradlefx.cli.CompilerOption
 import org.gradlefx.configuration.FlexUnitAntTasksConfigurator
 import org.gradlefx.conventions.FlexUnitConvention
 import org.gradlefx.conventions.GradleFxConvention
@@ -107,13 +108,17 @@ class Test extends DefaultTask {
                 }
             }
 
+            if (flexConvention.locales?.size()) {
+                source(dir: project.file(flexConvention.localeDir).path + '/{locale}')
+            }
+
             flexConvention.testDirs.each { String testDir ->
                 FileTree fileTree = project.fileTree(testDir)
                 fileTree.includes = flexUnit.includes
                 fileTree.excludes = flexUnit.excludes
 
-                fileTree.visit { FileTreeElement includedFile ->
-                    testSource(dir: project.file(testDir).path) {
+                testSource(dir: project.file(testDir).path) {
+                    fileTree.visit { FileTreeElement includedFile ->
                         include(name: includedFile.relativePath)
                     }
                 }
