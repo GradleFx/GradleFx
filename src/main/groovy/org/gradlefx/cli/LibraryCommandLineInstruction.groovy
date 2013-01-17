@@ -29,7 +29,6 @@ class LibraryCommandLineInstruction extends CommandLineInstruction {
     @Override
     public void setConventionArguments() {
         //add framework
-        addPlayerLibrary()
         addFramework()
         
         //add every source path

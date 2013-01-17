@@ -43,12 +43,6 @@ abstract class CommandLineInstruction {
 
     abstract public void setConventionArguments()
 
-    /** Adds the Flash player library to the <code>-external-library-path</code> argument */
-    public void addPlayerLibrary() {
-        String libPath = "$flexConvention.flexHome/frameworks/libs/player/{targetPlayerMajorVersion}.{targetPlayerMinorVersion}/playerglobal.swc"
-        add CompilerOption.EXTERNAL_LIBRARY_PATH, libPath
-    }
-
     /** Adds the framework libraries to the arguments based on the {@link FrameworkLinkage} */
     public void addFramework() {
         FrameworkLinkage linkage = flexConvention.frameworkLinkage
