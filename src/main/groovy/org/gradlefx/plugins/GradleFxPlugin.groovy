@@ -26,7 +26,8 @@ import org.gradlefx.configuration.FlexAntTasksConfigurator
 import org.gradlefx.tasks.ASDoc;
 import org.gradlefx.tasks.AirPackage
 import org.gradlefx.tasks.Build;
-import org.gradlefx.tasks.CopyResources;
+import org.gradlefx.tasks.CopyResources
+import org.gradlefx.tasks.CopyTestResources;
 import org.gradlefx.tasks.HtmlWrapper
 import org.gradlefx.tasks.Publish;
 import org.gradlefx.tasks.Tasks;
@@ -44,6 +45,7 @@ class GradleFxPlugin extends AbstractGradleFxPlugin {
         //generic tasks
         addTask Tasks.BUILD_TASK_NAME, Build
         addTask Tasks.COPY_RESOURCES_TASK_NAME, CopyResources
+        addTask Tasks.COPY_TEST_RESOURCES_TASK_NAME, CopyTestResources
         addTask Tasks.PUBLISH_TASK_NAME, Publish
         addTask Tasks.TEST_TASK_NAME, Test
         addTask Tasks.COMPILE_TASK_NAME, Compile
