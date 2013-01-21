@@ -25,7 +25,6 @@ import org.gradlefx.conventions.GradleFxConvention
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-
 abstract class CommandLineInstruction {
 
     protected static final Logger LOG = LoggerFactory.getLogger 'gradlefx'
@@ -47,9 +46,17 @@ abstract class CommandLineInstruction {
     public void addFramework() {
         FrameworkLinkage linkage = flexConvention.frameworkLinkage
 
-        //it's a pure AS project: we don't want to load the Flex configuration
-        if (!linkage.usesFlex())
+        if (!linkage.usesFlex()) {
+            //it's a pure AS project: we don't want to load the Flex configuration
             reset CompilerOption.LOAD_CONFIG
+
+            //but we need to add playerglobal.swc to the build path explicitly
+            def flexConfig = new XmlSlurper().parse(flexConvention.configPath)
+            def relativeSwcPaths = flexConfig['compiler']['external-library-path']['path-element']
+
+            def swcPathNode = relativeSwcPaths.find { it.text().contains 'playerglobal.swc' }
+            add CompilerOption.EXTERNAL_LIBRARY_PATH, "$flexConvention.flexHome/frameworks/${swcPathNode.text()}"
+        }
         //when FrameworkLinkage is the default for this compiler and it's not a swc, we don't have to do anything
         else if (!linkage.isCompilerDefault(flexConvention.type) || (flexConvention.type == FlexType.swc)) {
             //remove RSL's defined in config.xml
