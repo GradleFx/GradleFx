@@ -21,12 +21,14 @@ import org.gradlefx.tasks.compile.Compc
 import org.gradlefx.validators.CompcAdditionalPropertiesValidator
 import org.gradlefx.validators.FlexSDKSpecifiedValidator
 import org.gradlefx.validators.FrameworkLinkageValidator
+import org.gradlefx.validators.RequiredProjectPropertiesValidator
 import org.gradlefx.validators.runner.FailOnErrorValidatorRunner
 
 class ValidateCompcTaskPropertiesAction implements Action<Compc> {
 
     void execute(Compc delegate) {
         new FailOnErrorValidatorRunner(delegate.task.project)
+                .add(new RequiredProjectPropertiesValidator())
                 .add(new FlexSDKSpecifiedValidator())
                 .add(new FrameworkLinkageValidator())
                 .add(new CompcAdditionalPropertiesValidator())
