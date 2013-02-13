@@ -45,7 +45,9 @@ abstract class CommandLineInstruction {
 
     /** Adds the Flash player library to the <code>-external-library-path</code> argument */
     public void addPlayerLibrary() {
-        String libPath = "$flexConvention.flexHome/frameworks/libs/player/{targetPlayerMajorVersion}.{targetPlayerMinorVersion}/playerglobal.swc"
+        def flexConfig = new XmlSlurper().parse(flexConvention.configPath)
+        String libPath = flexConfig['compiler']['external-library-path']['path-element']
+        LOG.info("Adding external library ${libPath}")
         add CompilerOption.EXTERNAL_LIBRARY_PATH, libPath
     }
 
