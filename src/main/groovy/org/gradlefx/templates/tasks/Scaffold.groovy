@@ -16,6 +16,8 @@
 
 package org.gradlefx.templates.tasks
 
+import org.gradlefx.templates.validators.actions.ValidateScaffoldTaskPropertiesAction
+
 import java.io.InputStream;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.logging.LogLevel;
@@ -29,9 +31,9 @@ import org.slf4j.LoggerFactory;
 @Mixin(TemplateUtil)
 class Scaffold extends DefaultTask {
     public static final String NAME = 'scaffold'
-    
+
     protected static final Logger LOG = LoggerFactory.getLogger 'gradlefx'
-    
+
     /** Convention properties */
     GradleFxConvention flexConvention
 
@@ -46,10 +48,12 @@ class Scaffold extends DefaultTask {
 
     @TaskAction
     public void generateProject() {
+        new ValidateScaffoldTaskPropertiesAction().execute(this)
+
         createDirectories()
         createMainClass()
     }
-    
+
     /**
     * Creates physical directories for all the directories defined in the
     * conventions if they don't exist yet. Does not remove any previous
@@ -57,19 +61,19 @@ class Scaffold extends DefaultTask {
     */
    protected void createDirectories() {
        LOG.info "Creating directory structure"
-       
+
        flexConvention.allSrcDirs.each {
            LOG.info "\t" + it
            project.file(it).mkdirs()
        }
-       
+
        flexConvention.locales.each {
            String dir = flexConvention.localeDir + '/' + it
            LOG.info "\t" + dir
            project.file(dir).mkdirs()
        }
    }
-   
+
    /**
     * Creates the main application file in the main srcDir only if it doesn't exist yet.
     * If it's in a package structure, that will be created too.
@@ -77,28 +81,28 @@ class Scaffold extends DefaultTask {
     */
    protected void createMainClass() {
        if (flexConvention.type.isLib()) return
-       
+
        String relativePath = flexConvention.srcDirs[0] + '/' + flexConvention.mainClassPath
        File file = project.file relativePath
        boolean needsDescriptor = flexConvention.type.isNativeApp()
-       
+
        if (file.exists()) LOG.info "Main class already exists"
        else {
            LOG.info "Creating main class" + (needsDescriptor ? ' and application descriptor' : '')
-           
+
            file.getParentFile().mkdirs()
            writeContent getTemplate(false), file, false
-           
+
            if (needsDescriptor) {
                file = new File(toDescriptorPath(file.path))
                writeContent getTemplate(true), file, false
                LOG.info "\t" + toDescriptorPath(relativePath)
            }
        }
-       
+
        LOG.info "\t" + relativePath
    }
-   
+
    /**
     * Returns an {@link InputStream} which contains a content template for creating new files.
     * This template is chosen based on the selected project {@link FlexType} and {@link FrameworkLinkage}.
@@ -109,9 +113,9 @@ class Scaffold extends DefaultTask {
    private InputStream getTemplate(boolean descriptor) {
        String extension = flexConvention.frameworkLinkage.usesFlex() ? 'mxml' : 'as'
        String path = "/templates/${flexConvention.type}.${extension}"
-       
+
        if (descriptor) path = toDescriptorPath path
        return getClass().getResourceAsStream(path)
    }
-   
+
 }
