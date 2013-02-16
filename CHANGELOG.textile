@@ -1,5 +1,12 @@
 h2. GradleFx changelog
 
+h3. v0.6.4
+
+h5. Bugfixes
+* issue 76: NPE instead of clear error message when not defining the type property
+* issue 75: FrameworkLinkage: clean up playerglobal.swc linking
+* issue 72: FlexUnit: test task doesn't copy test-resources
+
 h3. v0.6.3
 
 h5. Bugfixes
