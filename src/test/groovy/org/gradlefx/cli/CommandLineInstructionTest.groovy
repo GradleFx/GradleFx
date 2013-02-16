@@ -19,6 +19,9 @@ package org.gradlefx.cli
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.testfixtures.ProjectBuilder
+import org.gradlefx.conventions.FlexType
+import org.gradlefx.conventions.FrameworkLinkage
+import org.gradlefx.conventions.GradleFxConvention
 import org.gradlefx.plugins.GradleFxPlugin
 import spock.lang.Specification
 
@@ -31,6 +34,20 @@ class CommandLineInstructionTest extends Specification {
         new GradleFxPlugin().apply(project)
 
         commandLineInstruction = new StubCommandLineInstruction(project)
+    }
+
+    def "call addFramework with FrameworkLinkage.none, should have playerglobal.swc on external classpath"() {
+        GradleFxConvention flexConvention = project.convention.plugins.flex
+        flexConvention.flexHome = './src/test/resources/valid-flex-sdk'
+        flexConvention.type = FlexType.swf
+        flexConvention.frameworkLinkage = FrameworkLinkage.none
+
+        when:
+            commandLineInstruction.addFramework()
+        then:
+            List args = commandLineInstruction.arguments
+            args.contains "$CompilerOption.LOAD_CONFIG="
+            args.contains "$CompilerOption.EXTERNAL_LIBRARY_PATH+=$flexConvention.flexHome/frameworks/libs/player/{targetPlayerMajorVersion}.{targetPlayerMinorVersion}/playerglobal.swc"
     }
 
     def "call addLibraries, should add valid swc locations to compiler arguments"() {
@@ -46,4 +63,5 @@ class CommandLineInstructionTest extends Specification {
             commandLineInstruction.arguments.contains("${CompilerOption.INCLUDE_LIBRARIES.optionName}+=${utilSwc.path}")
             commandLineInstruction.arguments.contains("${CompilerOption.INCLUDE_LIBRARIES.optionName}+=${domainSwc.path}")
     }
+
 }

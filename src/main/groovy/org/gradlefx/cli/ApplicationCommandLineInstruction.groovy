@@ -31,7 +31,6 @@ class ApplicationCommandLineInstruction extends CommandLineInstruction {
         addConfigFile()
         
         //add framework
-        addPlayerLibrary()
         addFramework()
 
         //add every source directory

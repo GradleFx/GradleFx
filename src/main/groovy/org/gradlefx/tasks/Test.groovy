@@ -43,6 +43,8 @@ class Test extends DefaultTask {
         logging.setLevel LogLevel.INFO
 
         flexConvention = project.convention.plugins.flex
+
+        dependsOn Tasks.COPY_TEST_RESOURCES_TASK_NAME
     }
 
     @TaskAction

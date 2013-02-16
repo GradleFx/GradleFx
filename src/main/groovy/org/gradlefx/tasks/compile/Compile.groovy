@@ -24,22 +24,24 @@ import org.gradle.api.tasks.TaskAction
 import org.gradlefx.cli.CommandLineInstruction
 import org.gradlefx.conventions.FlexType
 import org.gradlefx.conventions.GradleFxConvention
-
+import org.gradlefx.validators.RequiredProjectPropertiesValidator
+import org.gradlefx.validators.runner.FailOnErrorValidatorRunner
 
 class Compile extends DefaultTask implements CompileTask {
-    
+
     CompileTask delegate
     GradleFxConvention flexConvention
 
     public Compile() {
         logging.captureStandardOutput LogLevel.INFO
-        
+
         project.afterEvaluate {
             flexConvention = project.convention.plugins.flex
+            new FailOnErrorValidatorRunner(project).add(new RequiredProjectPropertiesValidator()).run()
 
             initInputDirectory()
             initOutputDirectory()
-            
+
             //delegate is also a default Closure argument, hence the explicit 'this' scope
             this.delegate = createDelegate()
             addCompilationDependencies()
@@ -51,7 +53,7 @@ class Compile extends DefaultTask implements CompileTask {
     public void compileFlex() {
         delegate.compileFlex()
     }
-    
+
     protected void initInputDirectory() {
         flexConvention.srcDirs.each { sourceDirectory ->
             inputs.dir sourceDirectory
@@ -61,13 +63,13 @@ class Compile extends DefaultTask implements CompileTask {
     protected void initOutputDirectory() {
         outputs.dir project.buildDir
     }
-    
+
     protected CompileTask createDelegate() {
         FlexType type = flexConvention.type
         CommandLineInstruction cli = type.cliClass.newInstance project
         return type.compileClass.newInstance(this, cli)
     }
-    
+
     protected void addCompilationDependencies() {
         dependsOn {
             Set dependentTasks = new HashSet()
@@ -79,5 +81,5 @@ class Compile extends DefaultTask implements CompileTask {
             dependentTasks
         }
     }
-    
+
 }

@@ -14,24 +14,20 @@
  * limitations under the License.
  */
 
-package org.gradlefx.validators.actions
+package org.gradlefx.templates.validators.actions
 
 import org.gradle.api.Action
-import org.gradlefx.tasks.compile.Mxmlc
-import org.gradlefx.validators.FlexSDKSpecifiedValidator
-import org.gradlefx.validators.FrameworkLinkageValidator
-import org.gradlefx.validators.MxmlcAdditionalPropertiesValidator
+import org.gradlefx.templates.tasks.Scaffold
 import org.gradlefx.validators.RequiredProjectPropertiesValidator
 import org.gradlefx.validators.runner.FailOnErrorValidatorRunner
 
-class ValidateMxmlcTaskPropertiesAction implements Action<Mxmlc> {
+class ValidateScaffoldTaskPropertiesAction implements Action<Scaffold> {
 
-    void execute(Mxmlc delegate) {
-        new FailOnErrorValidatorRunner(delegate.task.project)
-            .add(new RequiredProjectPropertiesValidator())
-            .add(new FlexSDKSpecifiedValidator())
-            .add(new FrameworkLinkageValidator())
-            .add(new MxmlcAdditionalPropertiesValidator())
-            .run()
+    @Override
+    void execute(Scaffold task) {
+        new FailOnErrorValidatorRunner(task.project)
+                .add(new RequiredProjectPropertiesValidator())
+                .run()
     }
+
 }
