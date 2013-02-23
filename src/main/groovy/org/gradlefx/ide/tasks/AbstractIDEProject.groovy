@@ -23,6 +23,7 @@ import org.gradle.api.tasks.TaskAction
 import org.gradlefx.configuration.Configurations
 import org.gradlefx.conventions.GradleFxConvention
 import org.gradlefx.ide.validators.actions.ValidateIDEProjectTaskAction
+import org.gradlefx.tasks.TaskGroups
 import org.gradlefx.templates.tasks.Scaffold
 import org.gradlefx.util.TemplateUtil
 import org.slf4j.Logger
@@ -45,6 +46,7 @@ abstract class AbstractIDEProject extends DefaultTask implements ProjectTask {
      */
     public AbstractIDEProject(String ideName) {
         this.ideName = ideName
+        group = TaskGroups.IDE
         description = "Generate $ideName project"
 
         logging.setLevel LogLevel.INFO

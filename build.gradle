@@ -23,7 +23,7 @@ apply plugin: 'signing'
 apply plugin: 'idea'
 
 group = 'org.gradlefx'
-version = '0.6.4'
+version = '0.6.5'
 ext.packaging = 'jar'
 
 def isDevBuild
@@ -74,7 +74,7 @@ artifacts {
 task wrapper(type: Wrapper) {
     group = 'Buildmaster'
     description = 'Generates gradlew and gradlew.bat bootstrap scripts'
-    gradleVersion = '1.1'
+    gradleVersion = '1.4'
     // place jar file and properties into a subdirectory to avoid root dir clutter
     jarFile = 'buildSrc/wrapper/gradle.jar'
 }
@@ -100,23 +100,23 @@ uploadArchives {
                 if(isReleaseBuild) {
                     beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
                 }
-    
+
                 repository(url: sonatypeRepositoryUrl) {
                   authentication(userName: sonatypeUsername, password: sonatypePassword)
                 }
-    
+
                 pom.project {
                    name 'GradleFx'
                    packaging 'jar'
                    description 'GradleFx is a Gradle plugin for building Flex and Actionscript applications'
                    url 'http://gradlefx.github.com/'
-    
+
                    scm {
                        url 'scm:git@github.com:GradleFx/GradleFx.git'
                        connection 'scm:git@github.com:GradleFx/GradleFx.git'
                        developerConnection 'scm:git@github.com:GradleFx/GradleFx.git'
                    }
-    
+
                    licenses {
                        license {
                            name 'The Apache Software License, Version 2.0'
@@ -124,7 +124,7 @@ uploadArchives {
                            distribution 'repo'
                        }
                    }
-    
+
                    developers {
                        developer {
                            id 'yennicktrevels'

@@ -26,6 +26,9 @@ class CleanSdks extends DefaultTask {
 
     @TaskAction
     public void deleteSdksDir() {
+        group = TaskGroups.FLEX_SDK
+        description = 'Deletes the Flex SDK directories from the Gradle cache.'
+
         SdkInstallLocationFactory locationFactory = new SdkInstallLocationFactory(project)
         SdkInstallLocation installLocation = locationFactory.createSdkLocation(SdkType.Flex)
 

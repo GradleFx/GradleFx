@@ -26,11 +26,13 @@ import org.gradlefx.conventions.GradleFxConvention;
 
 
 class ASDoc extends DefaultTask {
-    
+
     GradleFxConvention flexConvention
 
     public ASDoc() {
+        group = TaskGroups.DOCUMENTATION
         description = 'Generates ASDoc documentation'
+
         flexConvention = project.convention.plugins.flex
 
         [
@@ -41,7 +43,7 @@ class ASDoc extends DefaultTask {
             addDependsOnTaskInOtherProjects Tasks.COMPILE_TASK_NAME, it
         }
     }
-    
+
     /**
      * Adds a dependency on tasks with the specified name in other projects.  The other projects are determined from
      * project lib dependencies using the specified configuration name. These may be projects this project depends on or
@@ -70,13 +72,13 @@ class ASDoc extends DefaultTask {
         if (hasDocSources()) {
             initInputDirectory()
             initOutputDirectory()
-            
+
             CommandLineInstruction cli = new ASDocCommandLineInstruction(project)
             cli.setConventionArguments()
             cli.execute ant, 'asdoc'
         }
     }
-    
+
     private boolean hasDocSources() {
         return flexConvention.srcDirs.any { sourcePath ->
             return project.file(sourcePath).exists()

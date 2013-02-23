@@ -16,6 +16,7 @@
 
 package org.gradlefx.templates.tasks
 
+import org.gradlefx.tasks.TaskGroups
 import org.gradlefx.templates.validators.actions.ValidateScaffoldTaskPropertiesAction
 
 import java.io.InputStream;
@@ -41,6 +42,7 @@ class Scaffold extends DefaultTask {
      * Constructor
      */
     public Scaffold() {
+        group = TaskGroups.GENERATING
         description = "Generate IDE independent project scaffold"
         logging.setLevel LogLevel.INFO
         flexConvention = project.convention.plugins.flex

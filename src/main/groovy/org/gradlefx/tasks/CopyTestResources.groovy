@@ -25,6 +25,7 @@ class CopyTestResources extends DefaultTask {
     GradleFxConvention flexConvention;
 
     public CopyTestResources() {
+        group = TaskGroups.BUILD
         description = 'copies the test resources to the build directory'
 
         flexConvention = project.convention.plugins.flex

@@ -15,20 +15,16 @@
  */
 
 package org.gradlefx.tasks
-
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.FileTree
 import org.gradle.api.file.FileTreeElement
 import org.gradle.api.logging.LogLevel
 import org.gradle.api.tasks.TaskAction
-import org.gradlefx.cli.CompilerOption
 import org.gradlefx.configuration.FlexUnitAntTasksConfigurator
 import org.gradlefx.conventions.FlexUnitConvention
 import org.gradlefx.conventions.GradleFxConvention
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-
-
 /*
  * A Gradle task to execute FlexUnit tests.
  */
@@ -39,7 +35,9 @@ class Test extends DefaultTask {
     GradleFxConvention flexConvention;
 
     public Test() {
+        group = TaskGroups.VERIFICATION
         description = "Run the FlexUnit tests."
+
         logging.setLevel LogLevel.INFO
 
         flexConvention = project.convention.plugins.flex
@@ -142,5 +140,5 @@ class Test extends DefaultTask {
     private void configureAntWithFlexUnit() {
         new FlexUnitAntTasksConfigurator(project).configure()
     }
-    
+
 }

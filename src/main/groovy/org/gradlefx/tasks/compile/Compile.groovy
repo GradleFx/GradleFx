@@ -24,6 +24,7 @@ import org.gradle.api.tasks.TaskAction
 import org.gradlefx.cli.CommandLineInstruction
 import org.gradlefx.conventions.FlexType
 import org.gradlefx.conventions.GradleFxConvention
+import org.gradlefx.tasks.TaskGroups
 import org.gradlefx.validators.RequiredProjectPropertiesValidator
 import org.gradlefx.validators.runner.FailOnErrorValidatorRunner
 
@@ -33,6 +34,7 @@ class Compile extends DefaultTask implements CompileTask {
     GradleFxConvention flexConvention
 
     public Compile() {
+        group = TaskGroups.BUILD
         logging.captureStandardOutput LogLevel.INFO
 
         project.afterEvaluate {

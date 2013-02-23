@@ -25,6 +25,7 @@ class CopyResources extends DefaultTask {
     GradleFxConvention flexConvention;
 
     public CopyResources() {
+        group = TaskGroups.BUILD
         description = 'copies the resources to the build directory'
 
         flexConvention = project.convention.plugins.flex
