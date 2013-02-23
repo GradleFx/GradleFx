@@ -16,15 +16,13 @@
 
 package org.gradlefx.tasks
 
-import org.gradle.api.plugins.BasePlugin
-
 enum TaskGroups {
-    BUILD(BasePlugin.BUILD_GROUP),
+    BUILD('Build'),
     DOCUMENTATION('Documentation'),
     FLEX_SDK('Flex SDK'),
     GENERATING('Generating'),
     IDE('IDE'),
-    UPLOAD(BasePlugin.UPLOAD_GROUP),
+    UPLOAD('Upload'),
     VERIFICATION('Verification')
 
     private String groupName
