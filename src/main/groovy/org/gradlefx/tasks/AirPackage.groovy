@@ -26,16 +26,18 @@ import org.gradlefx.conventions.FlexType;
 import org.gradlefx.conventions.GradleFxConvention
 
 class AirPackage extends DefaultTask {
-    
+
     private static final String ANT_RESULT_PROPERTY = 'airPackageResult'
     private static final String ANT_OUTPUT_PROPERTY = 'airPackageOutput'
 
     GradleFxConvention flexConvention;
 
     public AirPackage() {
+        group = TaskGroups.BUILD
         description = 'Packages the generated swf file into an .air package'
+
         flexConvention = (GradleFxConvention) project.convention.plugins.flex
-        
+
         dependsOn Tasks.COMPILE_TASK_NAME
     }
 
@@ -109,5 +111,5 @@ class AirPackage extends DefaultTask {
     def showAntOutput(antOutput) {
         println antOutput
     }
-    
+
 }

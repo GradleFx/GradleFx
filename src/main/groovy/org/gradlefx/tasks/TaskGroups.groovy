@@ -16,16 +16,23 @@
 
 package org.gradlefx.tasks
 
-import org.gradle.api.DefaultTask
+enum TaskGroups {
+    BUILD('Build'),
+    DOCUMENTATION('Documentation'),
+    FLEX_SDK('Flex SDK'),
+    GENERATING('Generating'),
+    IDE('IDE'),
+    UPLOAD('Upload'),
+    VERIFICATION('Verification')
 
-class Build extends DefaultTask {
+    private String groupName
 
-    public Build() {
-        group = TaskGroups.BUILD
-        description = 'Assembles and tests this project.'
+    public TaskGroups(String groupName) {
+        this.groupName = groupName
+    }
 
-        dependsOn(Tasks.COMPILE_TASK_NAME)
-        dependsOn(Tasks.TEST_TASK_NAME)
+    public String toString() {
+        return groupName
     }
 
 }
