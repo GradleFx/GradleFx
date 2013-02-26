@@ -27,10 +27,12 @@ class AIRConvention {
     private String storepass = null
     private String applicationDescriptor
     private List<ConfigurableFileTree> includeFileTrees = null
-    
+    private String packageWorkDir;
+
     public AIRConvention(Project project) {
         keystore = "${project.name}.p12"
         applicationDescriptor = "src/main/actionscript/${project.name}.xml"
+        packageWorkDir = project.projectDir.path;
     }
 
     void configure(Closure closure) {
@@ -67,5 +69,14 @@ class AIRConvention {
 
     void includeFileTrees(List<ConfigurableFileTree> includeFileTrees) {
         this.includeFileTrees = includeFileTrees
+    }
+
+
+    String getPackageWorkDir() {
+        return packageWorkDir
+    }
+
+    void packageWorkDir(String packageWorkDir) {
+        this.packageWorkDir = packageWorkDir
     }
 }
