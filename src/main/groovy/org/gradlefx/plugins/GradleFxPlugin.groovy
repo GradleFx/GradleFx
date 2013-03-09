@@ -40,6 +40,7 @@ class GradleFxPlugin extends AbstractGradleFxPlugin {
         addTask Tasks.TEST_TASK_NAME, Test
         addTask Tasks.COMPILE_TASK_NAME, Compile
         addTask Tasks.CLEAN_SDKS, CleanSdks
+        addTask "customAdtTask", AdtTask
 
         //conditional tasks
         addTask Tasks.ASDOC_TASK_NAME, ASDoc, { flexConvention.type?.isLib() }
