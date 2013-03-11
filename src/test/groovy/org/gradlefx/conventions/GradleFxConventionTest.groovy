@@ -322,6 +322,7 @@ class GradleFxConventionTest extends Specification {
         when:
         flexConvention.airMobile {
             target = 'apk'
+            extensionDir = 'anedir'
             air {
                 keystore                keystoreValue
                 storepass               storepassValue
@@ -331,6 +332,8 @@ class GradleFxConventionTest extends Specification {
         }
 
         then:
+        flexConvention.airMobile.target == 'apk'
+        flexConvention.airMobile.extensionDir == 'anedir'
         flexConvention.airMobile.air.keystore == keystoreValue
         flexConvention.airMobile.air.storepass == storepassValue
         flexConvention.airMobile.air.applicationDescriptor == applicationDescriptorValue

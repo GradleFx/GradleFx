@@ -1,5 +1,6 @@
 package org.gradlefx.tasks
 
+import org.apache.commons.lang.StringUtils
 import org.gradle.api.file.ConfigurableFileTree
 import org.gradle.api.file.FileTreeElement
 import org.gradle.api.tasks.TaskAction
@@ -42,6 +43,11 @@ class AirMobilePackage extends AdtTask {
                     addArgs file.relativePath
                 }
             }
+        }
+
+        if (StringUtils.isNotEmpty(flexConvention.airMobile.extensionDir)) {
+            addArg("-extdir")
+            addArg(flexConvention.airMobile.extensionDir)
         }
 
         super.launch()

@@ -11,6 +11,7 @@ class AIRMobileConvention  {
 
     private String target;
 
+    private String extensionDir;
     private AIRConvention air;
 
     public AIRMobileConvention(Project project) {
@@ -40,5 +41,13 @@ class AIRMobileConvention  {
 
     void air(AIRConvention air) {
         this.air = air
+    }
+
+    String getExtensionDir() {
+        return extensionDir
+    }
+
+    void extensionDir(String extensionDir) {
+        this.extensionDir = extensionDir
     }
 }
