@@ -10,3 +10,5 @@ gradlefx.iws
 /target
 .orig
 /.project
+out
+out/
