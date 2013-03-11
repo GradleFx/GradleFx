@@ -45,7 +45,7 @@ class GradleFxPlugin extends AbstractGradleFxPlugin {
         //conditional tasks
         addTask Tasks.ASDOC_TASK_NAME, ASDoc, { flexConvention.type?.isLib() }
         addTask Tasks.PACKAGE_TASK_NAME, AirPackage, { flexConvention.type?.isNativeApp() }
-        addTask Tasks.PACKAGE_MOBILE_TASK_NAME, AirPackage, { flexConvention.type?.isMobile() }
+        addTask Tasks.PACKAGE_MOBILE_TASK_NAME, AirMobilePackage, { flexConvention.type?.isMobile() }
         addTask Tasks.CREATE_HTML_WRAPPER, HtmlWrapper, { flexConvention.type?.isWebApp() }
     }
 

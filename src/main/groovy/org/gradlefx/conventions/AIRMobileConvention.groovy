@@ -1,18 +1,29 @@
 package org.gradlefx.conventions
 
 import org.gradle.api.Project
+import org.gradle.util.ConfigureUtil
 
 /**
  * @author <a href="mailto:drykovanov@wiley.com">Denis Rykovanov</a>
  * @since 11.03.13
  */
-class AIRMobileConvention extends AIRConvention {
+class AIRMobileConvention  {
 
     private String target;
 
-    AIRMobileConvention(Project project) {
-        super(project)
+    private AIRConvention air;
+
+    public AIRMobileConvention(Project project) {
+        air = new AIRConvention(project)
         target = 'apk'
+    }
+
+    void configure(Closure closure) {
+        ConfigureUtil.configure(closure, this)
+    }
+
+    def air(Closure closure) {
+        air.configure(closure)
     }
 
     String getTarget() {
@@ -21,5 +32,13 @@ class AIRMobileConvention extends AIRConvention {
 
     void target(String target) {
         this.target = target
+    }
+
+    AIRConvention getAir() {
+        return air
+    }
+
+    void air(AIRConvention air) {
+        this.air = air
     }
 }

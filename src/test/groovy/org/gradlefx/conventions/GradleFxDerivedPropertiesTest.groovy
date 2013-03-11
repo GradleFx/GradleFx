@@ -238,6 +238,6 @@ class GradleFxDerivedPropertiesTest extends Specification {
             flexConvention.type = FlexType.mobile
             project.evaluate()
         then:
-            project.tasks.getByPath(':packageMobile').description == "Packages the generated swf file into an .air package"
+            project.tasks.getByPath(':packageMobile').description == "Packages the generated swf file into an mobile package"
     }
 }
