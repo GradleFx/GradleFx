@@ -107,6 +107,9 @@ class GradleFxConvention {
     // AIR packaging properties
     AIRConvention air
 
+    // AIR mobile packaging properties
+    AIRMobileConvention airMobile;
+
     // ASDoc properties
     ASDocConvention asdoc
 
@@ -123,6 +126,7 @@ class GradleFxConvention {
         htmlWrapper     = new HtmlWrapperConvention(project)
         flexUnit        = new FlexUnitConvention(project)
         air             = new AIRConvention(project)
+        airMobile       = new AIRMobileConvention(project)
         asdoc           = new ASDocConvention()
         sdkAutoInstall  = new SdkAutoInstallConvention()
     }
@@ -133,6 +137,10 @@ class GradleFxConvention {
 
     def air(Closure closure) {
         air.configure(closure)
+    }
+
+    def airMobile(Closure closure) {
+        airMobile.configure(closure)
     }
 
     def flexUnit(Closure closure) {

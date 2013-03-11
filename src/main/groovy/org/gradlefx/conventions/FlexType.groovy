@@ -17,7 +17,8 @@
 package org.gradlefx.conventions
 
 
-import org.gradlefx.cli.AIRCommandLineInstructionimport org.gradlefx.tasks.compile.Compc;
+import org.gradlefx.cli.AIRCommandLineInstruction
+import org.gradlefx.tasks.compile.Compc;
 import org.gradlefx.tasks.compile.Compile;
 import org.gradlefx.tasks.compile.Mxmlc;
 
@@ -68,6 +69,10 @@ enum FlexType {
     
     public boolean isNativeApp() {
         return this == air || this == mobile
+    }
+
+    public boolean isMobile() {
+        return this == mobile
     }
     
 }

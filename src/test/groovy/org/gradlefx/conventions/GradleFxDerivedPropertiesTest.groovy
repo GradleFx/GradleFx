@@ -18,6 +18,7 @@ package org.gradlefx.conventions
 
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
+import org.gradlefx.tasks.AirPackage
 import spock.lang.Specification
 import org.gradlefx.cli.CompilerOption;
 import org.gradlefx.conventions.GradleFxConvention
@@ -230,5 +231,13 @@ class GradleFxDerivedPropertiesTest extends Specification {
     }
     
     //TODO create a test for dependencyProjects
-    
+
+
+    def "packageMobile exists for airMobile type"() {
+        when:
+            flexConvention.type = FlexType.mobile
+            project.evaluate()
+        then:
+            project.tasks.getByPath(':packageMobile').description == "Packages the generated swf file into an .air package"
+    }
 }

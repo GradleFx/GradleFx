@@ -303,5 +303,13 @@ class GradleFxConventionTest extends Specification {
             flexConvention.htmlWrapper.versionDetection == oldVersionDetectionValue
             flexConvention.htmlWrapper.output == oldOutputValue
     }
-    
+
+
+    def "default target for mobile type must be apk"() {
+        when:
+        flexConvention.type = FlexType.mobile
+
+        then:
+        flexConvention.airMobile.target == "apk"
+    }
 }
