@@ -323,6 +323,8 @@ class GradleFxConventionTest extends Specification {
         flexConvention.airMobile {
             target = 'apk'
             extensionDir = 'anedir'
+            platformSdk = 'platformSdk'
+            targetDevice = 'targetDevice'
             air {
                 keystore                keystoreValue
                 storepass               storepassValue
@@ -334,6 +336,8 @@ class GradleFxConventionTest extends Specification {
         then:
         flexConvention.airMobile.target == 'apk'
         flexConvention.airMobile.extensionDir == 'anedir'
+        flexConvention.airMobile.platformSdk == 'platformSdk'
+        flexConvention.airMobile.targetDevice == 'targetDevice'
         flexConvention.airMobile.air.keystore == keystoreValue
         flexConvention.airMobile.air.storepass == storepassValue
         flexConvention.airMobile.air.applicationDescriptor == applicationDescriptorValue

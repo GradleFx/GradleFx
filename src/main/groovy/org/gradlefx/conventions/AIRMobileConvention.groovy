@@ -9,10 +9,12 @@ import org.gradle.util.ConfigureUtil
  */
 class AIRMobileConvention  {
 
-    private String target;
+    private String target
 
-    private String extensionDir;
-    private AIRConvention air;
+    private String extensionDir
+    private AIRConvention air
+    def String platformSdk
+    def String targetDevice
 
     public AIRMobileConvention(Project project) {
         air = new AIRConvention(project)
