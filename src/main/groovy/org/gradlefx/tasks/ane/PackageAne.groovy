@@ -1,6 +1,7 @@
 package org.gradlefx.tasks.ane
 
 import org.gradle.api.DefaultTask
+import org.gradle.api.Project
 import org.gradle.api.tasks.TaskAction
 
 /**
@@ -10,11 +11,44 @@ class PackageAne extends DefaultTask {
 
     def PackageAne() {
         description = 'package ane'
+        project.gradle.projectsEvaluated {
+            def dependsTasks = project.subprojects.build;
+            dependsOn dependsTasks;
+        }
+    }
+
+    def prepareApi(Project libProject, String targetPlatform) {
+        project.file("${project.buildDir}/${targetPlatform}/").mkdirs()
+        project.zipTree("${libProject.buildDir}/${libProject.name}.swc").each { file -> if (file.name == "library.swf") {
+            project.copy {
+                from file.path
+                into "${project.buildDir}/${targetPlatform}/"
+            }
+        } }
     }
 
     @TaskAction
     def action() {
         def FLEXSDK_HOME = System.getenv('FLEX_HOME')
+
+        def Project android_lib_proj = project.childProjects["android-lib"]
+        def Project common_api_proj = project.childProjects["common-api"]
+        def Project default_lib_proj = project.childProjects["default-lib"]
+
+        prepareApi(common_api_proj, "Android-ARM")
+        prepareApi(default_lib_proj, "default")
+
+        project.copy {
+            from "${default_lib_proj.buildDir}/${default_lib_proj.output}.swc"
+            into project.buildDir
+        }
+
+        project.copy {
+            from "${android_lib_proj.buildDir}/libs"
+            into "${project.buildDir}/Android-ARM"
+        }
+
+
 
         def ANT_RESULT_PROPERTY = 'adtResult'
         def ANT_OUTPUT_PROPERTY = 'adtOutput'
@@ -50,7 +84,7 @@ class PackageAne extends DefaultTask {
                 resultproperty: ANT_RESULT_PROPERTY,
                 outputproperty: ANT_OUTPUT_PROPERTY) {
             adtArguments.each { argument ->
-                println("adt args: ${argument}")
+                logger.info("adt args: ${argument}")
                 arg(value: argument.toString())
             }
         }
