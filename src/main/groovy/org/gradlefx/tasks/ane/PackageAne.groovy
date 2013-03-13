@@ -78,7 +78,7 @@ class PackageAne extends DefaultTask {
         buildDir.mkdirs();
         addArgs "-package", "-target", "ane", "${buildDir}/${project.name}.ane", "ane-descriptor.xml", "-swc", "${buildDir}/default-lib.swc"
         addArgs "-platform", "Android-ARM", "-C", "${buildDir}/Android-ARM", "."
-        addArgs "-platform", "default", "-C", "${buildDir}/default", "."
+        addArgs "-platform", "default", "-C", "${buildDir}/default", "library.swf"
         ant.java(jar: FLEXSDK_HOME + '/lib/adt.jar',
                 fork: true,
                 resultproperty: ANT_RESULT_PROPERTY,
