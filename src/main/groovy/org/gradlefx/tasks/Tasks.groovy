@@ -23,6 +23,7 @@ class Tasks {
     public static final String PACKAGE_TASK_NAME = 'package'
     public static final String PACKAGE_MOBILE_TASK_NAME = 'packageMobile'
     public static final String INSTALL_MOBILE_TASK_NAME = 'installMobileApp'
+    public static final String LAUNCH_MOBILE_TASK_NAME = 'launchMobileApp'
     public static final String TEST_TASK_NAME = 'test'
     public static final String PUBLISH_TASK_NAME = 'publish'
     public static final String COPY_RESOURCES_TASK_NAME = 'copyresources'
