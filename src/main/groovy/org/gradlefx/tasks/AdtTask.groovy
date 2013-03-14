@@ -15,6 +15,8 @@ public class AdtTask extends DefaultTask {
 
     List adtArguments
 
+    String adtWorkDir;
+
     public AdtTask() {
         group = TaskGroups.BUILD
         description = 'an Custom adt launch'
@@ -23,6 +25,8 @@ public class AdtTask extends DefaultTask {
 
         adtArguments = []
 
+        adtWorkDir = project.projectDir.absolutePath
+
         dependsOn Tasks.COMPILE_TASK_NAME
     }
 
@@ -30,6 +34,7 @@ public class AdtTask extends DefaultTask {
     def launch() {
         ant.java(jar: flexConvention.flexHome + '/lib/adt.jar',
                 fork: true,
+                dir: adtWorkDir,
                 resultproperty: ANT_RESULT_PROPERTY,
                 outputproperty: ANT_OUTPUT_PROPERTY) {
             adtArguments.each { argument ->
