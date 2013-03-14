@@ -314,23 +314,12 @@ class GradleFxConventionTest extends Specification {
     }
 
     def "all airmobile properties should be set when defining all of them in the air closure"() {
-        def keystoreValue = "keystoreName.p12"
-        def storepassValue = "storepassCode"
-        def applicationDescriptorValue = "appDescriptor.xml"
-        def includeFileTreesValue = [ project.fileTree(dir: 'src/main/actionscript/', include: 'assets/appIcon.png') ]
-
         when:
         flexConvention.airMobile {
             target = 'apk'
             extensionDir = 'anedir'
             platformSdk = 'platformSdk'
             targetDevice = 'targetDevice'
-            air {
-                keystore                keystoreValue
-                storepass               storepassValue
-                applicationDescriptor   applicationDescriptorValue
-                includeFileTrees        includeFileTreesValue
-            }
         }
 
         then:
@@ -338,10 +327,6 @@ class GradleFxConventionTest extends Specification {
         flexConvention.airMobile.extensionDir == 'anedir'
         flexConvention.airMobile.platformSdk == 'platformSdk'
         flexConvention.airMobile.targetDevice == 'targetDevice'
-        flexConvention.airMobile.air.keystore == keystoreValue
-        flexConvention.airMobile.air.storepass == storepassValue
-        flexConvention.airMobile.air.applicationDescriptor == applicationDescriptorValue
-        flexConvention.airMobile.air.includeFileTrees == includeFileTreesValue
     }
 
 }

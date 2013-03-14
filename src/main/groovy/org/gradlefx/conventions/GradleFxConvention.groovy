@@ -108,7 +108,7 @@ class GradleFxConvention {
     AIRConvention air
 
     // AIR mobile packaging properties
-    AIRMobileConvention airMobile;
+    AIRMobileConvention airMobile
 
     // ASDoc properties
     ASDocConvention asdoc

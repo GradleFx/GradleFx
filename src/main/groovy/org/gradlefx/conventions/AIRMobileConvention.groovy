@@ -12,12 +12,12 @@ class AIRMobileConvention  {
     private String target
 
     private String extensionDir
-    private AIRConvention air
-    def String platformSdk
-    def String targetDevice
+    //private AIRConvention air
+    private String platformSdk
+
+    private String targetDevice
 
     public AIRMobileConvention(Project project) {
-        air = new AIRConvention(project)
         target = 'apk'
     }
 
@@ -25,9 +25,22 @@ class AIRMobileConvention  {
         ConfigureUtil.configure(closure, this)
     }
 
-    def air(Closure closure) {
-        air.configure(closure)
+    String getTargetDevice() {
+        return targetDevice
     }
+
+    void targetDevice(String targetDevice) {
+        this.targetDevice = targetDevice
+    }
+
+    String getPlatformSdk() {
+        return platformSdk
+    }
+
+    void platformSdk(String platformSdk) {
+        this.platformSdk = platformSdk
+    }
+
 
     String getTarget() {
         return target
@@ -35,14 +48,6 @@ class AIRMobileConvention  {
 
     void target(String target) {
         this.target = target
-    }
-
-    AIRConvention getAir() {
-        return air
-    }
-
-    void air(AIRConvention air) {
-        this.air = air
     }
 
     String getExtensionDir() {

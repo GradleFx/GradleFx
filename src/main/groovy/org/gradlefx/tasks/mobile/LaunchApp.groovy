@@ -22,7 +22,7 @@ class LaunchApp extends AdtTask {
     def launch() {
         //flexConvention.airMobile.
         def builder = DocumentBuilderFactory.newInstance().newDocumentBuilder()
-        def doc = builder.parse(project.file(flexConvention.airMobile.air.applicationDescriptor).newInputStream())
+        def doc = builder.parse(project.file(flexConvention.air.applicationDescriptor).newInputStream())
         def xpath = XPathFactory.newInstance().newXPath()
 
         def appId = xpath.evaluate("/application/id", doc)

@@ -13,7 +13,7 @@ class AirMobilePackage extends AdtTask {
     public AirMobilePackage() {
         super()
         description = "Packages the generated swf file into an mobile package";
-        adtWorkDir = flexConvention.airMobile.air.packageWorkDir
+        adtWorkDir = flexConvention.air.packageWorkDir
     }
 
     @TaskAction
@@ -25,17 +25,17 @@ class AirMobilePackage extends AdtTask {
         addArgs "-storetype",
                 "pkcs12",
                 "-keystore",
-                flexConvention.airMobile.air.keystore,
+                flexConvention.air.keystore,
                 "-storepass",
-                flexConvention.airMobile.air.storepass
+                flexConvention.air.storepass
 
         addArgs project.file(project.buildDir.name + '/' + flexConvention.output).absolutePath
-        addArgs project.file(flexConvention.airMobile.air.applicationDescriptor)
+        addArgs project.file(flexConvention.air.applicationDescriptor)
         addArgs project.file("${project.buildDir}/${flexConvention.output}.${FlexType.swf}")
 
         addArgs "-C", "${project.buildDir.absolutePath}", "${flexConvention.output}.${FlexType.swf}"
 
-        flexConvention.airMobile.air.includeFileTrees.each { ConfigurableFileTree fileTree ->
+        flexConvention.air.includeFileTrees.each { ConfigurableFileTree fileTree ->
             addArgs "-C"
             addArgs fileTree.dir.absolutePath
 
