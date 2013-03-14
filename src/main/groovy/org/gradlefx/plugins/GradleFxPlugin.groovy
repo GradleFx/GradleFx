@@ -29,6 +29,7 @@ import org.gradlefx.tasks.*
 import org.gradlefx.tasks.compile.Compile
 import org.gradlefx.tasks.mobile.InstallApp
 import org.gradlefx.tasks.mobile.LaunchApp
+import org.gradlefx.tasks.mobile.UninstallApp
 
 class GradleFxPlugin extends AbstractGradleFxPlugin {
 
@@ -49,6 +50,7 @@ class GradleFxPlugin extends AbstractGradleFxPlugin {
         addTask Tasks.PACKAGE_TASK_NAME, AirPackage, { flexConvention.type?.isNativeApp() }
         addTask Tasks.PACKAGE_MOBILE_TASK_NAME, AirMobilePackage, { flexConvention.type?.isMobile() }
         addTask Tasks.INSTALL_MOBILE_TASK_NAME, InstallApp, { flexConvention.type?.isMobile() }
+        addTask Tasks.UNINSTALL_MOBILE_TASK_NAME, UninstallApp, { flexConvention.type?.isMobile() }
         addTask Tasks.LAUNCH_MOBILE_TASK_NAME, LaunchApp, { flexConvention.type?.isMobile() }
         addTask Tasks.CREATE_HTML_WRAPPER, HtmlWrapper, { flexConvention.type?.isWebApp() }
     }

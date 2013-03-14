@@ -1,21 +1,22 @@
 package org.gradlefx.tasks.mobile
 
-import javax.xml.parsers.DocumentBuilderFactory
-import javax.xml.xpath.*
 import org.gradlefx.tasks.AdtTask
 import org.gradlefx.tasks.TaskGroups
 import org.gradlefx.tasks.Tasks
 
+import javax.xml.parsers.DocumentBuilderFactory
+import javax.xml.xpath.XPathFactory
+
 /**
  * @author <a href="mailto:denis.rykovanov@gmail.com">Chaos Encoder</a>
  */
-class LaunchApp extends AdtTask {
+class UninstallApp extends AdtTask {
 
-    public LaunchApp() {
+    public UninstallApp() {
         super()
-        description "launch app to target device"
+        description "uninstall app to target device"
         group = TaskGroups.UPLOAD
-        dependsOn Tasks.INSTALL_MOBILE_TASK_NAME
+        //dependsOn Tasks.PACKAGE_MOBILE_TASK_NAME
     }
 
     @Override
@@ -27,7 +28,7 @@ class LaunchApp extends AdtTask {
 
         def appId = xpath.evaluate("/application/id", doc)
 
-        addArgs "-launchApp",
+        addArgs "-uninstallApp",
                 "-platform",
                 //fixme it must be custom
                 "android",
@@ -39,4 +40,5 @@ class LaunchApp extends AdtTask {
 
         return super.launch()
     }
+
 }

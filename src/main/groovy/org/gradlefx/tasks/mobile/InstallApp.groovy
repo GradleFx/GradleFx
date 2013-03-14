@@ -14,6 +14,7 @@ class InstallApp extends AdtTask {
         super()
         description "install app to target device"
         group = TaskGroups.UPLOAD
+        dependsOn Tasks.UNINSTALL_MOBILE_TASK_NAME
         dependsOn Tasks.PACKAGE_MOBILE_TASK_NAME
     }
 
