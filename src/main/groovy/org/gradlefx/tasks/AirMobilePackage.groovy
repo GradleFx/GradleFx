@@ -31,7 +31,6 @@ class AirMobilePackage extends AdtTask {
 
         addArgs project.file(outputPath)
         addArgs project.file(flexConvention.air.applicationDescriptor)
-        addArgs project.file("${project.buildDir}/${flexConvention.output}.${FlexType.swf}")
 
         addArgs "-C", "${project.buildDir.absolutePath}", "${flexConvention.output}.${FlexType.swf}"
 
