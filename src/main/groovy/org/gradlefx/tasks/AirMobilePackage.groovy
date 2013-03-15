@@ -21,7 +21,7 @@ class AirMobilePackage extends AdtTask {
         addArg '-package'
         addArg '-target'
         addArg flexConvention.airMobile.target
-
+        def outputPath = "${project.buildDir}/${flexConvention.output}.apk"  //todo extract target
         addArgs "-storetype",
                 "pkcs12",
                 "-keystore",
@@ -29,7 +29,7 @@ class AirMobilePackage extends AdtTask {
                 "-storepass",
                 flexConvention.air.storepass
 
-        addArgs project.file(project.buildDir.name + '/' + flexConvention.output).absolutePath
+        addArgs project.file(outputPath)
         addArgs project.file(flexConvention.air.applicationDescriptor)
         addArgs project.file("${project.buildDir}/${flexConvention.output}.${FlexType.swf}")
 
