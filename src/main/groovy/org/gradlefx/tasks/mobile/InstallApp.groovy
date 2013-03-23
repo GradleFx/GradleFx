@@ -23,12 +23,12 @@ class InstallApp extends AdtTask {
         addArgs "-installApp",
                 "-platform",
                 //fixme it must be custom
-                "android",
+                flexConvention.airMobile.platform,
                 "-platformsdk",
                 flexConvention.airMobile.platformSdk,
                 "-device", flexConvention.airMobile.targetDevice,
                 //todo fix package extension, it can be different
-                "-package", project.file("${project.buildDir.name}/${flexConvention.output}").absolutePath + ".${flexConvention.airMobile.target}"
+                "-package", project.file("${project.buildDir.name}/${flexConvention.output}").absolutePath + ".${flexConvention.airMobile.outputExtension}"
 
         return super.launch()
     }

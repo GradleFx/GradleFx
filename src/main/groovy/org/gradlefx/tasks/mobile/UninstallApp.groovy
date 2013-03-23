@@ -22,16 +22,11 @@ class UninstallApp extends AdtTask {
     @Override
     def launch() {                                          //todo remove duplicate with LaunchApp
         //flexConvention.airMobile.
-        def builder = DocumentBuilderFactory.newInstance().newDocumentBuilder()
-        def doc = builder.parse(project.file(flexConvention.air.applicationDescriptor).newInputStream())
-        def xpath = XPathFactory.newInstance().newXPath()
-
-        def appId = xpath.evaluate("/application/id", doc)
+        def appId = InstallAppUtils.getLaunchAppId(flexConvention, project)
 
         addArgs "-uninstallApp",
                 "-platform",
-                //fixme it must be custom
-                "android",
+                flexConvention.airMobile.platform,
                 "-platformsdk",
                 flexConvention.airMobile.platformSdk,
                 "-device", flexConvention.airMobile.targetDevice,

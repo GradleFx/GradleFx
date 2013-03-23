@@ -21,7 +21,12 @@ class AirMobilePackage extends AdtTask {
         addArg '-package'
         addArg '-target'
         addArg flexConvention.airMobile.target
-        def outputPath = "${project.buildDir}/${flexConvention.output}.apk"  //todo extract target
+
+        if (StringUtils.isNotEmpty(flexConvention.airMobile.provisioning_profile)) {
+            addArgs "-provisioning-profile", flexConvention.airMobile.provisioning_profile
+        }
+
+
         addArgs "-storetype",
                 "pkcs12",
                 "-keystore",
@@ -48,6 +53,10 @@ class AirMobilePackage extends AdtTask {
         if (StringUtils.isNotEmpty(flexConvention.airMobile.extensionDir)) {
             addArg("-extdir")
             addArg(flexConvention.airMobile.extensionDir)
+        }
+
+        if (flexConvention.airMobile.target.indexOf("-simulator") != -1) {
+            addArgs "-platformsdk", flexConvention.airMobile.platformSdk
         }
 
         super.launch()

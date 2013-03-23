@@ -16,6 +16,10 @@ class AIRMobileConvention  {
     private String platformSdk
 
     private String targetDevice
+    private String provisioning_profile
+    private String outputExtension
+    private String platform
+
 
     public AIRMobileConvention(Project project) {
         target = 'apk'
@@ -56,5 +60,29 @@ class AIRMobileConvention  {
 
     void extensionDir(String extensionDir) {
         this.extensionDir = extensionDir
+    }
+
+    String getProvisioning_profile() {
+        provisioning_profile
+    }
+
+    void provisioning_profile(String profile) {
+        provisioning_profile = profile
+    }
+
+    String getOutputExtension() {
+        outputExtension
+    }
+
+    void outputExtension(String outputExtension) {
+        this.outputExtension = outputExtension
+    }
+
+    String getPlatform() {
+        platform
+    }
+
+    void platform(String platform) {
+        this.platform = platform;
     }
 }
