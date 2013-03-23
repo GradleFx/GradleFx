@@ -1,5 +1,8 @@
 package org.gradlefx.tasks.mobile
 
+import org.gradle.api.Project
+import org.gradlefx.conventions.GradleFxConvention
+
 import javax.xml.parsers.DocumentBuilderFactory
 import javax.xml.xpath.*
 import org.gradlefx.tasks.AdtTask
@@ -21,22 +24,18 @@ class LaunchApp extends AdtTask {
     @Override
     def launch() {
         //flexConvention.airMobile.
-        def builder = DocumentBuilderFactory.newInstance().newDocumentBuilder()
-        def doc = builder.parse(project.file(flexConvention.air.applicationDescriptor).newInputStream())
-        def xpath = XPathFactory.newInstance().newXPath()
-
-        def appId = xpath.evaluate("/application/id", doc)
+        def appId = InstallAppUtils.getLaunchAppId(flexConvention, project)
 
         addArgs "-launchApp",
                 "-platform",
-                //fixme it must be custom
-                "android",
+                flexConvention.airMobile.platform,
                 "-platformsdk",
                 flexConvention.airMobile.platformSdk,
                 "-device", flexConvention.airMobile.targetDevice,
-                //todo fix package extension, it can be different
                 "-appid", appId
 
         return super.launch()
     }
+
+
 }
