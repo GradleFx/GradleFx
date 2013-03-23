@@ -22,6 +22,8 @@ class AirMobilePackage extends AdtTask {
         addArg '-target'
         addArg flexConvention.airMobile.target
 
+        def outputPath = "${project.buildDir}/${flexConvention.output}.${flexConvention.airMobile.outputExtension}"
+
         if (StringUtils.isNotEmpty(flexConvention.airMobile.provisioning_profile)) {
             addArgs "-provisioning-profile", flexConvention.airMobile.provisioning_profile
         }
@@ -34,7 +36,7 @@ class AirMobilePackage extends AdtTask {
                 "-storepass",
                 flexConvention.air.storepass
 
-        addArgs project.file(outputPath)
+        addArgs outputPath
         addArgs project.file(flexConvention.air.applicationDescriptor)
 
         addArgs "-C", "${project.buildDir.absolutePath}", "${flexConvention.output}.${FlexType.swf}"
