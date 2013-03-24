@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils
 import org.gradle.api.file.ConfigurableFileTree
 import org.gradle.api.file.FileTreeElement
 import org.gradle.api.tasks.TaskAction
+import org.gradlefx.conventions.AIRMobileConvention
 import org.gradlefx.conventions.FlexType
 import org.gradlefx.tasks.AdtTask
 
@@ -17,13 +18,23 @@ class BaseAirMobilePackage extends AdtTask {
         adtWorkDir = flexConvention.air.packageWorkDir
     }
 
+    def AIRMobileConvention getAirMobile() {
+        flexConvention.airMobile
+    }
+
+    def getTarget() {
+        airMobile.target
+    }
+
+    def getOutputPath() {
+        return "${project.buildDir}/${flexConvention.output}.${flexConvention.airMobile.outputExtension}"
+    }
+
     @TaskAction
     def launch() {
         addArg '-package'
         addArg '-target'
-        addArg flexConvention.airMobile.target
-
-        def outputPath = "${project.buildDir}/${flexConvention.output}.${flexConvention.airMobile.outputExtension}"
+        addArg target
 
         if (StringUtils.isNotEmpty(flexConvention.airMobile.provisioning_profile)) {
             addArgs "-provisioning-profile", flexConvention.airMobile.provisioning_profile
@@ -66,6 +77,8 @@ class BaseAirMobilePackage extends AdtTask {
 
         super.launch()
     }
+
+
 
 
 }
