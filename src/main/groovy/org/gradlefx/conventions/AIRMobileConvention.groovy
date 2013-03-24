@@ -20,6 +20,7 @@ class AIRMobileConvention  {
     private String outputExtension
     private String platform
     private String simulatorPlatformSdk
+    private String simulatorTarget
 
 
     public AIRMobileConvention(Project project) {
@@ -55,6 +56,14 @@ class AIRMobileConvention  {
 
     void target(String target) {
         this.target = target
+    }
+
+    String getSimulatorTarget() {
+        return simulatorTarget
+    }
+
+    void simulatorTarget(String simulatorTarget) {
+        this.simulatorTarget = simulatorTarget
     }
 
     String getExtensionDir() {

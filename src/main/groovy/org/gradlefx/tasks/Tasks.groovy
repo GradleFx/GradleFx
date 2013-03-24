@@ -31,4 +31,5 @@ class Tasks {
     public static final String COPY_TEST_RESOURCES_TASK_NAME = 'copytestresources'
     public static final String CREATE_HTML_WRAPPER = 'createHtmlWrapper'
     public static final String CLEAN_SDKS = 'cleanSdks'
+    public static final String PACKAGE_SIMULATOR_MOBILE_TASK_NAME = 'packageSimulatorMobileApp'
 }
