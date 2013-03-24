@@ -19,10 +19,13 @@ class AIRMobileConvention  {
     private String provisioning_profile
     private String outputExtension
     private String platform
+    private String simulatorPlatformSdk
 
 
     public AIRMobileConvention(Project project) {
         target = 'apk'
+        outputExtension = 'apk'
+        platform = 'android'
     }
 
     void configure(Closure closure) {
@@ -84,5 +87,13 @@ class AIRMobileConvention  {
 
     void platform(String platform) {
         this.platform = platform;
+    }
+
+    String getSimulatorPlatformSdk() {
+        return simulatorPlatformSdk
+    }
+
+    void simulatorPlatformSdk(String platformSdk) {
+        this.simulatorPlatformSdk = platformSdk
     }
 }
