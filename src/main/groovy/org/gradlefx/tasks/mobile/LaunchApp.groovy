@@ -18,7 +18,7 @@ class LaunchApp extends AdtTask {
         super()
         description "launch app to target device"
         group = TaskGroups.UPLOAD
-        dependsOn Tasks.INSTALL_MOBILE_TASK_NAME
+        dependsOn installAppTaskName
     }
 
     @Override
@@ -30,12 +30,22 @@ class LaunchApp extends AdtTask {
                 "-platform",
                 flexConvention.airMobile.platform,
                 "-platformsdk",
-                flexConvention.airMobile.platformSdk,
-                "-device", flexConvention.airMobile.targetDevice,
+                platformSdk,
+                "-device", targetDevice,
                 "-appid", appId
 
         return super.launch()
     }
 
+    def getInstallAppTaskName() {
+        Tasks.INSTALL_MOBILE_TASK_NAME
+    }
 
+    def getPlatformSdk() {
+        flexConvention.airMobile.platformSdk
+    }
+
+    def getTargetDevice() {
+        flexConvention.airMobile.targetDevice
+    }
 }

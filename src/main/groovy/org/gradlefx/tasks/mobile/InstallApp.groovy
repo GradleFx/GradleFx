@@ -14,22 +14,36 @@ class InstallApp extends AdtTask {
         super()
         description "install app to target device"
         group = TaskGroups.UPLOAD
-        dependsOn Tasks.UNINSTALL_MOBILE_TASK_NAME
-        dependsOn Tasks.PACKAGE_MOBILE_TASK_NAME
+        dependsOn uninstallTaskName
+        dependsOn packageTaskName
     }
 
     @Override
     def launch() {
         addArgs "-installApp",
                 "-platform",
-                //fixme it must be custom
                 flexConvention.airMobile.platform,
                 "-platformsdk",
-                flexConvention.airMobile.platformSdk,
-                "-device", flexConvention.airMobile.targetDevice,
-                //todo fix package extension, it can be different
-                "-package", project.file("${project.buildDir.name}/${flexConvention.output}").absolutePath + ".${flexConvention.airMobile.outputExtension}"
+                getPlatformSdk(),
+                "-device", targetDevice,
+                "-package", InstallAppUtils.getReleaseOutputPath(flexConvention, project)
 
         return super.launch()
+    }
+
+    def getPlatformSdk() {
+        flexConvention.airMobile.platformSdk
+    }
+
+    def getTargetDevice() {
+        flexConvention.airMobile.targetDevice
+    }
+
+    def getUninstallTaskName() {
+        Tasks.UNINSTALL_MOBILE_TASK_NAME
+    }
+
+    def getPackageTaskName() {
+        Tasks.PACKAGE_MOBILE_TASK_NAME
     }
 }

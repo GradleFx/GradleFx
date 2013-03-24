@@ -27,7 +27,7 @@ class BaseAirMobilePackage extends AdtTask {
     }
 
     def getOutputPath() {
-        return "${project.buildDir}/${flexConvention.output}.${flexConvention.airMobile.outputExtension}"
+        return InstallAppUtils.getReleaseOutputPath(flexConvention, project)
     }
 
     @TaskAction

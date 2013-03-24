@@ -14,7 +14,7 @@ class SimulatorAirMobilePackage extends BaseAirMobilePackage {
 
     @Override
     def getOutputPath() {
-        return "${project.buildDir}/${flexConvention.output}-${airMobile.simulatorTarget}.${flexConvention.airMobile.outputExtension}"
+        return InstallAppUtils.getSimulatorOutputPath(flexConvention, project)
     }
 }
 

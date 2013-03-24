@@ -20,7 +20,7 @@ class UninstallApp extends AdtTask {
     }
 
     @Override
-    def launch() {                                          //todo remove duplicate with LaunchApp
+    def launch() {
         //flexConvention.airMobile.
         def appId = InstallAppUtils.getLaunchAppId(flexConvention, project)
 
@@ -28,12 +28,18 @@ class UninstallApp extends AdtTask {
                 "-platform",
                 flexConvention.airMobile.platform,
                 "-platformsdk",
-                flexConvention.airMobile.platformSdk,
-                "-device", flexConvention.airMobile.targetDevice,
-                //todo fix package extension, it can be different
+                platformSdk,
+                "-device", targetDevice,
                 "-appid", appId
 
         return super.launch()
     }
 
+    def getPlatformSdk() {
+        flexConvention.airMobile.platformSdk
+    }
+
+    def getTargetDevice() {
+        flexConvention.airMobile.targetDevice
+    }
 }

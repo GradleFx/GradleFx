@@ -21,6 +21,7 @@ class AIRMobileConvention  {
     private String platform
     private String simulatorPlatformSdk
     private String simulatorTarget
+    private String simulatorTargetDevice
 
 
     public AIRMobileConvention(Project project) {
@@ -66,6 +67,17 @@ class AIRMobileConvention  {
         this.simulatorTarget = simulatorTarget
     }
 
+
+
+    String getSimulatorTargetDevice() {
+        return simulatorTargetDevice
+    }
+
+    void simulatorTargetDevice(String simulatorTargetDevice) {
+        this.simulatorTargetDevice = simulatorTargetDevice
+    }
+
+
     String getExtensionDir() {
         return extensionDir
     }
@@ -105,4 +117,6 @@ class AIRMobileConvention  {
     void simulatorPlatformSdk(String platformSdk) {
         this.simulatorPlatformSdk = platformSdk
     }
+
+
 }

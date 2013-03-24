@@ -28,4 +28,11 @@ class InstallAppUtils {
         return appId;
     }
 
+    static def getReleaseOutputPath(GradleFxConvention flexConvention, Project project) {
+        return "${project.buildDir}/${flexConvention.output}.${flexConvention.airMobile.outputExtension}"
+    }
+
+    static def getSimulatorOutputPath(GradleFxConvention flexConvention, Project project) {
+        return "${project.buildDir}/${flexConvention.output}-${flexConvention.airMobile.simulatorTarget}.${flexConvention.airMobile.outputExtension}"
+    }
 }
