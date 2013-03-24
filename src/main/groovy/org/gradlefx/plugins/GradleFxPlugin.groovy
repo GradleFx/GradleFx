@@ -27,6 +27,7 @@ import org.gradlefx.configuration.sdk.states.air.DetermineAirSdkDeclarationTypeS
 import org.gradlefx.configuration.sdk.states.flex.DetermineFlexSdkDeclarationTypeState
 import org.gradlefx.tasks.*
 import org.gradlefx.tasks.compile.Compile
+import org.gradlefx.tasks.mobile.AirMobilePackage
 import org.gradlefx.tasks.mobile.InstallApp
 import org.gradlefx.tasks.mobile.LaunchApp
 import org.gradlefx.tasks.mobile.UninstallApp

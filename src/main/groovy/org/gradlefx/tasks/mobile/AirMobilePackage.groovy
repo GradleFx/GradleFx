@@ -1,10 +1,11 @@
-package org.gradlefx.tasks
+package org.gradlefx.tasks.mobile
 
 import org.apache.commons.lang.StringUtils
 import org.gradle.api.file.ConfigurableFileTree
 import org.gradle.api.file.FileTreeElement
 import org.gradle.api.tasks.TaskAction
 import org.gradlefx.conventions.FlexType
+import org.gradlefx.tasks.AdtTask
 
 /**
  * @author <a href="mailto:denis.rykovanov@gmail.com">Chaos Encoder</a>
