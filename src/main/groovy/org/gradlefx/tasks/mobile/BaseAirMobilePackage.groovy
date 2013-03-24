@@ -10,8 +10,8 @@ import org.gradlefx.tasks.AdtTask
 /**
  * @author <a href="mailto:denis.rykovanov@gmail.com">Chaos Encoder</a>
  */
-class AirMobilePackage extends AdtTask {
-    public AirMobilePackage() {
+class BaseAirMobilePackage extends AdtTask {
+    public BaseAirMobilePackage() {
         super()
         description = "Packages the generated swf file into an mobile package";
         adtWorkDir = flexConvention.air.packageWorkDir
