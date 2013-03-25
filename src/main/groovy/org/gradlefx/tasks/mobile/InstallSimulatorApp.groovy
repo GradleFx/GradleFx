@@ -20,6 +20,10 @@ class InstallSimulatorApp extends InstallApp {
     }
 
     def getPackageTaskName() {
-        Tasks.PACKAGE_MOBILE_TASK_NAME
+        Tasks.PACKAGE_SIMULATOR_MOBILE_TASK_NAME
+    }
+
+    def getPackageOutputPath() {
+        return InstallAppUtils.getSimulatorOutputPath(flexConvention, project)
     }
 }

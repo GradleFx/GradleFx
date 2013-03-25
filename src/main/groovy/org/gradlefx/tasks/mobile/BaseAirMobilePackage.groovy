@@ -69,16 +69,12 @@ class BaseAirMobilePackage extends AdtTask {
             addArg(flexConvention.airMobile.extensionDir)
         }
 
-        if (flexConvention.airMobile.target.indexOf("-simulator") != -1) {
-            addArgs "-platformsdk", flexConvention.airMobile.simulatorPlatformSdk
-        } else if (flexConvention.airMobile.target.indexOf("ipa-") != -1) {
-            addArgs "-platformsdk", flexConvention.airMobile.platformSdk
-        }
+        addPlatformSdkParams()
 
         super.launch()
     }
 
-
-
-
+    def addPlatformSdkParams() {
+        addArgs "-platformsdk", flexConvention.airMobile.platformSdk
+    }
 }

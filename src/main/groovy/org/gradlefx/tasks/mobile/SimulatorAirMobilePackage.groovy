@@ -16,5 +16,9 @@ class SimulatorAirMobilePackage extends BaseAirMobilePackage {
     def getOutputPath() {
         return InstallAppUtils.getSimulatorOutputPath(flexConvention, project)
     }
+
+    def addPlatformSdkParams() {
+        addArgs "-platformsdk", flexConvention.airMobile.simulatorPlatformSdk
+    }
 }
 

@@ -26,9 +26,13 @@ class InstallApp extends AdtTask {
                 "-platformsdk",
                 getPlatformSdk(),
                 "-device", targetDevice,
-                "-package", InstallAppUtils.getReleaseOutputPath(flexConvention, project)
+                "-package", packageOutputPath
 
         return super.launch()
+    }
+
+    def getPackageOutputPath() {
+        return InstallAppUtils.getReleaseOutputPath(flexConvention, project)
     }
 
     def getPlatformSdk() {
