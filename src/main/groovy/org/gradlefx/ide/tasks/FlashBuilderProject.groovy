@@ -42,7 +42,8 @@ class FlashBuilderProject extends AbstractIDEProject {
     ]
     
     protected String mainSrcDir
-    
+
+    protected Boolean useApolloConfig
     
     /**
     * Constructor
@@ -156,6 +157,13 @@ class FlashBuilderProject extends AbstractIDEProject {
      * if it's any other kind of Flex project we add a .flexProperties file
      */
     private void createConfigFiles() {
+        def Boolean isNativeLib = false;
+        flexConvention.compilerArgs.every { String it ->
+            isNativeLib = it == '+configname=air'
+            return !isNativeLib
+        }
+        useApolloConfig = (isNativeLib) || flexConvention.type.isNativeApp()
+
         List extensions = [FlashBuilderUtil.eclipseProject, FlashBuilderUtil.actionScriptProperties]
         if (flexConvention.type.isLib()) extensions.add FlashBuilderUtil.flexLibProperties
         else if (flexConvention.frameworkLinkage.usesFlex()) extensions.add FlashBuilderUtil.flexProperties

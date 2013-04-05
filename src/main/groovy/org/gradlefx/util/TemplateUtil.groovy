@@ -60,6 +60,7 @@ class TemplateUtil {
                              .replaceAll(/\$\{appId\}/, {flexConvention.applicationId})
                              .replaceAll(/\$\{version\}/, {flexConvention.version})
                              .replaceAll(/\$\{useDebugRSLSwfs\}/, {flexConvention.useDebugRSLSwfs.toString()})
+                             .replaceAll(/\$\{useApolloConfig\}/, {useApolloConfig})
            }
        }
    }
