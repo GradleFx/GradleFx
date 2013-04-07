@@ -5,6 +5,8 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileTree
 import org.gradle.api.file.FileTreeElement
 import org.gradle.api.tasks.TaskAction
+import org.gradlefx.conventions.GradleFxConvention
+import org.gradlefx.conventions.embed.EmbedConvention
 
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -20,13 +22,16 @@ class GenerateResourcesEmbedCode extends DefaultTask {
 
     @TaskAction
     def action() {
-        ConfigurableFileTree soundsFolder = project.fileTree('sounds')
-
+        //
+        def embedConvention = (EmbedConvention) project.convention.plugins.embedFlexResources
 
         def srcFolder = project.file('src/main/actionscript')
         srcFolder.mkdirs();
 
-        def embedRefClass = new File(srcFolder, 'EmbedSourceRefClass.as');
+        embedConvention.embedRefClasses.each { embedRefInfo ->
+
+        def embedRefClass = new File(srcFolder,  "${embedRefInfo.name}.as");
+
 
         Path embedClassPath = Paths.get(embedRefClass.parentFile.path)
         Path projectPath = Paths.get(project.projectDir.path)
@@ -35,23 +40,32 @@ class GenerateResourcesEmbedCode extends DefaultTask {
             out.println("package {")
             out.println("import flash.utils.Dictionary;")
             out.println("//generated code")
-            out.println("\tpublic class EmbedSourceRefClass {")
+            out.println("\tpublic class ${embedRefInfo.name} {")
 
             def classKeyRefMap = [:];
 
-            soundsFolder.visit { FileTreeElement file ->
-                Path soundFilePath = Paths.get(file.getFile().absolutePath)
-                Path soundToEmbClassRelativePath = embedClassPath.relativize(soundFilePath);
-                String resourcePath = soundToEmbClassRelativePath.toString().replace('\\', '/');
+            embedRefInfo.sources.each { ConfigurableFileTree resourceSrcFolder ->
 
-                //String soundFileProjRelPath = projectPath.relativize(soundFilePath).toString().replace('\\', '/');
+                resourceSrcFolder.visit { FileTreeElement file ->
+                    if (file.directory) {
+                        return;
+                    }
 
-                def soundFileBaseName = FilenameUtils.getBaseName(file.name);
-                def classRefName = "_${soundFileBaseName}_classRef";
-                classKeyRefMap.put(soundFileBaseName, classRefName)
+                    Path resourceFilePath = Paths.get(file.getFile().absolutePath)
+                    Path resourceToEmbClassRelativePath = embedClassPath.relativize(resourceFilePath);
+                    String resourcePath = resourceToEmbClassRelativePath.toString().replace('\\', '/');
 
-                out.println("\t\t[Embed(source=\"${resourcePath}\")]")
-                out.println("\t\tpublic static var ${classRefName}:Class;");
+                    String resourceFileProjRelPath = projectPath.relativize(resourceFilePath).toString().replace('\\', '/');
+
+                    def resourceFileBaseName = FilenameUtils.getBaseName(file.name);
+                    def classRefName = "_${resourceFileBaseName}_classRef";
+                    def key =  FilenameUtils.removeExtension(resourceFileProjRelPath)
+                    classKeyRefMap.put(key, classRefName)
+
+                    out.println("\t\t[Embed(source=\"${resourcePath}\")]")
+                    out.println("\t\tpublic static var ${classRefName}:Class;");
+                }
+
             }
 
             out.println("//mapping to local resources");
@@ -66,6 +80,6 @@ class GenerateResourcesEmbedCode extends DefaultTask {
             out.println("\t}")
             out.println("}")
         }
-
+        }
     }
 }

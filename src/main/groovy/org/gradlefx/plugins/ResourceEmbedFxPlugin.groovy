@@ -2,6 +2,8 @@ package org.gradlefx.plugins
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradlefx.conventions.GradleFxConvention
+import org.gradlefx.conventions.embed.EmbedConvention
 import org.gradlefx.tasks.embed.GenerateResourcesEmbedCode
 
 /**
@@ -20,6 +22,11 @@ class ResourceEmbedFxPlugin implements Plugin<Project> {
         this.project = project
 
         applyPlugins()
+
+        if (!project.convention.plugins.embedFlexResources) {
+            EmbedConvention pluginConvention = new EmbedConvention(project)
+            project.convention.plugins.embedFlexResources = pluginConvention
+        }
 
         addTasks()
         project.afterEvaluate {
