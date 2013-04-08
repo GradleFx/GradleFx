@@ -57,7 +57,7 @@ class GenerateResourcesEmbedCode extends DefaultTask {
 
                     String resourceFileProjRelPath = projectPath.relativize(resourceFilePath).toString().replace('\\', '/');
 
-                    def resourceFileBaseName = FilenameUtils.getBaseName(file.name);
+                    def resourceFileBaseName = file.path.replaceAll(/(\.)|(\/)|(\-)/, '_');
                     def classRefName = "_${resourceFileBaseName}_classRef";
                     def key =  FilenameUtils.removeExtension(resourceFileProjRelPath)
                     classKeyRefMap.put(key, classRefName)
