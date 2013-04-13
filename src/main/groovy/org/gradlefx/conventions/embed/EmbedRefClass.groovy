@@ -28,8 +28,12 @@ class EmbedRefClass {
         return source
     }
 
-    void source(ConfigurableFileTree source) {
-        this.sources.add(source)
+    void source(ConfigurableFileTree... sources) {
+        this.sources.addAll(sources)
+    }
+
+    void source(Collection<ConfigurableFileTree> sources) {
+        this.sources.addAll(sources)
     }
 
     List<ConfigurableFileTree> getSources() {
