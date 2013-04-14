@@ -27,6 +27,7 @@ class Tasks {
     public static final String UNINSTALL_MOBILE_TASK_NAME = 'uninstallMobileApp'
     public static final String LAUNCH_MOBILE_TASK_NAME = 'launchMobileApp'
     public static final String LAUNCH_SIMULATOR_MOBILE_TASK_NAME = 'launchSimulatorMobileApp'
+    public static final String LAUNCH_ADL_TASK_NAME = 'launchAdl'
     public static final String TEST_TASK_NAME = 'test'
     public static final String PUBLISH_TASK_NAME = 'publish'
     public static final String COPY_RESOURCES_TASK_NAME = 'copyresources'

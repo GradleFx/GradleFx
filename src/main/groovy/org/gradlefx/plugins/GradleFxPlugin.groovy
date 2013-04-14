@@ -26,6 +26,7 @@ import org.gradlefx.configuration.sdk.DefaultSdkInitialisationContext
 import org.gradlefx.configuration.sdk.states.air.DetermineAirSdkDeclarationTypeState
 import org.gradlefx.configuration.sdk.states.flex.DetermineFlexSdkDeclarationTypeState
 import org.gradlefx.tasks.*
+import org.gradlefx.tasks.adl.AdlTask
 import org.gradlefx.tasks.compile.Compile
 import org.gradlefx.tasks.mobile.BaseAirMobilePackage
 import org.gradlefx.tasks.mobile.InstallApp
@@ -62,6 +63,7 @@ class GradleFxPlugin extends AbstractGradleFxPlugin {
         addTask Tasks.UNINSTALL_SIMULATOR_MOBILE_TASK_NAME, UninstallSimulatorApp, { flexConvention.type?.isMobile() }
         addTask Tasks.LAUNCH_MOBILE_TASK_NAME, LaunchApp, { flexConvention.type?.isMobile() }
         addTask Tasks.LAUNCH_SIMULATOR_MOBILE_TASK_NAME, LaunchSimulatorApp, { flexConvention.type?.isMobile() }
+        addTask Tasks.LAUNCH_ADL_TASK_NAME, AdlTask, { flexConvention.type?.isNativeApp() }
         addTask Tasks.CREATE_HTML_WRAPPER, HtmlWrapper, { flexConvention.type?.isWebApp() }
     }
 
