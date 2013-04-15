@@ -20,6 +20,7 @@ import org.gradle.api.Project
 import org.gradle.api.internal.file.FileResolver
 import org.gradle.api.internal.file.BaseDirFileResolver
 import org.gradle.internal.nativeplatform.filesystem.FileSystems
+import org.gradlefx.conventions.adl.AdlConvention
 
 
 @Mixin(GradleFxDerivedProperties)
@@ -117,6 +118,8 @@ class GradleFxConvention {
     SdkAutoInstallConvention sdkAutoInstall
 
 
+    AdlConvention adl
+
     def GradleFxConvention(Project project) {
         this.project = project
 
@@ -129,6 +132,7 @@ class GradleFxConvention {
         airMobile       = new AIRMobileConvention(project)
         asdoc           = new ASDocConvention()
         sdkAutoInstall  = new SdkAutoInstallConvention()
+        adl             = new AdlConvention()
     }
 
     def htmlWrapper(Closure closure) {
@@ -141,6 +145,10 @@ class GradleFxConvention {
 
     def airMobile(Closure closure) {
         airMobile.configure(closure)
+    }
+
+    def adl(Closure closure) {
+        adl.configure(closure)
     }
 
     def flexUnit(Closure closure) {

@@ -51,6 +51,10 @@ class AdlTask extends DefaultTask {
         //addArgs('-extdir', flexConvention.airMobile.extensionDir)
         addArgs flexConvention.flexHome + '/bin/adl.exe'
         addArgs flexConvention.air.applicationDescriptor
+
+        addArgThatNotNull '-profile', flexConvention.adl.profile
+        addArgThatNotNull '-screensize', flexConvention.adl.screenSize
+
         addArgs project.buildDir
         /*
         ant.java(jar: flexConvention.flexHome + '/lib/adl.jar',
@@ -75,6 +79,12 @@ class AdlTask extends DefaultTask {
             standardOutput = stdOut
         }
         showAntOutput stdOut.toString()
+    }
+
+    def addArgThatNotNull(String command, String value) {
+        if (value) {
+            addArgs(command, value);
+        }
     }
 
     def addArg(String arg) {
