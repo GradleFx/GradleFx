@@ -12,3 +12,5 @@ gradlefx.iws
 /.project
 out
 /out
+classes
+/classes

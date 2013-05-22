@@ -135,6 +135,18 @@ class IdeaProjectModuleTest extends Specification {
             getModuleRootMgrNode().orderEntry.find { it.'@type' == 'jdk' }.'@jdkName' == 'customname_flex_sdk'
     }
 
+    def "setup web app project"() {
+        given:
+            setupProjectWithName "test"
+            ideaProjectTask.flexConvention.type = 'swf'
+            ideaProjectTask.flexConvention.mainClass = 'subpackage/WebContainer.as'
+        when:
+            ideaProjectTask.createProjectConfig();
+        then:
+            getModuleConfNode().'@main-class'.text() == "subpackage.WebContainer"
+            getModuleConfNode().'@output-type'.text() == ""
+    }
+
     def setupProjectWithName(String projectName) {
         //todo extract
         File projectDir = new File(this.getClass().getResource("/stub-project-dir/intellij-dummy.xml").toURI())

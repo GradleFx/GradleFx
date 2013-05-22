@@ -21,6 +21,7 @@ import org.gradle.api.artifacts.Dependency
 import org.gradle.api.internal.artifacts.dependencies.DefaultProjectDependency
 import org.gradle.api.internal.artifacts.dependencies.DefaultSelfResolvingDependency
 import org.gradlefx.configuration.Configurations
+import org.gradlefx.conventions.FlexType
 import org.gradlefx.conventions.FrameworkLinkage
 import static java.util.UUID.randomUUID
 
@@ -109,8 +110,17 @@ class IdeaProject extends AbstractIDEProject {
 
     private void updateConfiguration() {
         editXmlFile imlFilename, { xml ->
-            def configuration = xml.component.find { it.'@name' == 'FlexBuildConfigurationManager' }.configurations.configuration
+            def configuration = xml.component.find { it.'@name' == 'FlexBuildConfigurationManager' }.configurations.configuration.first()
             configuration.@'pure-as' = flexConvention.frameworkLinkage == FrameworkLinkage.none;
+            switch (flexConvention.type) {
+                case FlexType.swf:
+                    configuration.attributes().remove('output-type')
+                case FlexType.air:
+                case FlexType.mobile:
+                    configuration.@'main-class' = flexConvention.mainClassPath.replace('/', '.').replace('.as', '').replace('.mxml', '');
+                    break;
+            }
+
         }
     }
 
