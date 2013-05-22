@@ -144,7 +144,23 @@ class IdeaProjectModuleTest extends Specification {
             ideaProjectTask.createProjectConfig();
         then:
             getModuleConfNode().'@main-class'.text() == "subpackage.WebContainer"
+            getModuleConfNode().'@target-platform'.text() == ""
+    }
+
+    def "setup air app project"() {
+        given:
+            setupProjectWithName "test"
+            ideaProjectTask.flexConvention.type = 'air'
+            ideaProjectTask.flexConvention.mainClass = 'subpackage/AirContainer.mxml'
+            ideaProjectTask.flexConvention.output = 'customOutput'
+        when:
+            ideaProjectTask.createProjectConfig()
+        then:
+            getModuleConfNode().'@main-class'.text() == "subpackage.AirContainer"
+            getModuleConfNode().'@target-platform'.text() == "Desktop"
             getModuleConfNode().'@output-type'.text() == ""
+            getModuleConfNode().'@output-file'.text() == "customOutput.swf"
+            getModuleConfNode().'packaging-air-desktop'.'@package-file-name'.text() == 'customOutput'
     }
 
     def setupProjectWithName(String projectName) {

@@ -112,15 +112,30 @@ class IdeaProject extends AbstractIDEProject {
         editXmlFile imlFilename, { xml ->
             def configuration = xml.component.find { it.'@name' == 'FlexBuildConfigurationManager' }.configurations.configuration.first()
             configuration.@'pure-as' = flexConvention.frameworkLinkage == FrameworkLinkage.none;
+
+            //setup main class
             switch (flexConvention.type) {
                 case FlexType.swf:
-                    configuration.attributes().remove('output-type')
                 case FlexType.air:
                 case FlexType.mobile:
                     configuration.@'main-class' = flexConvention.mainClassPath.replace('/', '.').replace('.as', '').replace('.mxml', '');
                     break;
             }
 
+            //setup platform
+            switch (flexConvention.type) {
+                case FlexType.swf:
+                    configuration.attributes().remove('target-platform')
+                    break;
+                case FlexType.air:
+                    configuration.attributes().remove('output-type')
+                    configuration.@'target-platform' = 'Desktop'
+                    configuration.'packaging-air-desktop'.@'package-file-name' = flexConvention.output
+                    configuration.@'output-file' = "${flexConvention.output}.swf"
+                    break;
+                case FlexType.mobile:
+                    break;
+            }
         }
     }
 
