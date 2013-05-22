@@ -11,4 +11,4 @@ gradlefx.iws
 .orig
 /.project
 out
-out/
+/out

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="Flex" version="4">
+  <component name="Flex.Build.Configuration">
+    <option name="TARGET_PLAYER_VERSION" value="${playerVersion}" />
+    <option name="VERSION" value="3" />
+  </component>
+  <component name="FlexBuildConfigurationManager" active="${project}">
+    <configurations>
+      <configuration name="${project}" pure-as="false" output-type="Library" output-file="${artifact}" output-folder="$MODULE_DIR$/bin-debug">
+        <!-- TODO target.player dependency ? -->
+        <dependencies target-player="${playerVersion}">
+            <entries>
+            </entries>
+        <!--TODO Entries-->
+          <!--<entries>
+            <entry library-id="fd47c470-8f70-4508-b705-11085c64948c">
+              <dependency linkage="Merged" />
+            </entry>
+            <entry library-id="11deea39-16d1-4661-871e-bedd0ce15788">
+              <dependency linkage="Test" />
+            </entry>
+          </entries>-->
+          <!-- TODO Can sdk name be set? We have no clue on what sdk's IntelliJ have in settings? -->
+          <sdk name="default_flex_sdk" />
+        </dependencies>
+        <!-- TODO compiler options -->
+        <compiler-options />
+        <!-- TODO look at an air project -->
+        <packaging-air-desktop />
+        <!-- TODO Android -->
+        <packaging-android />
+        <!-- TODO ios -->
+        <packaging-ios />
+      </configuration>
+    </configurations>
+    <compiler-options />
+  </component>
+  <component name="NewModuleRootManager" inherit-compiler-output="false">
+    <output url="file://$MODULE_DIR$/bin-debug" />
+    <output-test url="file://$MODULE_DIR$/bin-debug" />
+    <exclude-output />
+      <!--<content url="file://$MODULE_DIR$"> -->
+          <!-- TODO sources -->
+      <!--<sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="true" />-->
+      <!--</content> -->
+    <orderEntry type="jdk" jdkName="default_flex_sdk" jdkType="Flex SDK Type (new)" />
+
+    <orderEntry type="sourceFolder" forTests="false" />
+    <!--TODO libs-->
+    <!--<orderEntry type="module-library" exported="">
+      <library name="granite-2.1.0.GA" type="flex">
+        <properties id="fd47c470-8f70-4508-b705-11085c64948c" />
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/granite-swc-2.1.0.GA.swc!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>-->
+  </component>
+</module>
+
