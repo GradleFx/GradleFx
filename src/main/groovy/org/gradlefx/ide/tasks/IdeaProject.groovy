@@ -134,6 +134,11 @@ class IdeaProject extends AbstractIDEProject {
                     configuration.@'output-file' = "${flexConvention.output}.swf"
                     break;
                 case FlexType.mobile:
+                    configuration.attributes().remove('output-type')
+                    configuration.@'target-platform' = 'Mobile'
+                    configuration.'packaging-android'.@'package-file-name' = flexConvention.output
+                    configuration.'packaging-ios'.@'package-file-name' = flexConvention.output
+                    configuration.@'output-file' = "${flexConvention.output}.swf"
                     break;
             }
         }

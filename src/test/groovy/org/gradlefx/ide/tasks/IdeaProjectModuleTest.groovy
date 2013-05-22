@@ -3,6 +3,7 @@ package org.gradlefx.ide.tasks
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 import org.gradlefx.configuration.Configurations
+import org.gradlefx.conventions.FlexType
 import org.gradlefx.conventions.FrameworkLinkage
 import org.gradlefx.conventions.GradleFxConvention
 import spock.lang.Specification
@@ -156,11 +157,30 @@ class IdeaProjectModuleTest extends Specification {
         when:
             ideaProjectTask.createProjectConfig()
         then:
+            //todo files included in package
             getModuleConfNode().'@main-class'.text() == "subpackage.AirContainer"
             getModuleConfNode().'@target-platform'.text() == "Desktop"
             getModuleConfNode().'@output-type'.text() == ""
             getModuleConfNode().'@output-file'.text() == "customOutput.swf"
             getModuleConfNode().'packaging-air-desktop'.'@package-file-name'.text() == 'customOutput'
+    }
+
+    def "setup air mobile project"() {
+        given:
+            setupProjectWithName "test"
+            ideaProjectTask.flexConvention.type = FlexType.mobile
+            ideaProjectTask.flexConvention.mainClass = 'subpackage/AirContainer.mxml'
+            ideaProjectTask.flexConvention.output = 'customOutput'
+        when:
+            ideaProjectTask.createProjectConfig()
+        then:
+            //todo files included in package
+            getModuleConfNode().'@main-class'.text() == "subpackage.AirContainer"
+            getModuleConfNode().'@target-platform'.text() == "Mobile"
+            getModuleConfNode().'@output-type'.text() == ""
+            getModuleConfNode().'@output-file'.text() == "customOutput.swf"
+            getModuleConfNode().'packaging-android'.'@package-file-name'.text() == 'customOutput'
+            getModuleConfNode().'packaging-ios'.'@package-file-name'.text() == 'customOutput'
     }
 
     def setupProjectWithName(String projectName) {
