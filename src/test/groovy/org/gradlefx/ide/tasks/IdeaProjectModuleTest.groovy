@@ -216,7 +216,7 @@ class IdeaProjectModuleTest extends Specification {
         given:
             setupProjectWithName "test"
             ideaProjectTask.flexConvention.type = FlexType.swc
-            ideaProjectTask.flexConvention.compilerArgs << '+configname=air'
+            ideaProjectTask.flexConvention.additionalCompilerOptions << '+configname=air'
         when:
             ideaProjectTask.createProjectConfig()
         then:
@@ -225,6 +225,19 @@ class IdeaProjectModuleTest extends Specification {
             configuration.'@output-type'.text() == "Library"
             configuration.'@target-platform'.text() == "Desktop"
             configuration.'@pure-as'.text() == "false"
+    }
+
+    def "additional compiler options"() {
+        setup:
+            setupProjectWithName "test"
+            ideaProjectTask.flexConvention.type = FlexType.swc
+            ideaProjectTask.flexConvention.additionalCompilerOptions << '+configname=air'
+            ideaProjectTask.flexConvention.additionalCompilerOptions << '-tools-locale="en"' << '-default-background-color=0xcccccc'
+        when:
+            ideaProjectTask.createProjectConfig()
+        then:
+            def configuration = getModuleConfNode()
+            configuration.'compiler-options'.'option'.find{ it.'@name' == "additionalOptions" }.'@value' == '+configname=air -tools-locale="en" -default-background-color=0xcccccc'
     }
 
     def setupProjectWithName(String projectName) {

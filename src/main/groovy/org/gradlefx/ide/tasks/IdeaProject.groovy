@@ -46,6 +46,20 @@ class IdeaProject extends AbstractIDEProject {
         addSourceDirs()
         addDependencies()
         updateFlexSdk()
+        addCompilerOptions()
+    }
+
+    def addCompilerOptions() {
+        editXmlFile imlFilename, { xml ->
+            if (flexConvention.additionalCompilerOptions.empty) {
+                return
+            }
+
+            def rootMgr = xml.component.find { it.'@name' == 'FlexBuildConfigurationManager' }
+            def compilerOptions = rootMgr.configurations.configuration.'compiler-options'.first();
+            def additionalOptions = new Node(compilerOptions, 'option', ['name': "additionalOptions"])
+            additionalOptions.@'value' = flexConvention.additionalCompilerOptions.join(' ')
+        }
     }
 
     def updateFlexSdk() {
