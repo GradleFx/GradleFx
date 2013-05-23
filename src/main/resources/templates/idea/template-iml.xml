@@ -8,7 +8,7 @@
     <configurations>
       <configuration name="${project}" pure-as="false" output-type="Library" output-file="${artifact}" output-folder="$MODULE_DIR$/bin-debug">
         <!-- TODO target.player dependency ? -->
-        <dependencies target-player="${playerVersion}">
+        <dependencies target-player="${playerVersion}" framework-linkage="Merged">
             <entries>
             </entries>
         <!--TODO Entries-->
