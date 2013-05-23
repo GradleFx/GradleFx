@@ -29,6 +29,7 @@ class IdeaProjectModuleTest extends Specification {
     Project project
     IdeaProject _ideaFxProjectTask
     String imlFileContent
+    String testResourceDir = './src/test/resources/'
 
     def setup() {
     }
@@ -246,6 +247,24 @@ class IdeaProjectModuleTest extends Specification {
             suffix  << ['air-desktop', 'android']
         
     }
+
+    def "include file in air package"() {
+        setup:
+            setupProjectWithName "test"
+            ideaProjectTask.flexConvention.type = type
+            ideaProjectTask.flexConvention.airMobile.platform = platform
+            ideaProjectTask.flexConvention.air.includeFileTrees = [project.fileTree(dir: "sub-resource-dir", include: '**/*.*')]
+            ideaProjectTask.createProjectConfig()
+        expect:
+            project.fileTree(dir: "sub-resource-dir", include: '*.*').files.empty == false
+            def configuration = getModuleConfNode()
+            configuration["packaging-$suffix"].'files-to-package'.empty == false
+        where:
+                type            |   platform    |   suffix
+                FlexType.air    |   null        |   'air-desktop'
+                FlexType.mobile |   'android'   |   'android'
+                FlexType.mobile |   'ios'       |   'ios'
+    }
     
     def "additional compiler options"() {
         setup:
@@ -262,10 +281,10 @@ class IdeaProjectModuleTest extends Specification {
 
     def setupProjectWithName(String projectName) {
         //todo extract
-        File projectDir = new File(this.getClass().getResource("/stub-project-dir/intellij-dummy.xml").toURI())
+        File projectDir = new File("$testResourceDir/stub-project-dir");//new File(this.getClass().getResource("/stub-project-dir/intellij-dummy.xml").toURI())
         Project root = ProjectBuilder.builder().withProjectDir(projectDir.parentFile).withName('root').build()
         Project utilProject = ProjectBuilder.builder().withProjectDir(projectDir.getParentFile()).withParent(root).withName('util').build()
-        this.project = ProjectBuilder.builder().withProjectDir(projectDir.getParentFile()).withParent(root).withName(projectName).build()
+        this.project = ProjectBuilder.builder().withProjectDir(projectDir).withParent(root).withName(projectName).build()
         ideaProjectTask.flexConvention.type = 'swc'
         [
                 Configurations.INTERNAL_CONFIGURATION_NAME.configName(),

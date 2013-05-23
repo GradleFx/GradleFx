@@ -18,6 +18,8 @@ package org.gradlefx.ide.tasks
 
 import org.apache.commons.io.FilenameUtils
 import org.gradle.api.artifacts.Dependency
+import org.gradle.api.file.ConfigurableFileTree
+import org.gradle.api.file.FileTreeElement
 import org.gradle.api.internal.artifacts.dependencies.DefaultProjectDependency
 import org.gradle.api.internal.artifacts.dependencies.DefaultSelfResolvingDependency
 import org.gradlefx.configuration.Configurations
@@ -199,6 +201,7 @@ class IdeaProject extends AbstractIDEProject {
                     packaging.@'custom-descriptor-path' = "\$MODULE_DIR\$/${flexConvention.air.applicationDescriptor}"
                     new Node(packaging, 'AirSigningOptions',
                             ['keystore-path':"\$MODULE_DIR\$/${flexConvention.air.keystore}", 'use-temp-certificate':false])
+                    addFilesInPackage(packaging)
                     break;
                 case FlexType.mobile:
                     configuration.attributes().remove('output-type')
@@ -212,15 +215,29 @@ class IdeaProject extends AbstractIDEProject {
                     configuration.'packaging-android'.@'custom-descriptor-path' = "\$MODULE_DIR\$/${flexConvention.air.applicationDescriptor}"
                     configuration.'packaging-ios'.@'custom-descriptor-path' = "\$MODULE_DIR\$/${flexConvention.air.applicationDescriptor}"
 
+                    def packaging = flexConvention.airMobile.platform == 'android' ? configuration.'packaging-android'.first() : configuration.'packaging-ios'.first()
                     if (flexConvention.airMobile.platform == 'android') {
                         configuration.'packaging-android'.@'enabled' = true
-                        def packaging = configuration.'packaging-android'.first()
                         new Node(packaging, 'AirSigningOptions',
                                 ['keystore-path':"\$MODULE_DIR\$/${flexConvention.air.keystore}", 'use-temp-certificate':false])
                     } else if (flexConvention.airMobile.platform == 'ios') {
                         configuration.'packaging-ios'.@'enabled' = true
                     }
+
+                    addFilesInPackage(packaging)
                     break;
+            }
+
+        }
+    }
+
+    private void addFilesInPackage(parent) {
+        def filesParent = new Node(parent, 'files-to-package', [])
+        flexConvention.air.includeFileTrees.each { ConfigurableFileTree fileTree ->
+            fileTree.visit { FileTreeElement file ->
+                if (!file.isDirectory()) {
+                    new Node(filesParent, 'FilePathAndPathInPackage', ['file-path':file.path, 'path-in-package':file.relativePath.toString()])
+                }
             }
         }
     }
