@@ -231,6 +231,22 @@ class IdeaProjectModuleTest extends Specification {
             configuration.'@pure-as'.text() == "false"
     }
 
+    def "setup air certificate options for android and air"() { //todo cover ios
+        setup:
+            setupProjectWithName "test"
+            ideaProjectTask.flexConvention.type = type
+            ideaProjectTask.flexConvention.air.keystore = 'somecert.p12'
+            ideaProjectTask.createProjectConfig()
+        expect:
+            def configuration = getModuleConfNode()
+            configuration["packaging-$suffix"].AirSigningOptions.'@keystore-path'.text() == '$MODULE_DIR$/somecert.p12'
+            configuration["packaging-$suffix"].AirSigningOptions.'@use-temp-certificate'.text() == 'false'
+        where:
+            type    << [FlexType.air, FlexType.mobile]
+            suffix  << ['air-desktop', 'android']
+        
+    }
+    
     def "additional compiler options"() {
         setup:
             setupProjectWithName "test"

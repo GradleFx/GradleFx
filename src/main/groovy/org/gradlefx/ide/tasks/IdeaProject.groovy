@@ -193,9 +193,12 @@ class IdeaProject extends AbstractIDEProject {
                     configuration.attributes().remove('output-type')
                     configuration.@'target-platform' = 'Desktop'
                     configuration.@'output-file' = "${flexConvention.output}.swf"
-                    configuration.'packaging-air-desktop'.@'package-file-name' = flexConvention.output
-                    configuration.'packaging-air-desktop'.@'use-generated-descriptor' = false
-                    configuration.'packaging-air-desktop'.@'custom-descriptor-path' = "\$MODULE_DIR\$/${flexConvention.air.applicationDescriptor}"
+                    def packaging = configuration.'packaging-air-desktop'.first()
+                    packaging.@'package-file-name' = flexConvention.output
+                    packaging.@'use-generated-descriptor' = false
+                    packaging.@'custom-descriptor-path' = "\$MODULE_DIR\$/${flexConvention.air.applicationDescriptor}"
+                    new Node(packaging, 'AirSigningOptions',
+                            ['keystore-path':"\$MODULE_DIR\$/${flexConvention.air.keystore}", 'use-temp-certificate':false])
                     break;
                 case FlexType.mobile:
                     configuration.attributes().remove('output-type')
@@ -211,6 +214,9 @@ class IdeaProject extends AbstractIDEProject {
 
                     if (flexConvention.airMobile.platform == 'android') {
                         configuration.'packaging-android'.@'enabled' = true
+                        def packaging = configuration.'packaging-android'.first()
+                        new Node(packaging, 'AirSigningOptions',
+                                ['keystore-path':"\$MODULE_DIR\$/${flexConvention.air.keystore}", 'use-temp-certificate':false])
                     } else if (flexConvention.airMobile.platform == 'ios') {
                         configuration.'packaging-ios'.@'enabled' = true
                     }
