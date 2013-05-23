@@ -34,7 +34,7 @@ class IdeaProjectTest {
         given_player_version_is("12")
         when_I_create_project_config()
         then_the_iml_file_should_have_tag('<option name="TARGET_PLAYER_VERSION" value="12"/>')
-        then_the_iml_file_should_have_tag('<dependencies target-player="12" framework-linkage="Merged">')
+        then_the_iml_file_should_have_tag('<dependencies target-player="12" framework-linkage="Runtime">')
     }
 
     @Test
