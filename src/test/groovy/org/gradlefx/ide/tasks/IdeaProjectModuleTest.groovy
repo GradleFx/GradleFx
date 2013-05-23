@@ -134,14 +134,18 @@ class IdeaProjectModuleTest extends Specification {
 
 
     def "setup flex sdk"() {
-        given:
+        setup:
             setupProjectWithName "test"
-        when:
+            ideaProjectTask.flexConvention.frameworkLinkage = frameworkLinkage
             ideaProjectTask.createProjectConfig()
-        then:
+        expect:
             def configuration = getModuleConfNode()
             configuration.dependencies.sdk.'@name'.text() == 'default_flex_sdk'
+            configuration.dependencies.'@framework-linkage'.text() == ideaSdkLinkage
             getModuleRootMgrNode().orderEntry.find { it.'@type' == "jdk" }.'@jdkName' == 'default_flex_sdk'
+        where:
+            frameworkLinkage << [FrameworkLinkage.merged, FrameworkLinkage.none, FrameworkLinkage.rsl]
+            ideaSdkLinkage << ['Merged', '', 'Runtime']
     }
 
     def "setup flex sdk with custom name"() {

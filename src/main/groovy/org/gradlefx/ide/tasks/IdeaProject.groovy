@@ -64,12 +64,25 @@ class IdeaProject extends AbstractIDEProject {
 
     def updateFlexSdk() {
         editXmlFile imlFilename, { xml ->
-            if (!project.hasProperty('ideaFxModuleSdkName')) {
-                return
-            }
+
             def rootMgr = xml.component.find { it.'@name' == 'FlexBuildConfigurationManager' }
-            rootMgr.configurations.configuration.dependencies.sdk.@'name' = project.property('ideaFxModuleSdkName')
-            xml.component.find { it.'@name' == 'NewModuleRootManager' }.orderEntry.find { it.'@type' == 'jdk' }.@'jdkName' = project.property('ideaFxModuleSdkName')
+            def dependencies = rootMgr.configurations.configuration.dependencies.first()
+
+            switch (flexConvention.frameworkLinkage) {
+                case FrameworkLinkage.none:
+                    dependencies.attributes().remove('framework-linkage')
+                    break;
+                case FrameworkLinkage.external:
+                case FrameworkLinkage.rsl:
+                    dependencies.@'framework-linkage' = 'Runtime'
+                    break;
+            }
+
+            if (project.hasProperty('ideaFxModuleSdkName')) {
+                dependencies.sdk.@'name' = project.property('ideaFxModuleSdkName')
+                xml.component.find { it.'@name' == 'NewModuleRootManager' }.orderEntry.find { it.'@type' == 'jdk' }.@'jdkName' = project.property('ideaFxModuleSdkName')
+            }
+
         }
     }
 
