@@ -113,6 +113,26 @@ class IdeaProjectModuleTest extends Specification {
             orderEntry.'@module-name' == 'util'
     }
 
+
+    def "setup dependency type"() {
+        setup:
+            setupProjectWithName "test"
+            ideaProjectTask.flexConvention.type = 'swc'
+            project.getDependencies().add(configName, project.project(':util'))
+            ideaProjectTask.createProjectConfig()
+        expect:
+            def configuration = getModuleConfNode()
+            def entry = configuration.dependencies.entries.entry.first();
+            entry.dependency.'@linkage'.text() == linkageType
+        where:
+            configName << [Configurations.MERGE_CONFIGURATION_NAME.configName(),
+                    Configurations.INTERNAL_CONFIGURATION_NAME.configName(),
+                    Configurations.EXTERNAL_CONFIGURATION_NAME.configName(),
+                    Configurations.TEST_CONFIGURATION_NAME.configName()]
+            linkageType << ['Merged', 'Include', 'External', 'Test']
+    }
+
+
     def "setup flex sdk"() {
         given:
             setupProjectWithName "test"
@@ -183,6 +203,22 @@ class IdeaProjectModuleTest extends Specification {
             getModuleConfNode().'packaging-ios'.'@package-file-name'.text() == 'customOutput'
     }
 
+    def "setup air lib project"() {
+        given:
+            setupProjectWithName "test"
+            ideaProjectTask.flexConvention.type = FlexType.swc
+            ideaProjectTask.flexConvention.compilerArgs << '+configname=air'
+        when:
+            ideaProjectTask.createProjectConfig()
+        then:
+            def configuration = getModuleConfNode()
+            configuration.'@name'.text() == 'test'
+            configuration.'@output-type'.text() == "Library"
+            configuration.'@target-platform'.text() == "Desktop"
+            configuration.'@pure-as'.text() == "false"
+    }
+
+
     def setupProjectWithName(String projectName) {
         //todo extract
         File projectDir = new File(this.getClass().getResource("/stub-project-dir/intellij-dummy.xml").toURI())
@@ -195,7 +231,8 @@ class IdeaProjectModuleTest extends Specification {
                 Configurations.EXTERNAL_CONFIGURATION_NAME.configName(),
                 Configurations.MERGE_CONFIGURATION_NAME.configName(),
                 Configurations.RSL_CONFIGURATION_NAME.configName(),
-                Configurations.THEME_CONFIGURATION_NAME.configName()
+                Configurations.THEME_CONFIGURATION_NAME.configName(),
+                Configurations.TEST_CONFIGURATION_NAME.configName()
         ].each { project.configurations.add(it) }
 
     }

@@ -70,21 +70,22 @@ class IdeaProject extends AbstractIDEProject {
                     Configurations.EXTERNAL_CONFIGURATION_NAME.configName(),
                     Configurations.MERGE_CONFIGURATION_NAME.configName(),
                     Configurations.RSL_CONFIGURATION_NAME.configName(),
+                    Configurations.TEST_CONFIGURATION_NAME.configName(),
                     Configurations.THEME_CONFIGURATION_NAME.configName()
-            ].each { type ->
-                project.configurations[type].allDependencies.each { Dependency dependency ->
+            ].each { configType ->
+                project.configurations[configType].allDependencies.each { Dependency dependency ->
 
                     if (dependency instanceof DefaultProjectDependency) {
                         def projectDependency = dependency as DefaultProjectDependency;
                         def entryProjectRef = new Node(entries, 'entry', ['module-name':projectDependency.dependencyProject.name, 'build-configuration-name':projectDependency.dependencyProject.name])
-                        new Node(entryProjectRef, 'dependency', ['linkage':'Merged'])
+                        new Node(entryProjectRef, 'dependency', ['linkage': configTypeToLinkageType(configType) ])
                         new Node(rootMgr, 'orderEntry', [type:"module", 'module-name':projectDependency.dependencyProject.name]);
                     } else if (dependency instanceof DefaultSelfResolvingDependency) {
                         def selfDependency = dependency as DefaultSelfResolvingDependency;
                         selfDependency.source.files.each { file ->
                             def String uuid = file.name
                             def entry = new Node(entries, 'entry', ['library-id': uuid])
-                            new Node(entry, 'dependency', ['linkage':'Merged'])
+                            new Node(entry, 'dependency', ['linkage':configTypeToLinkageType(configType)])
 
                             def orderEntry = new Node(rootMgr, 'orderEntry', [type:"module-library"]);
                             def libNode = new Node(orderEntry, 'library', [name:file.name, type:"flex"])
@@ -99,6 +100,26 @@ class IdeaProject extends AbstractIDEProject {
 
             }
         }
+    }
+
+    def configTypeToLinkageType(String configType) {
+        switch (configType) {
+            case Configurations.INTERNAL_CONFIGURATION_NAME.configName():
+                "Include"
+                break;
+            case Configurations.EXTERNAL_CONFIGURATION_NAME.configName():
+                "External"
+                break;
+            case Configurations.MERGE_CONFIGURATION_NAME.configName():
+                "Merged"
+                break;
+            case Configurations.TEST_CONFIGURATION_NAME.configName():
+                "Test"
+                break;
+        }
+
+
+
     }
 
     void createImlFile() {
@@ -123,8 +144,22 @@ class IdeaProject extends AbstractIDEProject {
             }
 
             //setup platform
+
+            def Boolean isNativeLib = false;
+            flexConvention.compilerArgs.every { String it ->
+                isNativeLib = it == '+configname=air'
+                return !isNativeLib
+            }
+            isNativeLib = (isNativeLib) || flexConvention.type.isNativeApp()
+
             switch (flexConvention.type) {
+                case FlexType.swc:
+                    if (isNativeLib) {
+                        configuration.@'target-platform' = 'Desktop'
+                    }
+                    break;
                 case FlexType.swf:
+                    configuration.attributes().remove('output-type')
                     configuration.attributes().remove('target-platform')
                     break;
                 case FlexType.air:

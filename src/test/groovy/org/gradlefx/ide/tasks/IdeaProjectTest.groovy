@@ -34,7 +34,7 @@ class IdeaProjectTest {
         given_player_version_is("12")
         when_I_create_project_config()
         then_the_iml_file_should_have_tag('<option name="TARGET_PLAYER_VERSION" value="12"/>')
-        then_the_iml_file_should_have_tag('<dependencies target-player="12">')
+        then_the_iml_file_should_have_tag('<dependencies target-player="12" framework-linkage="Merged">')
     }
 
     @Test
@@ -82,7 +82,8 @@ class IdeaProjectTest {
                 Configurations.EXTERNAL_CONFIGURATION_NAME.configName(),
                 Configurations.MERGE_CONFIGURATION_NAME.configName(),
                 Configurations.RSL_CONFIGURATION_NAME.configName(),
-                Configurations.THEME_CONFIGURATION_NAME.configName()
+                Configurations.THEME_CONFIGURATION_NAME.configName(),
+                Configurations.TEST_CONFIGURATION_NAME.configName()
         ].each { project.configurations.add(it) }
     }
 

@@ -53,7 +53,7 @@ dependencies {
     compile group: 'commons-lang', name: 'commons-lang', version: '2.6'
     compile group: 'commons-io', name: 'commons-io', version: '2.4'
     testCompile "org.spockframework:spock-core:0.7-groovy-1.8"
-    groovy group: 'org.codehaus.groovy', name: 'groovy', version: '1.8.6'
+    groovy 'org.codehaus.groovy:groovy-all:1.8.6'
 }
 
 task groovydocJar(type: Jar, dependsOn: groovydoc) {
