@@ -192,7 +192,7 @@ class IdeaProjectModuleTest extends Specification {
             getModuleConfNode().'packaging-air-desktop'.'@custom-descriptor-path'.text() == '$MODULE_DIR$/src/main/actionscript/air.xml'
     }
 
-    def "setup air mobile project"() { //todo data driven , ios
+    def "setup air mobile project"() { 
         setup:
             setupProjectWithName "test"
             ideaProjectTask.flexConvention.type = FlexType.mobile
