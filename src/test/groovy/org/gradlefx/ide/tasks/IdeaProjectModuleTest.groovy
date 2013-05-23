@@ -174,6 +174,7 @@ class IdeaProjectModuleTest extends Specification {
             ideaProjectTask.flexConvention.type = 'air'
             ideaProjectTask.flexConvention.mainClass = 'subpackage/AirContainer.mxml'
             ideaProjectTask.flexConvention.output = 'customOutput'
+            ideaProjectTask.flexConvention.air.applicationDescriptor = 'src/main/actionscript/air.xml'
         when:
             ideaProjectTask.createProjectConfig()
         then:
@@ -183,6 +184,8 @@ class IdeaProjectModuleTest extends Specification {
             getModuleConfNode().'@output-type'.text() == ""
             getModuleConfNode().'@output-file'.text() == "customOutput.swf"
             getModuleConfNode().'packaging-air-desktop'.'@package-file-name'.text() == 'customOutput'
+            getModuleConfNode().'packaging-air-desktop'.'@use-generated-descriptor'.text() == 'false'
+            getModuleConfNode().'packaging-air-desktop'.'@custom-descriptor-path'.text() == '$MODULE_DIR$/src/main/actionscript/air.xml'
     }
 
     def "setup air mobile project"() { //todo data driven , ios

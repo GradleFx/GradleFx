@@ -165,8 +165,10 @@ class IdeaProject extends AbstractIDEProject {
                 case FlexType.air:
                     configuration.attributes().remove('output-type')
                     configuration.@'target-platform' = 'Desktop'
-                    configuration.'packaging-air-desktop'.@'package-file-name' = flexConvention.output
                     configuration.@'output-file' = "${flexConvention.output}.swf"
+                    configuration.'packaging-air-desktop'.@'package-file-name' = flexConvention.output
+                    configuration.'packaging-air-desktop'.@'use-generated-descriptor' = false
+                    configuration.'packaging-air-desktop'.@'custom-descriptor-path' = "\$MODULE_DIR\$/${flexConvention.air.applicationDescriptor}"
                     break;
                 case FlexType.mobile:
                     configuration.attributes().remove('output-type')
