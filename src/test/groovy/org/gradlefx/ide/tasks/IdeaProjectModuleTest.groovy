@@ -185,22 +185,28 @@ class IdeaProjectModuleTest extends Specification {
             getModuleConfNode().'packaging-air-desktop'.'@package-file-name'.text() == 'customOutput'
     }
 
-    def "setup air mobile project"() {
-        given:
+    def "setup air mobile project"() { //todo data driven , ios
+        setup:
             setupProjectWithName "test"
             ideaProjectTask.flexConvention.type = FlexType.mobile
             ideaProjectTask.flexConvention.mainClass = 'subpackage/AirContainer.mxml'
             ideaProjectTask.flexConvention.output = 'customOutput'
-        when:
+            ideaProjectTask.flexConvention.air.applicationDescriptor = 'src/main/actionscript/apk.xml'
+            ideaProjectTask.flexConvention.airMobile.platform = platform
             ideaProjectTask.createProjectConfig()
-        then:
+        expect:
             //todo files included in package
             getModuleConfNode().'@main-class'.text() == "subpackage.AirContainer"
             getModuleConfNode().'@target-platform'.text() == "Mobile"
             getModuleConfNode().'@output-type'.text() == ""
             getModuleConfNode().'@output-file'.text() == "customOutput.swf"
-            getModuleConfNode().'packaging-android'.'@package-file-name'.text() == 'customOutput'
-            getModuleConfNode().'packaging-ios'.'@package-file-name'.text() == 'customOutput'
+            getModuleConfNode()["packaging-$packagin_suffix"].'@enabled'.text() == 'true'
+            getModuleConfNode()["packaging-$packagin_suffix"].'@package-file-name'.text() == 'customOutput'
+            getModuleConfNode()["packaging-$packagin_suffix"].'@use-generated-descriptor'.text() == 'false'
+            getModuleConfNode()["packaging-$packagin_suffix"].'@custom-descriptor-path'.text() == '$MODULE_DIR$/src/main/actionscript/apk.xml'
+        where:
+            platform << ['android', 'ios']
+            packagin_suffix << ['android', 'ios']
     }
 
     def "setup air lib project"() {
@@ -217,7 +223,6 @@ class IdeaProjectModuleTest extends Specification {
             configuration.'@target-platform'.text() == "Desktop"
             configuration.'@pure-as'.text() == "false"
     }
-
 
     def setupProjectWithName(String projectName) {
         //todo extract

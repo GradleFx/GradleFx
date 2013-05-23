@@ -174,6 +174,17 @@ class IdeaProject extends AbstractIDEProject {
                     configuration.'packaging-android'.@'package-file-name' = flexConvention.output
                     configuration.'packaging-ios'.@'package-file-name' = flexConvention.output
                     configuration.@'output-file' = "${flexConvention.output}.swf"
+
+                    configuration.'packaging-android'.@'use-generated-descriptor' = false
+                    configuration.'packaging-ios'.@'use-generated-descriptor' = false
+                    configuration.'packaging-android'.@'custom-descriptor-path' = "\$MODULE_DIR\$/${flexConvention.air.applicationDescriptor}"
+                    configuration.'packaging-ios'.@'custom-descriptor-path' = "\$MODULE_DIR\$/${flexConvention.air.applicationDescriptor}"
+
+                    if (flexConvention.airMobile.platform == 'android') {
+                        configuration.'packaging-android'.@'enabled' = true
+                    } else if (flexConvention.airMobile.platform == 'ios') {
+                        configuration.'packaging-ios'.@'enabled' = true
+                    }
                     break;
             }
         }
