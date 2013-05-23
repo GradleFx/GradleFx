@@ -200,7 +200,7 @@ class IdeaProject extends AbstractIDEProject {
                     packaging.@'use-generated-descriptor' = false
                     packaging.@'custom-descriptor-path' = "\$MODULE_DIR\$/${flexConvention.air.applicationDescriptor}"
                     new Node(packaging, 'AirSigningOptions',
-                            ['keystore-path':"\$MODULE_DIR\$/${flexConvention.air.keystore}", 'use-temp-certificate':false])
+                            ['keystore-path':"\$MODULE_DIR\$/${FilenameUtils.separatorsToUnix(project.relativePath(flexConvention.air.keystore))}", 'use-temp-certificate':false])
                     addFilesInPackage(packaging)
                     break;
                 case FlexType.mobile:
@@ -219,7 +219,7 @@ class IdeaProject extends AbstractIDEProject {
                     if (flexConvention.airMobile.platform == 'android') {
                         configuration.'packaging-android'.@'enabled' = true
                         new Node(packaging, 'AirSigningOptions',
-                                ['keystore-path':"\$MODULE_DIR\$/${flexConvention.air.keystore}", 'use-temp-certificate':false])
+                                ['keystore-path':"\$MODULE_DIR\$/${FilenameUtils.separatorsToUnix(project.relativePath(flexConvention.air.keystore))}", 'use-temp-certificate':false])
                     } else if (flexConvention.airMobile.platform == 'ios') {
                         configuration.'packaging-ios'.@'enabled' = true
                     }
@@ -236,7 +236,7 @@ class IdeaProject extends AbstractIDEProject {
         flexConvention.air.includeFileTrees.each { ConfigurableFileTree fileTree ->
             fileTree.visit { FileTreeElement file ->
                 if (!file.isDirectory()) {
-                    new Node(filesParent, 'FilePathAndPathInPackage', ['file-path':file.path, 'path-in-package':file.relativePath.toString()])
+                    new Node(filesParent, 'FilePathAndPathInPackage', ['file-path':file.file.absoluteFile, 'path-in-package':file.relativePath.toString()])
                 }
             }
         }
