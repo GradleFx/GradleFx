@@ -30,56 +30,61 @@ class GenerateResourcesEmbedCode extends DefaultTask {
 
         embedConvention.embedRefClasses.each { embedRefInfo ->
 
-        def embedRefClass = new File(srcFolder,  "${embedRefInfo.name}.as");
+            def embedRefClass = new File(srcFolder,  "${embedRefInfo.name}.as");
 
 
-        Path embedClassPath = Paths.get(embedRefClass.parentFile.path)
-        Path projectPath = Paths.get(project.projectDir.path)
+            Path embedClassPath = Paths.get(embedRefClass.parentFile.path)
+            Path projectPath = Paths.get(project.projectDir.path)
 
-        embedRefClass.withWriter { out ->
-            out.println("package {")
-            out.println("import flash.utils.Dictionary;")
-            out.println("//generated code")
-            out.println("\tpublic class ${embedRefInfo.name} {")
+            embedRefClass.withWriter { out ->
+                out.println("package {")
+                out.println("import flash.utils.Dictionary;")
+                out.println("//generated code")
+                out.println("\tpublic class ${embedRefInfo.name} {")
 
-            def classKeyRefMap = [:];
+                def classKeyRefMap = [:];
 
-            embedRefInfo.sources.each { ConfigurableFileTree resourceSrcFolder ->
+                embedRefInfo.sources.each { ConfigurableFileTree resourceSrcFolder ->
 
-                resourceSrcFolder.visit { FileTreeElement file ->
-                    if (file.directory) {
-                        return;
+                    resourceSrcFolder.visit { FileTreeElement file ->
+                        if (file.directory) {
+                            return;
+                        }
+
+                        Path resourceFilePath = Paths.get(file.getFile().absolutePath)
+                        Path resourceToEmbClassRelativePath = embedClassPath.relativize(resourceFilePath);
+                        String resourcePath = resourceToEmbClassRelativePath.toString().replace('\\', '/');
+
+                        String resourceFileProjRelPath = projectPath.relativize(resourceFilePath).toString().replace('\\', '/');
+
+                        def resourceFileBaseName = file.path.replaceAll(/(\.)|(\/)|(\-)/, '_');
+                        def classRefName = "_${resourceFileBaseName}_classRef";
+                        def key =  FilenameUtils.removeExtension(resourceFileProjRelPath)
+                        classKeyRefMap.put(key, classRefName)
+
+                        if (FilenameUtils.getExtension(file.file.path) != 'xml') {
+                            out.println("\t\t[Embed(source=\"${resourcePath}\")]")
+                        } else {
+                            out.println("\t\t[Embed(source=\"${resourcePath}\", mimeType=\"application/octet-stream\")]")
+                        }
+
+                        out.println("\t\tpublic static var ${classRefName}:Class;");
                     }
 
-                    Path resourceFilePath = Paths.get(file.getFile().absolutePath)
-                    Path resourceToEmbClassRelativePath = embedClassPath.relativize(resourceFilePath);
-                    String resourcePath = resourceToEmbClassRelativePath.toString().replace('\\', '/');
-
-                    String resourceFileProjRelPath = projectPath.relativize(resourceFilePath).toString().replace('\\', '/');
-
-                    def resourceFileBaseName = file.path.replaceAll(/(\.)|(\/)|(\-)/, '_');
-                    def classRefName = "_${resourceFileBaseName}_classRef";
-                    def key =  FilenameUtils.removeExtension(resourceFileProjRelPath)
-                    classKeyRefMap.put(key, classRefName)
-
-                    out.println("\t\t[Embed(source=\"${resourcePath}\")]")
-                    out.println("\t\tpublic static var ${classRefName}:Class;");
                 }
 
-            }
+                out.println("//mapping to local resources");
+                out.println("\tpublic static var keys:Dictionary;");
+                out.println("{");
+                out.println("\t\tkeys = new Dictionary()");
+                classKeyRefMap.each { key, value ->
+                    out.println("\t\tkeys[\"$key\"] = $value;")
+                }
+                out.println("}");
 
-            out.println("//mapping to local resources");
-            out.println("\tpublic static var keys:Dictionary;");
-            out.println("{");
-            out.println("\t\tkeys = new Dictionary()");
-            classKeyRefMap.each { key, value ->
-                out.println("\t\tkeys[\"$key\"] = $value;")
+                out.println("\t}")
+                out.println("}")
             }
-            out.println("}");
-
-            out.println("\t}")
-            out.println("}")
-        }
         }
     }
 }
