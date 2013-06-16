@@ -173,6 +173,23 @@ class IdeaProjectModuleTest extends Specification {
             getModuleConfNode().'@target-platform'.text() == ""
     }
 
+    def "setup empty air app project "() {
+        given:
+            setupProjectWithName "test"
+            ideaProjectTask.flexConvention.type = 'air'
+            ideaProjectTask.flexConvention.frameworkLinkage = 'none'
+        when:
+            ideaProjectTask.createProjectConfig()
+        then:
+            getModuleConfNode().'@main-class'.text() == "Main"
+            getModuleConfNode().'@target-platform'.text() == "Desktop"
+            getModuleConfNode().'@output-type'.text() == ""
+            getModuleConfNode().'@output-file'.text() == "test.swf"
+            getModuleConfNode().'packaging-air-desktop'.'@package-file-name'.text() == 'test'
+            getModuleConfNode().'packaging-air-desktop'.'@use-generated-descriptor'.text() == 'false'
+            getModuleConfNode().'packaging-air-desktop'.'@custom-descriptor-path'.text() == '$MODULE_DIR$/src/main/actionscript/test.xml'
+    }
+
     def "setup air app project"() {
         given:
             setupProjectWithName "test"
@@ -215,6 +232,28 @@ class IdeaProjectModuleTest extends Specification {
         where:
             platform << ['android', 'ios']
             packagin_suffix << ['android', 'ios']
+    }
+
+    def "setup air mobile ios specific values"() {
+        given:
+            setupProjectWithName "test"
+            ideaProjectTask.flexConvention.type = FlexType.mobile
+            ideaProjectTask.flexConvention.airMobile.platform = 'ios'
+            ideaProjectTask.flexConvention.airMobile.platformSdk = '/ios_sdk'
+            ideaProjectTask.flexConvention.airMobile.provisioning_profile = 'provisioning-profile.mobileprovision'
+
+            ideaProjectTask.flexConvention.air.keystore = 'somecert.p12'
+        when:
+            ideaProjectTask.createProjectConfig()
+        then:
+            //check platform sdk
+            //check cert check provision file
+            //<AirSigningOptions sdk="app sdk" keystore-path="key" provisioning-profile-path="profision file" />
+            def configuration = getModuleConfNode()
+            configuration["packaging-ios"].AirSigningOptions.'@keystore-path'.text() == '$MODULE_DIR$/somecert.p12'
+            configuration["packaging-ios"].AirSigningOptions.'@use-temp-certificate'.text() == 'false'
+            configuration["packaging-ios"].AirSigningOptions.'@sdk'.text() == '/ios_sdk'
+            configuration["packaging-ios"].AirSigningOptions.'@provisioning-profile-path'.text() == '$MODULE_DIR$/provisioning-profile.mobileprovision'
     }
 
     def "setup air lib project"() {

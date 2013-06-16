@@ -222,6 +222,17 @@ class IdeaProject extends AbstractIDEProject {
                                 ['keystore-path':"\$MODULE_DIR\$/${FilenameUtils.separatorsToUnix(project.relativePath(flexConvention.air.keystore))}", 'use-temp-certificate':false])
                     } else if (flexConvention.airMobile.platform == 'ios') {
                         configuration.'packaging-ios'.@'enabled' = true
+
+                        def attrs = ['keystore-path':"\$MODULE_DIR\$/${FilenameUtils.separatorsToUnix(project.relativePath(flexConvention.air.keystore))}",
+                                     'use-temp-certificate':false,
+                                     sdk:flexConvention.airMobile.platformSdk
+                                    ];
+                        if (flexConvention.airMobile.provisioning_profile != null) {
+                            attrs['provisioning-profile-path']  = "\$MODULE_DIR\$/${FilenameUtils.separatorsToUnix(project.relativePath(flexConvention.airMobile.provisioning_profile))}"
+                        }
+
+                        new Node(packaging, 'AirSigningOptions', attrs)
+
                     }
 
                     addFilesInPackage(packaging)
