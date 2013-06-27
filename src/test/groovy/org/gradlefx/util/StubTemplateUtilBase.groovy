@@ -26,6 +26,8 @@ class StubTemplateUtilBase {
 
     public Project project
 
+    def useApolloConfig
+
     StubTemplateUtilBase(Project project, GradleFxConvention flexConvention) {
         this.project = project
         this.flexConvention = flexConvention

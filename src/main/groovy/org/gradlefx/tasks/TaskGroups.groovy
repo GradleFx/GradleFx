@@ -23,7 +23,8 @@ enum TaskGroups {
     GENERATING('Generating'),
     IDE('IDE'),
     UPLOAD('Upload'),
-    VERIFICATION('Verification')
+    VERIFICATION('Verification'),
+    RUN('Run')
 
     private String groupName
 

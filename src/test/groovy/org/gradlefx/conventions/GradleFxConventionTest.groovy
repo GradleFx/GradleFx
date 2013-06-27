@@ -303,5 +303,30 @@ class GradleFxConventionTest extends Specification {
             flexConvention.htmlWrapper.versionDetection == oldVersionDetectionValue
             flexConvention.htmlWrapper.output == oldOutputValue
     }
-    
+
+
+    def "default target for mobile type must be apk"() {
+        when:
+        flexConvention.type = FlexType.mobile
+
+        then:
+        flexConvention.airMobile.target == "apk"
+    }
+
+    def "all airmobile properties should be set when defining all of them in the air closure"() {
+        when:
+        flexConvention.airMobile {
+            target = 'apk'
+            extensionDir = 'anedir'
+            platformSdk = 'platformSdk'
+            targetDevice = 'targetDevice'
+        }
+
+        then:
+        flexConvention.airMobile.target == 'apk'
+        flexConvention.airMobile.extensionDir == 'anedir'
+        flexConvention.airMobile.platformSdk == 'platformSdk'
+        flexConvention.airMobile.targetDevice == 'targetDevice'
+    }
+
 }
