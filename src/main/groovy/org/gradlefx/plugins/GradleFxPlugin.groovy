@@ -26,7 +26,17 @@ import org.gradlefx.configuration.sdk.DefaultSdkInitialisationContext
 import org.gradlefx.configuration.sdk.states.air.DetermineAirSdkDeclarationTypeState
 import org.gradlefx.configuration.sdk.states.flex.DetermineFlexSdkDeclarationTypeState
 import org.gradlefx.tasks.*
+import org.gradlefx.tasks.adl.AdlTask
 import org.gradlefx.tasks.compile.Compile
+import org.gradlefx.tasks.mobile.BaseAirMobilePackage
+import org.gradlefx.tasks.mobile.InstallApp
+import org.gradlefx.tasks.mobile.InstallSimulatorApp
+import org.gradlefx.tasks.mobile.LaunchApp
+import org.gradlefx.tasks.mobile.LaunchSimulatorApp
+import org.gradlefx.tasks.mobile.ReleaseAirMobilePackage
+import org.gradlefx.tasks.mobile.SimulatorAirMobilePackage
+import org.gradlefx.tasks.mobile.UninstallApp
+import org.gradlefx.tasks.mobile.UninstallSimulatorApp
 
 class GradleFxPlugin extends AbstractGradleFxPlugin {
 
@@ -40,10 +50,20 @@ class GradleFxPlugin extends AbstractGradleFxPlugin {
         addTask Tasks.TEST_TASK_NAME, Test
         addTask Tasks.COMPILE_TASK_NAME, Compile
         addTask Tasks.CLEAN_SDKS, CleanSdks
+        addTask "customAdtTask", AdtTask
 
         //conditional tasks
         addTask Tasks.ASDOC_TASK_NAME, ASDoc, { flexConvention.type?.isLib() }
         addTask Tasks.PACKAGE_TASK_NAME, AirPackage, { flexConvention.type?.isNativeApp() }
+        addTask Tasks.PACKAGE_MOBILE_TASK_NAME, ReleaseAirMobilePackage, { flexConvention.type?.isMobile() }
+        addTask Tasks.PACKAGE_SIMULATOR_MOBILE_TASK_NAME, SimulatorAirMobilePackage, { flexConvention.type?.isMobile() }
+        addTask Tasks.INSTALL_MOBILE_TASK_NAME, InstallApp, { flexConvention.type?.isMobile() }
+        addTask Tasks.INSTALL_SIMULATOR_MOBILE_TASK_NAME, InstallSimulatorApp, { flexConvention.type?.isMobile() }
+        addTask Tasks.UNINSTALL_MOBILE_TASK_NAME, UninstallApp, { flexConvention.type?.isMobile() }
+        addTask Tasks.UNINSTALL_SIMULATOR_MOBILE_TASK_NAME, UninstallSimulatorApp, { flexConvention.type?.isMobile() }
+        addTask Tasks.LAUNCH_MOBILE_TASK_NAME, LaunchApp, { flexConvention.type?.isMobile() }
+        addTask Tasks.LAUNCH_SIMULATOR_MOBILE_TASK_NAME, LaunchSimulatorApp, { flexConvention.type?.isMobile() }
+        addTask Tasks.LAUNCH_ADL_TASK_NAME, AdlTask, { flexConvention.type?.isNativeApp() }
         addTask Tasks.CREATE_HTML_WRAPPER, HtmlWrapper, { flexConvention.type?.isWebApp() }
     }
 

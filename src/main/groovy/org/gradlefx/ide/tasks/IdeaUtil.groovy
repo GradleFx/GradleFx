@@ -14,24 +14,17 @@
 * limitations under the License.
 */
 
-package org.gradlefx.ide.plugins
+package org.gradlefx.ide.tasks
 
-import org.gradlefx.ide.tasks.IdeaClean
-import org.gradlefx.ide.tasks.IdeaProject
-import org.gradlefx.plugins.AbstractGradleFxPlugin
+import org.gradle.api.Project
 
-class IdeaPlugin extends AbstractGradleFxPlugin {
 
-    @Override
-    protected void applyPlugins() {
-        super.applyPlugins()
-        applyPlugin 'scaffold'
-    }
+class IdeaUtil {
+    public static final String projectFolder = '.idea'
+    public static final String module = '.iml'
 
-    @Override
-    protected void addTasks() {
-        addTask IdeaProject.NAME, IdeaProject
-        addTask IdeaClean.NAME, IdeaClean
+    public String getOutputDir(Project project) {
+        return 'out'
     }
 
 }
