@@ -35,7 +35,7 @@ class AbstractIDEProjectTest extends Specification {
         actionscriptPropertiesSourceFile = new File(getClass().getResource("/stub-project-dir/" + ACTIONSCRIPT_PROPERTIES_FILENAME).toURI())
 
         Project project = ProjectBuilder.builder().withProjectDir(projectDir).build()
-        ideProjectTask = project.tasks.add(IDE_PROJECT_TASK_NAME, StubAbstractIDEProject)
+        ideProjectTask = project.tasks.create(IDE_PROJECT_TASK_NAME, StubAbstractIDEProject)
     }
 
     def "editXmlFile should save closure changes"() {

@@ -35,7 +35,7 @@ class ResourceEmbedFxPlugin implements Plugin<Project> {
     }
 
     def addTasks() {
-        project.tasks.add('generateEmbedCode', GenerateResourcesEmbedCode)
+        project.tasks.create('generateEmbedCode', GenerateResourcesEmbedCode)
     }
 
     protected void applyPlugins() {

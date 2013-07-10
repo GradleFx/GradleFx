@@ -29,7 +29,7 @@ class PackageAneFxPlugin implements Plugin<Project> {
     }
 
     def addTasks() {
-        project.tasks.add('package', PackageAne)
+        project.tasks.create('package', PackageAne)
     }
 
     protected void applyPlugins() {

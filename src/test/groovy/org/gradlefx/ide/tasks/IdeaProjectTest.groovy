@@ -84,7 +84,7 @@ class IdeaProjectTest {
                 Configurations.RSL_CONFIGURATION_NAME.configName(),
                 Configurations.THEME_CONFIGURATION_NAME.configName(),
                 Configurations.TEST_CONFIGURATION_NAME.configName()
-        ].each { project.configurations.add(it) }
+        ].each { project.configurations.create(it) }
     }
 
     void given_player_version_is(String version) {
@@ -132,7 +132,7 @@ class IdeaProjectTest {
 
     IdeaProject ideaProjectTask() {
         if (_ideaFxProjectTask == null) {
-            _ideaFxProjectTask = project.tasks.add("ideafx", IdeaProject)
+            _ideaFxProjectTask = project.tasks.create("ideafx", IdeaProject)
             GradleFxConvention pluginConvention = new GradleFxConvention(project)
             _ideaFxProjectTask.flexConvention = pluginConvention
             _ideaFxProjectTask.flexConvention.playerVersion = "11.5"
