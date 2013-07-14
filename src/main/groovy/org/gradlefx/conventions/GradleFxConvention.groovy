@@ -117,7 +117,7 @@ class GradleFxConvention {
     //SDK autoinstall properties
     SdkAutoInstallConvention sdkAutoInstall
 
-
+    //adl convention propeperties
     AdlConvention adl
 
     def GradleFxConvention(Project project) {

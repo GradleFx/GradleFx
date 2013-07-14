@@ -15,11 +15,6 @@
  */
 package org.gradlefx.tasks.mobile
 
-import org.gradle.api.Project
-import org.gradlefx.conventions.GradleFxConvention
-
-import javax.xml.parsers.DocumentBuilderFactory
-import javax.xml.xpath.*
 import org.gradlefx.tasks.AdtTask
 import org.gradlefx.tasks.TaskGroups
 import org.gradlefx.tasks.Tasks
@@ -30,7 +25,6 @@ import org.gradlefx.tasks.Tasks
 class LaunchApp extends AdtTask {
 
     public LaunchApp() {
-        super()
         description "launch app to target device"
         group = TaskGroups.UPLOAD
         dependsOn installAppTaskName
@@ -38,7 +32,6 @@ class LaunchApp extends AdtTask {
 
     @Override
     def launch() {
-        //flexConvention.airMobile.
         def appId = InstallAppUtils.getLaunchAppId(flexConvention, project)
 
         addArgs "-launchApp",

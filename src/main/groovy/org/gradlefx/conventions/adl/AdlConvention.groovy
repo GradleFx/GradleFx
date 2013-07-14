@@ -22,7 +22,7 @@ import org.gradle.util.ConfigureUtil
  * @author <a href="mailto:denis.rykovanov@gmail.com">Chaos Encoder</a>
  */
 class AdlConvention {
-    private String profile;
+    String profile;
     String screenSize
 
     public AdlConvention() {

@@ -157,7 +157,7 @@ class FlashBuilderProject extends AbstractIDEProject {
      * if it's any other kind of Flex project we add a .flexProperties file
      */
     private void createConfigFiles() {
-        def Boolean isNativeLib = false;
+        def isNativeLib = false;
         flexConvention.compilerArgs.every { String it ->
             isNativeLib = it == '+configname=air'
             return !isNativeLib

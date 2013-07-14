@@ -16,10 +16,6 @@
 
 package org.gradlefx.util
 
-import java.io.File;
-import java.io.InputStream;
-
-
 class TemplateUtil {
 
    /**

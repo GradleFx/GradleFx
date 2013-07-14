@@ -38,7 +38,6 @@ class GenerateResourcesEmbedCode extends DefaultTask {
 
     @TaskAction
     def action() {
-        //
         def embedConvention = (EmbedConvention) project.convention.plugins.embedFlexResources
 
         def srcFolder = project.file('src/main/actionscript')

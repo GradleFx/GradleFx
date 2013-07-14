@@ -23,7 +23,7 @@ class SimulatorAirMobilePackage extends BaseAirMobilePackage {
 
 
     @Override
-    def getTarget() {
+    String getTarget() {
         return airMobile.simulatorTarget
     }
 

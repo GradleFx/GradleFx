@@ -27,17 +27,18 @@ import org.gradlefx.tasks.AdtTask
  * @author <a href="mailto:denis.rykovanov@gmail.com">Chaos Encoder</a>
  */
 class BaseAirMobilePackage extends AdtTask {
+
     public BaseAirMobilePackage() {
         super()
         description = "Packages the generated swf file into an mobile package";
         adtWorkDir = flexConvention.air.packageWorkDir
     }
 
-    def AIRMobileConvention getAirMobile() {
+    AIRMobileConvention getAirMobile() {
         flexConvention.airMobile
     }
 
-    def getTarget() {
+    String getTarget() {
         airMobile.target
     }
 
@@ -54,7 +55,6 @@ class BaseAirMobilePackage extends AdtTask {
         if (StringUtils.isNotEmpty(flexConvention.airMobile.provisioning_profile)) {
             addArgs "-provisioning-profile", flexConvention.airMobile.provisioning_profile
         }
-
 
         addArgs "-storetype",
                 "pkcs12",

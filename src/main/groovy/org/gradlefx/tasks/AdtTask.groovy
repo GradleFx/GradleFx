@@ -23,10 +23,10 @@ import org.gradlefx.conventions.GradleFxConvention
  * @author <a href="mailto:denis.rykovanov@gmail.com">Chaos Encoder</a>
  */
 public class AdtTask extends DefaultTask {
-    GradleFxConvention flexConvention;
-
     private static final String ANT_RESULT_PROPERTY = 'adtResult'
     private static final String ANT_OUTPUT_PROPERTY = 'adtOutput'
+
+    GradleFxConvention flexConvention;
 
     List adtArguments
 
@@ -71,7 +71,7 @@ public class AdtTask extends DefaultTask {
         adtArguments.addAll(args)
     }
 
-    def handlePackageIfFailed(antResultProperty, antOutputProperty) {
+    def handlePackageIfFailed(String antResultProperty, String antOutputProperty) {
         if (ant.properties[antResultProperty] != '0') {
             throw new Exception("Packaging failed: ${ant.properties[antOutputProperty]}\n")
         }

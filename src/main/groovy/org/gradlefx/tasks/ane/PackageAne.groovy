@@ -47,9 +47,9 @@ class PackageAne extends DefaultTask {
     def action() {
         def FLEXSDK_HOME = System.getenv('FLEX_HOME')
 
-        def Project android_lib_proj = project.childProjects["android-lib"]
-        def Project common_api_proj = project.childProjects["common-api"]
-        def Project default_lib_proj = project.childProjects["default-lib"]
+        Project android_lib_proj = project.childProjects["android-lib"]
+        Project common_api_proj = project.childProjects["common-api"]
+        Project default_lib_proj = project.childProjects["default-lib"]
 
         prepareApi(common_api_proj, "Android-ARM")
         prepareApi(default_lib_proj, "default")
@@ -64,28 +64,26 @@ class PackageAne extends DefaultTask {
             into "${project.buildDir}/Android-ARM"
         }
 
-
-
         def ANT_RESULT_PROPERTY = 'adtResult'
         def ANT_OUTPUT_PROPERTY = 'adtOutput'
 
-        adtArguments = []
+        def adtArguments = []
 
-        addArg = {String arg ->
+        def addArg = {String arg ->
             adtArguments.add(arg)
         }
 
-        addArgs = {...args ->
+        def addArgs = {...args ->
             adtArguments.addAll(args)
         }
 
-        handlePackageIfFailed = { antResultProperty, antOutputProperty ->
+        def handlePackageIfFailed = { antResultProperty, antOutputProperty ->
             if (ant.properties[antResultProperty] != '0') {
                 throw new Exception("Packaging failed: ${ant.properties[antOutputProperty]}\n")
             }
         }
 
-        showAntOutput = { antOutput->
+        def showAntOutput = { antOutput->
             println antOutput
         }
 

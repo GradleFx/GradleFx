@@ -27,9 +27,6 @@ import org.gradlefx.tasks.Tasks
 class AdlTask extends DefaultTask {
     GradleFxConvention flexConvention;
 
-    private static final String ANT_RESULT_PROPERTY = 'adtResult'
-    private static final String ANT_OUTPUT_PROPERTY = 'adtOutput'
-
     List adlArguments
 
     String adlWorkDir;
@@ -50,20 +47,6 @@ class AdlTask extends DefaultTask {
 
     @TaskAction
     def launch() {
-
-/**
- adl     [-runtime runtime-directory]
- [-pubid publisher-id]
- [-nodebug]
- [-atlogin]
- [-profile profileName]
- [-screensize value]
- [-extdir extension-directory]
- application.xml
- [root-directory]
- [-- arguments]
- */
-        //addArgs('-extdir', flexConvention.airMobile.extensionDir)
         addArgs flexConvention.flexHome + '/bin/adl.exe'
         addArgs flexConvention.air.applicationDescriptor
 
@@ -71,20 +54,6 @@ class AdlTask extends DefaultTask {
         addArgThatNotNull '-screensize', flexConvention.adl.screenSize
 
         addArgs project.buildDir
-        /*
-        ant.java(jar: flexConvention.flexHome + '/lib/adl.jar',
-                fork: true,
-                dir: adlWorkDir,
-                resultproperty: ANT_RESULT_PROPERTY,
-                outputproperty: ANT_OUTPUT_PROPERTY) {
-            adlArguments.each { argument ->
-                logger.info("adt args: {}", argument)
-                arg(value: argument.toString())
-            }
-        }
-
-        handlePackageIfFailed ANT_RESULT_PROPERTY, ANT_OUTPUT_PROPERTY
-        */
         def stdOut = new ByteArrayOutputStream();
 
         project.exec {
@@ -102,18 +71,8 @@ class AdlTask extends DefaultTask {
         }
     }
 
-    def addArg(String arg) {
-        adlArguments.add(arg)
-    }
-
     def addArgs(...args) {
         adlArguments.addAll(args)
-    }
-
-    def handlePackageIfFailed(antResultProperty, antOutputProperty) {
-        if (ant.properties[antResultProperty] != '0') {
-            throw new Exception("Packaging failed: ${ant.properties[antOutputProperty]}\n")
-        }
     }
 
     def showAntOutput(antOutput) {

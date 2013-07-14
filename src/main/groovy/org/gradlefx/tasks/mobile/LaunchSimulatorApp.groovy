@@ -22,6 +22,7 @@ import org.gradlefx.tasks.Tasks
  */
 
 class LaunchSimulatorApp extends LaunchApp {
+
     def getInstallAppTaskName() {
         Tasks.INSTALL_SIMULATOR_MOBILE_TASK_NAME
     }

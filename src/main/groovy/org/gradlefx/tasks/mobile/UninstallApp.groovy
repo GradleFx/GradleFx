@@ -31,12 +31,10 @@ class UninstallApp extends AdtTask {
         super()
         description "uninstall app to target device"
         group = TaskGroups.UPLOAD
-        //dependsOn Tasks.PACKAGE_MOBILE_TASK_NAME
     }
 
     @Override
     def launch() {
-        //flexConvention.airMobile.
         def appId = InstallAppUtils.getLaunchAppId(flexConvention, project)
 
         addArgs "-uninstallApp",

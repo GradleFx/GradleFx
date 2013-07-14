@@ -14,6 +14,10 @@ import static org.hamcrest.core.StringContains.containsString
 
 class IdeaProjectTest {
 
+    Project project
+    IdeaProject _ideaFxProjectTask
+    String imlFileContent
+
     @Test
     void should_create_iml_file() {
         given_project_name_is("AmandaHuggenkiss")
@@ -140,7 +144,4 @@ class IdeaProjectTest {
         return _ideaFxProjectTask;
     }
 
-    Project project
-    IdeaProject _ideaFxProjectTask
-    String imlFileContent
 }

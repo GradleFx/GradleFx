@@ -27,7 +27,6 @@ class AIRMobileConvention  {
     private String target
 
     private String extensionDir
-    //private AIRConvention air
     private String platformSdk
 
     private String targetDevice

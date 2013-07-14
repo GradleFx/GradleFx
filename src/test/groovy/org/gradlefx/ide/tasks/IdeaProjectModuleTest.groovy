@@ -12,7 +12,6 @@ import static junit.framework.Assert.assertTrue
 
 /**
  * @author <a href="mailto:drykovanov@wiley.com">Denis Rykovanov</a>
- * @since 21.05.13
  */
 class IdeaProjectModuleTest extends Specification {
 
@@ -42,7 +41,7 @@ class IdeaProjectModuleTest extends Specification {
             ideaProjectTask.createProjectConfig()
         then:
             File imlFile = project.file("${project.name}.iml")
-            imlFile.exists() == true
+            imlFile.exists()
     }
 
     def "config for pure web lib"() {

@@ -26,7 +26,6 @@ import org.gradlefx.tasks.Tasks
 class InstallApp extends AdtTask {
 
     public InstallApp() {
-        super()
         description "install app to target device"
         group = TaskGroups.UPLOAD
         dependsOn uninstallTaskName

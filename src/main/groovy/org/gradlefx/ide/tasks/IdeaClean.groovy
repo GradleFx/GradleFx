@@ -35,7 +35,7 @@ class IdeaClean extends DefaultTask implements CleanTask {
     /**
      * Constructor
      */
-    public FlashBuilderClean() {
+    public IdeaClean() {
         ideName = 'IntelliJ Idea'
         description = "Cleans $ideName project, i.e. removes $ideName configuration files and folders"
 
@@ -64,7 +64,6 @@ class IdeaClean extends DefaultTask implements CleanTask {
             if (it.exists()) {
                 LOG.info "\t$it.name"
                 filesDeleted = true
-                //it.isFile() ? it.delete() : it.deleteDir()
             }
         }
 

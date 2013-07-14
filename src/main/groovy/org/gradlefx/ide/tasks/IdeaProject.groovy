@@ -28,7 +28,9 @@ import org.gradlefx.conventions.FrameworkLinkage
 import static java.util.UUID.randomUUID
 
 class IdeaProject extends AbstractIDEProject {
+
     public static final String NAME = 'idea'
+
     private String imlFilename
 
     public IdeaProject() {
@@ -174,7 +176,7 @@ class IdeaProject extends AbstractIDEProject {
 
             //setup platform
 
-            def Boolean isNativeLib = false;
+            def isNativeLib = false;
             flexConvention.compilerArgs.every { String it ->
                 isNativeLib = it == '+configname=air'
                 return !isNativeLib
