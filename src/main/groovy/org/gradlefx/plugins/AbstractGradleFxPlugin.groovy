@@ -71,13 +71,13 @@ abstract class AbstractGradleFxPlugin implements Plugin<Project> {
     protected void configure(Project project) {}
     
     protected Task addTask(String name, Class taskClass) {
-        return project.tasks.add(name, taskClass)
+        return project.tasks.create(name, taskClass)
     }
     
     protected Task addTask(String name, Class taskClass, Closure condition) {
         //always add tasks to make sure they are immediately on the task graph,
         //but remove them after evaluation if it turns out we don't need them
-        Task task = project.tasks.add name, taskClass
+        Task task = project.tasks.create name, taskClass
         
         project.afterEvaluate {
             if (!condition()) project.tasks.remove task
@@ -87,7 +87,7 @@ abstract class AbstractGradleFxPlugin implements Plugin<Project> {
     }
     
     protected Configuration addConfiguration(String name) {
-        return project.configurations.add(name)
+        return project.configurations.create(name)
     }
 
 }
