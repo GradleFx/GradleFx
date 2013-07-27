@@ -64,6 +64,7 @@ class IdeaClean extends DefaultTask implements CleanTask {
             if (it.exists()) {
                 LOG.info "\t$it.name"
                 filesDeleted = true
+                it.isFile() ? it.delete() : it.deleteDir()
             }
         }
 
