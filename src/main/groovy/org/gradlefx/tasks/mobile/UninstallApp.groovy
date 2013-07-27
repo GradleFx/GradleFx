@@ -15,12 +15,9 @@
  */
 package org.gradlefx.tasks.mobile
 
+import org.gradlefx.cli.CompilerOption
 import org.gradlefx.tasks.AdtTask
 import org.gradlefx.tasks.TaskGroups
-import org.gradlefx.tasks.Tasks
-
-import javax.xml.parsers.DocumentBuilderFactory
-import javax.xml.xpath.XPathFactory
 
 /**
  * @author <a href="mailto:denis.rykovanov@gmail.com">Chaos Encoder</a>
@@ -37,13 +34,13 @@ class UninstallApp extends AdtTask {
     def launch() {
         def appId = InstallAppUtils.getLaunchAppId(flexConvention, project)
 
-        addArgs "-uninstallApp",
-                "-platform",
+        addArgs CompilerOption.UNINSTALL_APP.optionName,
+                CompilerOption.PLATFORM.optionName,
                 flexConvention.airMobile.platform,
-                "-platformsdk",
+                CompilerOption.PLATFORM_SDK.optionName,
                 platformSdk,
-                "-device", targetDevice,
-                "-appid", appId
+                CompilerOption.DEVICE.optionName, targetDevice,
+                CompilerOption.APP_ID.optionName, appId
 
         return super.launch()
     }

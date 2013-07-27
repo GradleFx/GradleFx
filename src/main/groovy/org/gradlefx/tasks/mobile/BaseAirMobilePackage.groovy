@@ -19,6 +19,7 @@ import org.apache.commons.lang.StringUtils
 import org.gradle.api.file.ConfigurableFileTree
 import org.gradle.api.file.FileTreeElement
 import org.gradle.api.tasks.TaskAction
+import org.gradlefx.cli.CompilerOption
 import org.gradlefx.conventions.AIRMobileConvention
 import org.gradlefx.conventions.FlexType
 import org.gradlefx.tasks.AdtTask
@@ -48,28 +49,28 @@ class BaseAirMobilePackage extends AdtTask {
 
     @TaskAction
     def launch() {
-        addArg '-package'
-        addArg '-target'
+        addArg CompilerOption.PACKAGE.optionName
+        addArg CompilerOption.TARGET.optionName
         addArg target
 
         if (StringUtils.isNotEmpty(flexConvention.airMobile.provisioning_profile)) {
-            addArgs "-provisioning-profile", flexConvention.airMobile.provisioning_profile
+            addArgs CompilerOption.PROVISIONING_PROFILE.optionName, flexConvention.airMobile.provisioning_profile
         }
 
-        addArgs "-storetype",
+        addArgs CompilerOption.STORE_TYPE.optionName,
                 "pkcs12",
-                "-keystore",
+                CompilerOption.KEYSTORE.optionName,
                 flexConvention.air.keystore,
-                "-storepass",
+                CompilerOption.STOREPASS.optionName,
                 flexConvention.air.storepass
 
         addArgs outputPath
         addArgs project.file(flexConvention.air.applicationDescriptor)
 
-        addArgs "-C", "${project.buildDir.absolutePath}", "${flexConvention.output}.${FlexType.swf}"
+        addArgs CompilerOption.CHANGE_DIRECTORY.optionName, "${project.buildDir.absolutePath}", "${flexConvention.output}.${FlexType.swf}"
 
         flexConvention.air.includeFileTrees.each { ConfigurableFileTree fileTree ->
-            addArgs "-C"
+            addArgs CompilerOption.CHANGE_DIRECTORY.optionName
             addArgs fileTree.dir.absolutePath
 
             fileTree.visit { FileTreeElement file ->
@@ -80,7 +81,7 @@ class BaseAirMobilePackage extends AdtTask {
         }
 
         if (StringUtils.isNotEmpty(flexConvention.airMobile.extensionDir)) {
-            addArg("-extdir")
+            addArg(CompilerOption.EXTDIR.optionName)
             addArg(flexConvention.airMobile.extensionDir)
         }
 
@@ -90,6 +91,6 @@ class BaseAirMobilePackage extends AdtTask {
     }
 
     def addPlatformSdkParams() {
-        addArgs "-platformsdk", flexConvention.airMobile.platformSdk
+        addArgs CompilerOption.PLATFORM_SDK.optionName, flexConvention.airMobile.platformSdk
     }
 }

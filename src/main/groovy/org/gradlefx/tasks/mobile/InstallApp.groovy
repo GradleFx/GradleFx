@@ -15,7 +15,7 @@
  */
 package org.gradlefx.tasks.mobile
 
-import org.gradlefx.conventions.GradleFxConvention
+import org.gradlefx.cli.CompilerOption
 import org.gradlefx.tasks.AdtTask
 import org.gradlefx.tasks.TaskGroups
 import org.gradlefx.tasks.Tasks
@@ -34,13 +34,13 @@ class InstallApp extends AdtTask {
 
     @Override
     def launch() {
-        addArgs "-installApp",
-                "-platform",
+        addArgs CompilerOption.INSTALL_APP.optionName,
+                CompilerOption.PLATFORM.optionName,
                 flexConvention.airMobile.platform,
-                "-platformsdk",
+                CompilerOption.PLATFORM_SDK.optionName,
                 getPlatformSdk(),
-                "-device", targetDevice,
-                "-package", packageOutputPath
+                CompilerOption.DEVICE.optionName, targetDevice,
+                CompilerOption.PACKAGE.optionName, packageOutputPath
 
         return super.launch()
     }

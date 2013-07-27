@@ -77,32 +77,32 @@ class FlashBuilderProject extends AbstractIDEProject {
      * @return Whether the application files are in a invalid location for FlashBuilder
      */
     private boolean isApplicationFilesInvalid() {
-        return flexConvention.type.isNativeApp() && !!flexConvention.packageName
+        return flexConvention.type.isNativeApp() && !flexConvention.packageName
     }
     
     private boolean validateProjectDependencies() {
         boolean isValid = true
         
-        flexConvention.dependencyProjects.each {
-            File buildDir = it.file getOutputDir(it)
+        flexConvention.dependencyProjects.each { Project dependencyProject ->
+            File buildDir = dependencyProject.file getOutputDir(dependencyProject)
             if (!buildDir.exists()) {
                 isValid = false
                 
-                LOG.warn "\t[WARNING] Couldn't find a compiled library (.swc file) for dependency project '$it.name' " +
+                LOG.warn "\t[WARNING] Couldn't find a compiled library (.swc file) for dependency project '$dependencyProject.name' " +
                                      "in $buildDir.path because the project wasn't compiled with $ideName yet: " +
-                                     "please build '$it.name' with $ideName and run this task again to verify whether this warning disappears"
+                                     "please build '$dependencyProject.name' with $ideName and run this task again to verify whether this warning disappears"
             
                 return
             }
             
-            File swcFile = new File(buildDir, "${it.name}.${FlexType.swc}")
+            File swcFile = new File(buildDir, "${dependencyProject.name}.${FlexType.swc}")
             if (!swcFile.exists()) {
                 isValid = false
                 
-                String msg = "Couldn't find a compiled library (.swc file) for dependency project $it.name at $swcFile.path"
+                String msg = "Couldn't find a compiled library (.swc file) for dependency project $dependencyProject.name at $swcFile.path"
                 
                 File alternativeSwcFile = buildDir.listFiles().find {
-                    it.name.endsWith ".$FlexType.swc"
+                    dependencyProject.name.endsWith ".$FlexType.swc"
                 }
                 if (alternativeSwcFile) 
                     msg += "; however, we found '$alternativeSwcFile.name' in $buildDir.path " +
@@ -193,7 +193,7 @@ class FlashBuilderProject extends AbstractIDEProject {
     }
     
     /**
-     * If {@link GradleFxConvention}.includeClasses is defined, 
+     * If {@link org.gradlefx.conventions.GradleFxConvention}.includeClasses is defined,
      * add the included classes to the project configuration
      */
     private void addIncludedClasses() {
