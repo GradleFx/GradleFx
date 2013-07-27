@@ -39,7 +39,7 @@ class IdeaProject extends AbstractIDEProject {
 
     @Override
     protected void invalidateConventions() {
-        // TODO Auto-generated method stub
+        //nothing to do here
     }
 
     @Override
