@@ -165,7 +165,7 @@ class IdeaProjectModuleTest extends Specification {
     def "setup flex sdk with custom name"() {
         given:
             setupProjectWithName "test"
-            project.setProperty 'ideaFxModuleSdkName', 'customname_flex_sdk'
+            ideaProjectTask.flexConvention.flexSdkName = 'customname_flex_sdk'
         when:
             ideaProjectTask.createProjectConfig()
         then:

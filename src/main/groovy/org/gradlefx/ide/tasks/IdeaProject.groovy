@@ -82,9 +82,9 @@ class IdeaProject extends AbstractIDEProject {
                     break;
             }
 
-            if (project.hasProperty('ideaFxModuleSdkName')) {
-                dependencies.sdk.@'name' = project.property('ideaFxModuleSdkName')
-                xml.component.find { it.'@name' == 'NewModuleRootManager' }.orderEntry.find { it.'@type' == 'jdk' }.@'jdkName' = project.property('ideaFxModuleSdkName')
+            if (flexConvention.flexSdkName != null) {
+                dependencies.sdk.@'name' = flexConvention.flexSdkName
+                xml.component.find { it.'@name' == 'NewModuleRootManager' }.orderEntry.find { it.'@type' == 'jdk' }.@'jdkName' = flexConvention.flexSdkName
             }
 
         }

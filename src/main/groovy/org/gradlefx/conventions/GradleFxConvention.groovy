@@ -44,6 +44,9 @@ class GradleFxConvention {
         this.flexHome = flexHome ? new File(flexHome).absolutePath : null
     }
 
+    //The name you want to give to the SDK
+    String flexSdkName
+
     // which directories to look into for source code
     List <String> srcDirs = ['src/main/actionscript']
 
