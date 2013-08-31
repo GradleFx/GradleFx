@@ -229,8 +229,8 @@ class IdeaProject extends AbstractIDEProject {
                                      'use-temp-certificate':false,
                                      sdk:flexConvention.airMobile.platformSdk
                                     ];
-                        if (flexConvention.airMobile.provisioning_profile != null) {
-                            attrs['provisioning-profile-path']  = "\$MODULE_DIR\$/${FilenameUtils.separatorsToUnix(project.relativePath(flexConvention.airMobile.provisioning_profile))}"
+                        if (flexConvention.airMobile.provisioningProfile != null) {
+                            attrs['provisioning-profile-path']  = "\$MODULE_DIR\$/${FilenameUtils.separatorsToUnix(project.relativePath(flexConvention.airMobile.provisioningProfile))}"
                         }
 
                         new Node(packaging, 'AirSigningOptions', attrs)

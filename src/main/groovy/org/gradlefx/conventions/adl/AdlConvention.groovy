@@ -19,10 +19,21 @@ package org.gradlefx.conventions.adl
 import org.gradle.util.ConfigureUtil
 
 /**
- * @author <a href="mailto:denis.rykovanov@gmail.com">Chaos Encoder</a>
+ * Defines the convention properties for ADL (AIR Debug Launcher).
  */
 class AdlConvention {
+
+    /**
+     * ADL will debug the applicatino with the specified profile.
+     * Can have the following values: desktop, extendedDesktop, mobileDevice
+     */
     String profile;
+    /**
+     * The simulated screen size to use when running apps in the mobileDevice profile on the desktop.
+     * To specify the screen size as a predefined screen type, look at the list provided here:
+     * http://help.adobe.com/en_US/air/build/WSfffb011ac560372f-6fa6d7e0128cca93d31-8000.html
+     * To specify the screen pixel dimensions directly, use the following format: widthXheight:fullscreenWidthXfullscreenHeight
+     */
     String screenSize
 
     public AdlConvention() {

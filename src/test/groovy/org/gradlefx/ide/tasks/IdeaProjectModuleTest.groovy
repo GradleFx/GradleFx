@@ -24,8 +24,6 @@ import org.gradlefx.conventions.FrameworkLinkage
 import org.gradlefx.conventions.GradleFxConvention
 import spock.lang.Specification
 
-import static junit.framework.Assert.assertTrue
-
 /**
  * @author <a href="mailto:drykovanov@wiley.com">Denis Rykovanov</a>
  */
@@ -255,7 +253,7 @@ class IdeaProjectModuleTest extends Specification {
             ideaProjectTask.flexConvention.type = FlexType.mobile
             ideaProjectTask.flexConvention.airMobile.platform = 'ios'
             ideaProjectTask.flexConvention.airMobile.platformSdk = '/ios_sdk'
-            ideaProjectTask.flexConvention.airMobile.provisioning_profile = 'provisioning-profile.mobileprovision'
+            ideaProjectTask.flexConvention.airMobile.provisioningProfile = 'provisioning-profile.mobileprovision'
 
             ideaProjectTask.flexConvention.air.keystore = 'somecert.p12'
         when:

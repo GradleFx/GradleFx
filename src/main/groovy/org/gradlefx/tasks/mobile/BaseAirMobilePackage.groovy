@@ -53,8 +53,8 @@ class BaseAirMobilePackage extends AdtTask {
         addArg CompilerOption.TARGET.optionName
         addArg target
 
-        if (StringUtils.isNotEmpty(flexConvention.airMobile.provisioning_profile)) {
-            addArgs CompilerOption.PROVISIONING_PROFILE.optionName, flexConvention.airMobile.provisioning_profile
+        if (StringUtils.isNotEmpty(flexConvention.airMobile.provisioningProfile)) {
+            addArgs CompilerOption.PROVISIONING_PROFILE.optionName, flexConvention.airMobile.provisioningProfile
         }
 
         addArgs CompilerOption.STORE_TYPE.optionName,

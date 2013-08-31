@@ -21,12 +21,32 @@ import org.gradle.util.ConfigureUtil
 import org.gradle.api.file.ConfigurableFileTree
 
 
+/**
+ * All the convention properties related the AIR.
+ */
 class AIRConvention {
-    
+
+    /**
+     * The name of the certificate which will be used to sign the air package. Uses the project name by convention.
+     */
     private String keystore
+    /**
+     * The password required to access the keystore.
+     */
     private String storepass = null
+    /**
+     * The location of the air descriptor file. Uses the project name by convention for this file.
+     */
     private String applicationDescriptor
+    /**
+     * A list of FileTree objects which reference the files to include into the AIR package, like application icons
+     * which are specified in your application descriptor.
+     * Can have a value such as this: [fileTree(dir: ‘src/main/actionscript/’, include: ‘assets/appIcon.png’)]
+     */
     private List<ConfigurableFileTree> includeFileTrees = null
+    /**
+     * The directory in which the adt packager will be executed. By default uses the project directory.
+     */
     private String packageWorkDir;
 
     public AIRConvention(Project project) {

@@ -19,22 +19,87 @@ import org.gradle.api.Project
 import org.gradle.util.ConfigureUtil
 
 /**
- * @author <a href="mailto:drykovanov@wiley.com">Denis Rykovanov</a>
- * @since 11.03.13
+ * All convention properties related to AIR for mobile.
  */
 class AIRMobileConvention  {
 
+    /**
+     * Specifies the mobile platform for which the package is created.
+     * ane —an AIR native extension package
+     * Android package targets:
+     *  apk — an Android package. A package produced with this target can only be installed on an Android device, not an emulator.
+     *  apk‑captive‑runtime — an Android package that includes both the application and a captive version of the AIR runtime. A package produced with this target can only be installed on an Android device, not an emulator.
+     *  apk-debug — an Android package with extra debugging information. (The SWF files in the application must also be compiled with debugging support.)
+     *  apk-emulator — an Android package for use on an emulator without debugging support. (Use the apk-debug target to permit debugging on both emulators and devices.)
+     *  apk-profile — an Android package that supports application performance and memory profiling.
+     * iOS package targets:
+     *  ipa-ad-hoc — an iOS package for ad hoc distribution.
+     *  ipa-app-store — an iOS package for Apple App store distribution.
+     *  ipa-debug — an iOS package with extra debugging information. (The SWF files in the application must also be compiled with debugging support.)
+     *  ipa-test — an iOS package compiled without optimization or debugging information.
+     *  ipa-debug-interpreter — functionally equivalent to a debug package, but compiles more quickly. However, the ActionScript bytecode is interpreted and not translated to machine code. As a result, code execution is slower in an interpreter package.
+     *  ipa-debug-interpreter-simulator — functionally equivalent to ipa-debug-interpreter, but packaged for the iOS simulator. Macintosh-only. If you use this option, you must also include the -platformsdk option, specifying the path to the iOS Simulator SDK.
+     *  ipa-test-interpreter — functionally equivalent to a test package, but compiles more quickly. However, the ActionScript bytecode is interpreted and not translated to machine code. As a result, code execution is slower in an interpreter package.
+     *  ipa-test-interpreter-simulator — functionally equivalent to ipa-test-interpreter, but packaged for the iOS simulator. Macintosh-only. If you use this option, you must also include the -platformsdk option, specifying the path to the iOS Simulator SDK.
+     */
     private String target
 
+    /**
+     * The name of a directory to search for native extensions (ANE files).
+     * Either an absolute path or a relative path from the project directory.
+     */
     private String extensionDir
+
+    /**
+     * Specify ios_simulator, the serial number (Android), or handle (iOS) of the connected device.
+     * On iOS, this parameter is required; on Android, this paramater only needs to be specified when more than one
+     * Android device or emulator is attached to your computer and running.
+     * If the specified device is not connected, ADT returns exit code 14: Device error (Android) or Invalid device specified (iOS).
+     * If more than one device or emulator is connected and a device is not specified, ADT returns exit code 2: Usage error
+     */
+    private String targetDevice
+
+    /**
+     * The path to your iOS provisioning profile. Relative from your project directory.
+     */
+    private String provisioningProfile
+
+    /**
+     * The extension of the packaged application.
+     */
+    private String outputExtension
+
+    /**
+     * The name of the platform of the device. Specify ios or android.
+     */
+    private String platform
+
+    /**
+     * The path to the platform SDK for the target device:
+     *  Android - The AIR 2.6+ SDK includes the tools from the Android SDK needed to implement the relevant ADT commands.
+     *  Only set this value to use a different version of the Android SDK. Also, the platform SDK path does not need to
+     *  be supplied if the AIR_ANDROID_SDK_HOME environment variable is already set.
+     *  iOS - The AIR SDK ships with a captive iOS SDK. The platformsdk option lets you package applications with an
+     *  external SDK so that you are not restricted to using the captive iOS SDK.
+     *  For example, if you have built an extension with the latest iOS SDK, you can specify that SDK when packaging
+     *  your application. Additionally, when using ADT with the iOS Simulator, you must always include the platformsdk
+     *  option, specifying the path to the iOS Simulator SDK.
+     */
     private String platformSdk
 
-    private String targetDevice
-    private String provisioning_profile
-    private String outputExtension
-    private String platform
+    /**
+     * The path to the platform SDK for the simulator.
+     */
     private String simulatorPlatformSdk
+
+    /**
+     * Specifies the mobile platform of the simulator. See the target property for more information.
+     */
     private String simulatorTarget
+
+    /**
+     * Specifies the device of the simulator. See the device property for more information.
+     */
     private String simulatorTargetDevice
 
 
@@ -101,11 +166,11 @@ class AIRMobileConvention  {
     }
 
     String getProvisioning_profile() {
-        provisioning_profile
+        provisioningProfile
     }
 
     void provisioning_profile(String profile) {
-        provisioning_profile = profile
+        provisioningProfile = profile
     }
 
     String getOutputExtension() {
