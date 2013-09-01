@@ -19,34 +19,29 @@ package org.gradlefx.tasks.ane
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.tasks.TaskAction
+import org.gradlefx.cli.CompilerOption
+import org.gradlefx.conventions.GradleFxConvention
 
 /**
- * @author <a href="mailto:denis.rykovanov@gmail.com">Chaos Encoder</a>
+ * Task which packages an ANE extension.
  */
 class PackageAne extends DefaultTask {
 
-    def PackageAne() {
-        description = 'package ane'
-        project.gradle.projectsEvaluated {
-            def dependsTasks = project.subprojects.build;
-            dependsOn dependsTasks;
-        }
-    }
+    def ANT_RESULT_PROPERTY = 'adtResult'
+    def ANT_OUTPUT_PROPERTY = 'adtOutput'
 
-    def prepareApi(Project libProject, String targetPlatform) {
-        project.file("${project.buildDir}/${targetPlatform}/").mkdirs()
-        project.zipTree("${libProject.buildDir}/${libProject.name}.swc").each { file -> if (file.name == "library.swf") {
-            project.copy {
-                from file.path
-                into "${project.buildDir}/${targetPlatform}/"
-            }
-        } }
+    GradleFxConvention flexConvention;
+
+    def PackageAne() {
+        description = 'package ANE'
+        flexConvention = (GradleFxConvention) project.convention.plugins.flex
+        project.afterEvaluate {
+            dependsOn project.subprojects.build;
+        }
     }
 
     @TaskAction
     def action() {
-        def FLEXSDK_HOME = System.getenv('FLEX_HOME')
-
         Project android_lib_proj = project.childProjects["android-lib"]
         Project common_api_proj = project.childProjects["common-api"]
         Project default_lib_proj = project.childProjects["default-lib"]
@@ -64,36 +59,15 @@ class PackageAne extends DefaultTask {
             into "${project.buildDir}/Android-ARM"
         }
 
-        def ANT_RESULT_PROPERTY = 'adtResult'
-        def ANT_OUTPUT_PROPERTY = 'adtOutput'
-
         def adtArguments = []
-
-        def addArg = {String arg ->
-            adtArguments.add(arg)
-        }
-
-        def addArgs = {...args ->
-            adtArguments.addAll(args)
-        }
-
-        def handlePackageIfFailed = { antResultProperty, antOutputProperty ->
-            if (ant.properties[antResultProperty] != '0') {
-                throw new Exception("Packaging failed: ${ant.properties[antOutputProperty]}\n")
-            }
-        }
-
-        def showAntOutput = { antOutput->
-            println antOutput
-        }
-
         def buildDir = project.buildDir
 
         buildDir.mkdirs();
-        addArgs "-package", "-target", "ane", "${buildDir}/${project.name}.ane", "ane-descriptor.xml", "-swc", "${buildDir}/default-lib.swc"
-        addArgs "-platform", "Android-ARM", "-C", "${buildDir}/Android-ARM", "."
-        addArgs "-platform", "default", "-C", "${buildDir}/default", "library.swf"
-        ant.java(jar: FLEXSDK_HOME + '/lib/adt.jar',
+        addArgs adtArguments, CompilerOption.PACKAGE, CompilerOption.TARGET, "ane", "${buildDir}/${project.name}.ane", "ane-descriptor.xml", CompilerOption.SWC, "${buildDir}/default-lib.swc"
+        addArgs adtArguments, CompilerOption.PLATFORM, "Android-ARM", CompilerOption.CHANGE_DIRECTORY, "${buildDir}/Android-ARM", "."
+        addArgs adtArguments, CompilerOption.PLATFORM, "default", CompilerOption.CHANGE_DIRECTORY, "${buildDir}/default", "library.swf"
+
+        ant.java(jar: flexConvention.flexHome + '/lib/adt.jar',
                 fork: true,
                 resultproperty: ANT_RESULT_PROPERTY,
                 outputproperty: ANT_OUTPUT_PROPERTY) {
@@ -107,6 +81,30 @@ class PackageAne extends DefaultTask {
 
         showAntOutput ant.properties[ANT_OUTPUT_PROPERTY]
 
+    }
+
+    def addArgs(List adtArguments, ...args) {
+        adtArguments.addAll(args)
+    }
+
+    def handlePackageIfFailed(String antResultProperty, String antOutputProperty) {
+        if (ant.properties[antResultProperty] != '0') {
+            throw new Exception("Packaging failed: ${ant.properties[antOutputProperty]}\n")
+        }
+    }
+
+    def showAntOutput(String antOutput) {
+        logger.info antOutput
+    }
+
+    def prepareApi(Project libProject, String targetPlatform) {
+        project.file("${project.buildDir}/${targetPlatform}/").mkdirs()
+        project.zipTree("${libProject.buildDir}/${libProject.name}.swc").each { file -> if (file.name == "library.swf") {
+            project.copy {
+                from file.path
+                into "${project.buildDir}/${targetPlatform}/"
+            }
+        } }
     }
 
 }

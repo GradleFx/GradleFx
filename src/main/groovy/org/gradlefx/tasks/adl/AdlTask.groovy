@@ -20,11 +20,16 @@ import org.gradle.api.tasks.TaskAction
 import org.gradlefx.conventions.GradleFxConvention
 import org.gradlefx.tasks.TaskGroups
 import org.gradlefx.tasks.Tasks
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 /**
- * @author <a href="mailto:denis.rykovanov@gmail.com">Chaos Encoder</a>
+ * Task which launches ADL.
  */
 class AdlTask extends DefaultTask {
+
+    protected static final Logger LOG = LoggerFactory.getLogger 'gradlefx'
+
     GradleFxConvention flexConvention;
 
     List adlArguments
@@ -62,7 +67,8 @@ class AdlTask extends DefaultTask {
             //store the output instead of printing to the console:
             standardOutput = stdOut
         }
-        showAntOutput stdOut.toString()
+
+        LOG.info stdOut.toString()
     }
 
     def addArgThatNotNull(String command, String value) {
@@ -73,10 +79,6 @@ class AdlTask extends DefaultTask {
 
     def addArgs(...args) {
         adlArguments.addAll(args)
-    }
-
-    def showAntOutput(antOutput) {
-        println antOutput
     }
 
 }

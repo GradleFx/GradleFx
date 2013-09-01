@@ -148,9 +148,6 @@ class IdeaProject extends AbstractIDEProject {
                 "Test"
                 break;
         }
-
-
-
     }
 
     void createImlFile() {

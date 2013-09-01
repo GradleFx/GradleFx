@@ -16,45 +16,16 @@
 
 package org.gradlefx.plugins
 
-import org.gradle.api.Plugin
-import org.gradle.api.Project
+import org.gradlefx.tasks.Tasks
 import org.gradlefx.tasks.ane.PackageAne
 
 /**
- * @author <a href="mailto:denis.rykovanov@gmail.com">Chaos Encoder</a>
+ * Plugin for packaging an ANE.
  */
-class PackageAneFxPlugin implements Plugin<Project> {
-    protected Project project;
-
-
-    @Override
-    protected void configure(Project project) {
-
-    }
-
-    @Override
-    public void apply(Project project) {
-        this.project = project
-
-        applyPlugins()
-
-        addTasks()
-        project.afterEvaluate {
-            configure(project)
-        }
-    }
+class PackageAneFxPlugin extends AbstractGradleFxPlugin {
 
     def addTasks() {
-        project.tasks.create('package', PackageAne)
+        project.tasks.create(Tasks.PACKAGE_TASK_NAME, PackageAne)
     }
-
-    protected void applyPlugins() {
-        applyPlugin 'base'
-    }
-
-    protected void applyPlugin(String name) {
-        project.apply(plugin: name)
-    }
-
 
 }
