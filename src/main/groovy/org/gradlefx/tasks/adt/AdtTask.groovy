@@ -22,7 +22,7 @@ import org.gradlefx.tasks.TaskGroups
 import org.gradlefx.tasks.Tasks
 
 /**
- * @author <a href="mailto:denis.rykovanov@gmail.com">Chaos Encoder</a>
+ * £Task which launches ADT.
  */
 public class AdtTask extends DefaultTask {
     private static final String ANT_RESULT_PROPERTY = 'adtResult'
