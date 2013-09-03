@@ -94,11 +94,11 @@ class AirPackage extends DefaultTask {
 
     private void addAirSigningOptions(List compilerOptions) {
         compilerOptions.addAll ([
-                "-storetype",
+                CompilerOption.STORE_TYPE,
                 "pkcs12",
-                "-keystore",
+                CompilerOption.KEYSTORE,
                 flexConvention.air.keystore,
-                "-storepass",
+                CompilerOption.STOREPASS,
                 flexConvention.air.storepass
         ])
     }

@@ -18,9 +18,8 @@ package org.gradlefx.tasks.mobile
 import org.gradlefx.tasks.Tasks
 
 /**
- * @author <a href="mailto:denis.rykovanov@gmail.com">Chaos Encoder</a>
+ * Installs the app on the simulator.
  */
-
 class InstallSimulatorApp extends InstallApp {
     def getPlatformSdk() {
         flexConvention.airMobile.simulatorPlatformSdk

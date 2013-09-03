@@ -16,9 +16,8 @@
 package org.gradlefx.tasks.mobile
 
 /**
- * @author <a href="mailto:denis.rykovanov@gmail.com">Chaos Encoder</a>
+ * Packages the mobile app for the simulator.
  */
-
 class SimulatorAirMobilePackage extends BaseAirMobilePackage {
 
 

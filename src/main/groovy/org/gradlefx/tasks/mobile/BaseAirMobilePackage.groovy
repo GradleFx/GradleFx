@@ -22,29 +22,16 @@ import org.gradle.api.tasks.TaskAction
 import org.gradlefx.cli.CompilerOption
 import org.gradlefx.conventions.AIRMobileConvention
 import org.gradlefx.conventions.FlexType
-import org.gradlefx.tasks.AdtTask
+import org.gradlefx.tasks.adt.AdtTask
 
 /**
- * @author <a href="mailto:denis.rykovanov@gmail.com">Chaos Encoder</a>
+ * Base task for packaging mobile apps.
  */
 class BaseAirMobilePackage extends AdtTask {
 
     public BaseAirMobilePackage() {
-        super()
         description = "Packages the generated swf file into an mobile package";
         adtWorkDir = flexConvention.air.packageWorkDir
-    }
-
-    AIRMobileConvention getAirMobile() {
-        flexConvention.airMobile
-    }
-
-    String getTarget() {
-        airMobile.target
-    }
-
-    def getOutputPath() {
-        return InstallAppUtils.getReleaseOutputPath(flexConvention, project)
     }
 
     @TaskAction
@@ -88,6 +75,18 @@ class BaseAirMobilePackage extends AdtTask {
         addPlatformSdkParams()
 
         super.launch()
+    }
+
+    AIRMobileConvention getAirMobile() {
+        flexConvention.airMobile
+    }
+
+    String getTarget() {
+        airMobile.target
+    }
+
+    def getOutputPath() {
+        return InstallAppUtils.getReleaseOutputPath(flexConvention, project)
     }
 
     def addPlatformSdkParams() {

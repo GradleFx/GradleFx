@@ -18,9 +18,8 @@ package org.gradlefx.tasks.mobile
 import org.gradlefx.tasks.Tasks
 
 /**
- * @author <a href="mailto:denis.rykovanov@gmail.com">Chaos Encoder</a>
+ * Launches the app on the simulator.
  */
-
 class LaunchSimulatorApp extends LaunchApp {
 
     def getInstallAppTaskName() {

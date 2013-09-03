@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.gradlefx.tasks
+package org.gradlefx.tasks.adt
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 import org.gradlefx.conventions.GradleFxConvention
+import org.gradlefx.tasks.TaskGroups
+import org.gradlefx.tasks.Tasks
 
 /**
  * @author <a href="mailto:denis.rykovanov@gmail.com">Chaos Encoder</a>
@@ -34,7 +36,7 @@ public class AdtTask extends DefaultTask {
 
     public AdtTask() {
         group = TaskGroups.BUILD
-        description = 'an Custom adt launch'
+        description = 'a custom adt launch'
 
         flexConvention = (GradleFxConvention) project.convention.plugins.flex
 

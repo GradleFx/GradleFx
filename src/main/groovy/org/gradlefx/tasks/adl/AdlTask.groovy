@@ -38,7 +38,7 @@ class AdlTask extends DefaultTask {
 
     public AdlTask() {
         group = TaskGroups.RUN
-        description = 'an custom adl launch'
+        description = 'a custom adl launch'
 
         flexConvention = (GradleFxConvention) project.convention.plugins.flex
 
