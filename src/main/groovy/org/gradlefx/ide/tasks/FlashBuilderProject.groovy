@@ -77,7 +77,7 @@ class FlashBuilderProject extends AbstractIDEProject {
      * @return Whether the application files are in a invalid location for FlashBuilder
      */
     private boolean isApplicationFilesInvalid() {
-        return flexConvention.type.isNativeApp() && !flexConvention.packageName
+        return flexConvention.type.isNativeApp() && flexConvention.packageName
     }
     
     private boolean validateProjectDependencies() {
