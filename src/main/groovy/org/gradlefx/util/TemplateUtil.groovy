@@ -55,6 +55,7 @@ class TemplateUtil {
                              .replaceAll(/\$\{uuid\}/, {flexConvention.uuid})
                              .replaceAll(/\$\{appId\}/, {flexConvention.applicationId})
                              .replaceAll(/\$\{version\}/, {flexConvention.version})
+                             .replaceAll(/\$\{content\}/, {project.buildDir.name + '/' + flexConvention.output + '.swf'})
                              .replaceAll(/\$\{artifact\}/, artifact())
                              .replaceAll(/\$\{useDebugRSLSwfs\}/, {flexConvention.useDebugRSLSwfs.toString()})
                              .replaceAll(/\$\{useApolloConfig\}/, {useApolloConfig})
