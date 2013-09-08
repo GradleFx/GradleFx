@@ -66,7 +66,8 @@ class TemplateUtil {
     String artifact() {
         return flexConvention.output + '.' + flexConvention.type
     }
-/**
+
+    /**
      * Converts the path of the main class in to that of a descriptor file
      *
      * @param mainClassPath The path of the main class
