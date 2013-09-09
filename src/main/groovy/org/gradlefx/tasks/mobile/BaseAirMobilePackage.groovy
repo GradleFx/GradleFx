@@ -22,6 +22,7 @@ import org.gradle.api.tasks.TaskAction
 import org.gradlefx.cli.CompilerOption
 import org.gradlefx.conventions.AIRMobileConvention
 import org.gradlefx.conventions.FlexType
+import org.gradlefx.tasks.Tasks
 import org.gradlefx.tasks.adt.AdtTask
 
 /**
@@ -32,6 +33,7 @@ class BaseAirMobilePackage extends AdtTask {
     public BaseAirMobilePackage() {
         description = "Packages the generated swf file into an mobile package";
         adtWorkDir = flexConvention.air.packageWorkDir
+        dependsOn Tasks.COMPILE_TASK_NAME
     }
 
     @TaskAction
