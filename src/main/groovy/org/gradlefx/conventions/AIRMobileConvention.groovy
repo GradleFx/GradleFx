@@ -105,6 +105,7 @@ class AIRMobileConvention  {
 
     public AIRMobileConvention(Project project) {
         target = 'apk'
+        simulatorTarget = 'apk'
         outputExtension = 'apk'
         platform = 'android'
     }
