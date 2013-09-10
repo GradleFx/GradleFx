@@ -313,6 +313,14 @@ class GradleFxConventionTest extends Specification {
         flexConvention.airMobile.target == "apk"
     }
 
+    def "default simulatorTarget for mobile type must be apk"() {
+        when:
+        flexConvention.type = FlexType.mobile
+
+        then:
+        flexConvention.airMobile.simulatorTarget == "apk"
+    }
+
     def "all airmobile properties should be set when defining all of them in the air closure"() {
         when:
         flexConvention.airMobile {
