@@ -56,7 +56,7 @@ class BaseAirMobilePackage extends AdtTask {
         addArgs outputPath
         addArgs project.file(flexConvention.air.applicationDescriptor)
 
-        addArgs CompilerOption.CHANGE_DIRECTORY.optionName, "${project.buildDir.absolutePath}", "${flexConvention.output}.${FlexType.swf}"
+        addArgs "${project.buildDir.name}/${flexConvention.output}.${FlexType.swf}"
 
         flexConvention.air.includeFileTrees.each { ConfigurableFileTree fileTree ->
             addArgs CompilerOption.CHANGE_DIRECTORY.optionName
@@ -92,6 +92,8 @@ class BaseAirMobilePackage extends AdtTask {
     }
 
     def addPlatformSdkParams() {
-        addArgs CompilerOption.PLATFORM_SDK.optionName, flexConvention.airMobile.platformSdk
+        if(flexConvention.airMobile.platformSdk != null) {
+            addArgs CompilerOption.PLATFORM_SDK.optionName, flexConvention.airMobile.platformSdk
+        }
     }
 }
