@@ -20,11 +20,16 @@ import org.gradle.api.tasks.TaskAction
 import org.gradlefx.conventions.GradleFxConvention
 import org.gradlefx.tasks.TaskGroups
 import org.gradlefx.tasks.Tasks
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 /**
  * £Task which launches ADT.
  */
 public class AdtTask extends DefaultTask {
+
+    protected static final Logger LOG = LoggerFactory.getLogger 'gradlefx'
+
     private static final String ANT_RESULT_PROPERTY = 'adtResult'
     private static final String ANT_OUTPUT_PROPERTY = 'adtOutput'
 
@@ -75,12 +80,13 @@ public class AdtTask extends DefaultTask {
 
     def handlePackageIfFailed(String antResultProperty, String antOutputProperty) {
         if (ant.properties[antResultProperty] != '0') {
+            LOG.error ant.properties[antOutputProperty]
             throw new Exception("Packaging failed: ${ant.properties[antOutputProperty]}\n")
         }
     }
 
     def showAntOutput(antOutput) {
-        println antOutput
+        LOG.info antOutput
     }
 
 }
