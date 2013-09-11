@@ -81,7 +81,7 @@ class AirPackage extends DefaultTask {
 
     private void addFiles(List compilerOptions) {
         flexConvention.air.includeFileTrees.each { ConfigurableFileTree fileTree ->
-            compilerOptions.add "-C"
+            compilerOptions.add CompilerOption.CHANGE_DIRECTORY.optionName
             compilerOptions.add fileTree.dir.absolutePath
 
             fileTree.visit { FileTreeElement file ->
