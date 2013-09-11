@@ -20,27 +20,31 @@ import org.gradlefx.tasks.adt.AdtTask
 import org.gradlefx.tasks.TaskGroups
 
 /**
- * @author <a href="mailto:denis.rykovanov@gmail.com">Chaos Encoder</a>
+ * Uninstalls the app from the target device.
  */
 class UninstallApp extends AdtTask {
 
     public UninstallApp() {
-        super()
         description "uninstall app to target device"
         group = TaskGroups.UPLOAD
     }
 
     @Override
     def launch() {
-        def appId = InstallAppUtils.getLaunchAppId(flexConvention, project)
-
         addArgs CompilerOption.UNINSTALL_APP.optionName,
                 CompilerOption.PLATFORM.optionName,
-                flexConvention.airMobile.platform,
-                CompilerOption.PLATFORM_SDK.optionName,
-                platformSdk,
-                CompilerOption.DEVICE.optionName, targetDevice,
-                CompilerOption.APP_ID.optionName, appId
+                flexConvention.airMobile.platform
+
+        if(platformSdk != null) {
+            addArgs CompilerOption.PLATFORM_SDK.optionName, platformSdk
+        }
+
+        if(targetDevice != null) {
+            addArgs CompilerOption.DEVICE.optionName, targetDevice
+        }
+
+        def appId = InstallAppUtils.getLaunchAppId(flexConvention, project)
+        addArgs CompilerOption.APP_ID.optionName, appId
 
         return super.launch()
     }

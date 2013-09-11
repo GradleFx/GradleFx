@@ -21,7 +21,7 @@ import org.gradlefx.tasks.TaskGroups
 import org.gradlefx.tasks.Tasks
 
 /**
- * @author <a href="mailto:denis.rykovanov@gmail.com">Chaos Encoder</a>
+ * Installs the app to the device.
  */
 class InstallApp extends AdtTask {
 
@@ -36,11 +36,17 @@ class InstallApp extends AdtTask {
     def launch() {
         addArgs CompilerOption.INSTALL_APP.optionName,
                 CompilerOption.PLATFORM.optionName,
-                flexConvention.airMobile.platform,
-                CompilerOption.PLATFORM_SDK.optionName,
-                getPlatformSdk(),
-                CompilerOption.DEVICE.optionName, targetDevice,
-                CompilerOption.PACKAGE.optionName, packageOutputPath
+                flexConvention.airMobile.platform
+
+        if(platformSdk != null) {
+            addArgs CompilerOption.PLATFORM_SDK.optionName, platformSdk
+        }
+
+        if(targetDevice != null) {
+            addArgs CompilerOption.DEVICE.optionName, targetDevice
+        }
+
+        addArgs CompilerOption.PACKAGE.optionName, packageOutputPath
 
         return super.launch()
     }

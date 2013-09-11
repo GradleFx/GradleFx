@@ -33,15 +33,20 @@ class LaunchApp extends AdtTask {
 
     @Override
     def launch() {
-        def appId = InstallAppUtils.getLaunchAppId(flexConvention, project)
-
         addArgs CompilerOption.LAUNCH_APP.optionName,
                 CompilerOption.PLATFORM.optionName,
-                flexConvention.airMobile.platform,
-                CompilerOption.PLATFORM_SDK.optionName,
-                platformSdk,
-                CompilerOption.DEVICE.optionName, targetDevice,
-                CompilerOption.APP_ID.optionName, appId
+                flexConvention.airMobile.platform
+
+        if(platformSdk != null) {
+            addArgs CompilerOption.PLATFORM_SDK.optionName, platformSdk
+        }
+
+        if(targetDevice != null) {
+            addArgs CompilerOption.DEVICE.optionName, targetDevice
+        }
+
+        def appId = InstallAppUtils.getLaunchAppId(flexConvention, project)
+        addArgs CompilerOption.APP_ID.optionName, appId
 
         return super.launch()
     }
