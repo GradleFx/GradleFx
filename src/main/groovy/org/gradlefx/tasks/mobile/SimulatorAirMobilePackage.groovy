@@ -32,7 +32,9 @@ class SimulatorAirMobilePackage extends BaseAirMobilePackage {
     }
 
     def addPlatformSdkParams() {
-        addArgs "-platformsdk", flexConvention.airMobile.simulatorPlatformSdk
+        if(flexConvention.airMobile.simulatorPlatformSdk != null) {
+            addArgs "-platformsdk", flexConvention.airMobile.simulatorPlatformSdk
+        }
     }
 }
 
