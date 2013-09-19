@@ -65,7 +65,7 @@ public class AdtTask extends DefaultTask {
             }
         }
 
-        handlePackageIfFailed ANT_RESULT_PROPERTY, ANT_OUTPUT_PROPERTY
+        handleIfFailed ANT_RESULT_PROPERTY, ANT_OUTPUT_PROPERTY
 
         showAntOutput ant.properties[ANT_OUTPUT_PROPERTY]
     }
@@ -78,10 +78,10 @@ public class AdtTask extends DefaultTask {
         adtArguments.addAll(args)
     }
 
-    def handlePackageIfFailed(String antResultProperty, String antOutputProperty) {
+    def handleIfFailed(String antResultProperty, String antOutputProperty) {
         if (ant.properties[antResultProperty] != '0') {
             LOG.error ant.properties[antOutputProperty]
-            throw new Exception("Packaging failed: ${ant.properties[antOutputProperty]}\n")
+            throw new Exception("${description} failed: ${ant.properties[antOutputProperty]}\n")
         }
     }
 
