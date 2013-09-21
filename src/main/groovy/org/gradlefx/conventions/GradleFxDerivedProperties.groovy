@@ -113,7 +113,7 @@ class GradleFxDerivedProperties {
         return defaultFrameworkLinkage
     }
     
-    /** A collection of {@link Project}s that are dependencies for this project */
+    /** A collection of {@link org.gradle.api.Project}s that are dependencies for this project */
     def dependencyProjects
     
     public getDependencyProjects() {

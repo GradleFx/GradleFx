@@ -7,6 +7,14 @@ build
 *.iml
 gradlefx.ipr
 gradlefx.iws
+*.ipr
+*.iws
+**/*.ipr
+**/*.iws
 /target
 .orig
 /.project
+out
+/out
+classes
+/classes

@@ -67,7 +67,10 @@ class ApplicationCommandLineInstruction extends CommandLineInstruction {
     }
     
     public void addMainClass() {
-        File mainClassFile = findFile flexConvention.srcDirs, flexConvention.mainClassPath
+        File mainClassFile = new File(flexConvention.mainClassPath)
+        if (!mainClassFile.isAbsolute()) {
+            mainClassFile = findFile flexConvention.srcDirs, flexConvention.mainClassPath
+        }
         add mainClassFile.absolutePath
     }
     

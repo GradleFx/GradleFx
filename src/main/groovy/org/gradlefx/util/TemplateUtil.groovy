@@ -16,10 +16,6 @@
 
 package org.gradlefx.util
 
-import java.io.File;
-import java.io.InputStream;
-
-
 class TemplateUtil {
 
    /**
@@ -46,7 +42,7 @@ class TemplateUtil {
    public void writeContent(InputStream source, File target, boolean overwrite) {
        if (overwrite && target.exists()) target.delete()
        target.createNewFile()
-       
+
        target.withWriter { out ->
            source.eachLine {
                out.println it.replaceAll(/\$\{class\}/, {flexConvention.className})
@@ -59,11 +55,18 @@ class TemplateUtil {
                              .replaceAll(/\$\{uuid\}/, {flexConvention.uuid})
                              .replaceAll(/\$\{appId\}/, {flexConvention.applicationId})
                              .replaceAll(/\$\{version\}/, {flexConvention.version})
+                             .replaceAll(/\$\{content\}/, {project.buildDir.name + '/' + flexConvention.output + '.swf'})
+                             .replaceAll(/\$\{artifact\}/, artifact())
                              .replaceAll(/\$\{useDebugRSLSwfs\}/, {flexConvention.useDebugRSLSwfs.toString()})
+                             .replaceAll(/\$\{useApolloConfig\}/, {useApolloConfig})
            }
        }
    }
-      
+
+    String artifact() {
+        return flexConvention.output + '.' + flexConvention.type
+    }
+
     /**
      * Converts the path of the main class in to that of a descriptor file
      *
@@ -73,5 +76,5 @@ class TemplateUtil {
     public String toDescriptorPath(String mainClassPath) {
         return mainClassPath.replaceAll(/\.(mxml|as)$/, '-app.xml')
     }
-   
+
 }

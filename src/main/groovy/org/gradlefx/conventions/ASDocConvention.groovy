@@ -19,9 +19,19 @@ package org.gradlefx.conventions
 import org.gradle.util.ConfigureUtil
 
 
+/**
+ * All convention properties related to ASDoc generation.
+ */
 class ASDocConvention {
-    
+
+    /**
+     * The directory in which the asdoc documentation will be created.
+     */
     private String outputDir = 'doc'
+
+    /**
+     * Additional options for the asdoc compiler.
+     */
     private List <String> additionalASDocOptions = []
 
     void configure(Closure closure) {

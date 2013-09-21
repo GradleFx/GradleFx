@@ -1,7 +1,3 @@
-package org.gradlefx.validators
-
-import org.gradle.api.Project
-
 /*
  * Copyright (c) 2011 the original author or authors
  *
@@ -17,6 +13,11 @@ import org.gradle.api.Project
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package org.gradlefx.validators
+
+import org.gradle.api.Project
+
 public interface ProjectPropertyValidator {
 
     void setProject(Project project)

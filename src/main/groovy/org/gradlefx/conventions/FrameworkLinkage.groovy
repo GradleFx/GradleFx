@@ -18,11 +18,30 @@ package org.gradlefx.conventions
 
 import org.gradlefx.cli.CompilerOption;
 
-
+/**
+ * Defines how the framework will be linked during compilation.
+ */
 public enum FrameworkLinkage {
+    /**
+     *  Indicates that this library will be externalized from the application, but it will not be used as an RSL.
+     *  This excludes all the definitions in a library from an application but provides compile time link checking.
+     */
     external(CompilerOption.EXTERNAL_LIBRARY_PATH),
+    /**
+     * Indicates that this library will be used as an RSL. When you compile your application, the classes and their
+     * dependencies in this library are externalized, but you compile against them.
+     * You must then make them available as an RSL at run time.
+     */
     rsl(CompilerOption.RUNTIME_SHARED_LIBRARY_PATH),
+    /**
+     * Indicates that classes and their dependencies from this library are added to the SWF file at compile time.
+     * They are not loaded at run time. The result is a larger SWF file, but no external dependencies.
+     * This is the default selection for the framework.
+     */
     merged(CompilerOption.LIBRARY_PATH),
+    /**
+     * Framework won't be linked. Primarily used for pure Actionscript projects.
+     */
     none
     
     private CompilerOption compilerOption

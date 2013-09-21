@@ -20,6 +20,10 @@ import org.gradle.api.Project
 import org.gradle.util.ConfigureUtil
 
 
+/**
+ * All FlexUnit conventions.
+ * Documentation of all the options can be found here: http://docs.flexunit.org/index.php?title=Ant_Task
+ */
 class FlexUnitConvention {
     
     private String player           = 'flash'

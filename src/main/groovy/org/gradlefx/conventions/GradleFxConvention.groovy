@@ -20,6 +20,7 @@ import org.gradle.api.Project
 import org.gradle.api.internal.file.FileResolver
 import org.gradle.api.internal.file.BaseDirFileResolver
 import org.gradle.internal.nativeplatform.filesystem.FileSystems
+import org.gradlefx.conventions.adl.AdlConvention
 
 
 @Mixin(GradleFxDerivedProperties)
@@ -42,6 +43,9 @@ class GradleFxConvention {
         //convert relative paths to absolute ones to prevent ANT from freaking out
         this.flexHome = flexHome ? new File(flexHome).absolutePath : null
     }
+
+    //The name you want to give to the SDK
+    String flexSdkName
 
     // which directories to look into for source code
     List <String> srcDirs = ['src/main/actionscript']
@@ -107,12 +111,17 @@ class GradleFxConvention {
     // AIR packaging properties
     AIRConvention air
 
+    // AIR mobile packaging properties
+    AIRMobileConvention airMobile
+
     // ASDoc properties
     ASDocConvention asdoc
 
     //SDK autoinstall properties
     SdkAutoInstallConvention sdkAutoInstall
 
+    //adl convention propeperties
+    AdlConvention adl
 
     def GradleFxConvention(Project project) {
         this.project = project
@@ -123,8 +132,10 @@ class GradleFxConvention {
         htmlWrapper     = new HtmlWrapperConvention(project)
         flexUnit        = new FlexUnitConvention(project)
         air             = new AIRConvention(project)
+        airMobile       = new AIRMobileConvention(project)
         asdoc           = new ASDocConvention()
         sdkAutoInstall  = new SdkAutoInstallConvention()
+        adl             = new AdlConvention()
     }
 
     def htmlWrapper(Closure closure) {
@@ -133,6 +144,14 @@ class GradleFxConvention {
 
     def air(Closure closure) {
         air.configure(closure)
+    }
+
+    def airMobile(Closure closure) {
+        airMobile.configure(closure)
+    }
+
+    def adl(Closure closure) {
+        adl.configure(closure)
     }
 
     def flexUnit(Closure closure) {

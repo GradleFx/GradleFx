@@ -29,6 +29,7 @@ class TemplateUtilTest extends Specification {
     Project project
     GradleFxConvention flexConvention
 
+
     def setup() {
         project = ProjectBuilder.builder().build()
         new GradleFxPlugin().apply(project)
@@ -36,6 +37,7 @@ class TemplateUtilTest extends Specification {
         flexConvention.type = FlexType.swf
 
         templateUtil = new StubTemplateUtilBase(project, flexConvention);
+        templateUtil.useApolloConfig = true
     }
 
     def "writeContent should retain backslashes"() {

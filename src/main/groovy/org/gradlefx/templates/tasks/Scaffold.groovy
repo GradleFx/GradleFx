@@ -96,9 +96,9 @@ class Scaffold extends DefaultTask {
            writeContent getTemplate(false), file, false
 
            if (needsDescriptor) {
-               file = new File(toDescriptorPath(file.path))
+               file = project.file(flexConvention.air.applicationDescriptor)
                writeContent getTemplate(true), file, false
-               LOG.info "\t" + toDescriptorPath(relativePath)
+               LOG.info "\t" + flexConvention.air.applicationDescriptor
            }
        }
 

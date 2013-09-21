@@ -15,7 +15,7 @@
 			sourceFolderPath="${mainSrc}" 
 			strict="true" 
 			targetPlayerVersion="${playerVersion}" 
-			useApolloConfig="false" 
+			useApolloConfig="${useApolloConfig}"
 			useDebugRSLSwfs="${useDebugRSLSwfs}" 
 			verifyDigests="true"
 			warn="true">
