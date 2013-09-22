@@ -1,5 +1,14 @@
 h2. GradleFx changelog
 
+h3. v0.7
+
+h5. New Features
+* issue 102: Added mobile support for iOS and Android
+
+h5. Improvements
+* issue 92: Fixed the Container.add() deprecated warning for Gradle 1.6
+* issue 101: The Scaffold plugin now uses the air.applicationDescriptor property to generate the name of the descriptor file
+
 h3. v0.6.4
 
 h5. Bugfixes

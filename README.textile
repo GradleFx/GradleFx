@@ -17,6 +17,7 @@ Features:
 * Adobe Flash Builder project generation
 * project scaffolding
 * Automatic Flex/AIR SDK installation
+* Mobile (Android & iOS) support
 
 h2. Useful links
 
@@ -29,4 +30,3 @@ h2. Useful links
 
 h2. Upcoming features
 * IDEA project generation support
-* Mobile support
