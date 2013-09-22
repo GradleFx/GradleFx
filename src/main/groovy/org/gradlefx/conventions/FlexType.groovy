@@ -17,7 +17,8 @@
 package org.gradlefx.conventions
 
 
-import org.gradlefx.cli.AIRCommandLineInstructionimport org.gradlefx.tasks.compile.Compc;
+import org.gradlefx.cli.AIRCommandLineInstruction
+import org.gradlefx.tasks.compile.Compc;
 import org.gradlefx.tasks.compile.Compile;
 import org.gradlefx.tasks.compile.Mxmlc;
 
@@ -25,14 +26,26 @@ import org.gradlefx.cli.ApplicationCommandLineInstruction;
 import org.gradlefx.cli.CommandLineInstruction;
 import org.gradlefx.cli.LibraryCommandLineInstruction;
 
+/**
+ * Defines a certain type of Flex application.
+ */
 enum FlexType {
     swf('flex', Mxmlc, ApplicationCommandLineInstruction),
     swc('flex', Compc, LibraryCommandLineInstruction),
     air('air', Mxmlc, AIRCommandLineInstruction),
     mobile('airmobile', Mxmlc, AIRCommandLineInstruction)
-        
+
+    /**
+     * The name of the type.
+     */
     private String configName
+    /**
+     * The Compile task class which performs the compilation of that specific type.
+     */
     private Class<Compile> compileClass
+    /**
+     * The class which calls the command line interface.
+     */
     private Class<CommandLineInstruction> cliClass
     
     
@@ -68,6 +81,10 @@ enum FlexType {
     
     public boolean isNativeApp() {
         return this == air || this == mobile
+    }
+
+    public boolean isMobile() {
+        return this == mobile
     }
     
 }

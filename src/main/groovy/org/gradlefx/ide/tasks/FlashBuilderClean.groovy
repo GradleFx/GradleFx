@@ -19,6 +19,7 @@ package org.gradlefx.ide.tasks
 import org.gradle.api.DefaultTask
 import org.gradle.api.logging.LogLevel
 import org.gradle.api.tasks.TaskAction
+import org.gradlefx.tasks.TaskGroups
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -36,6 +37,7 @@ class FlashBuilderClean extends DefaultTask implements CleanTask {
      */
     public FlashBuilderClean() {
         ideName = 'FlashBuilder'
+        group = TaskGroups.IDE
         description = "Cleans $ideName project, i.e. removes $ideName configuration files and folders"
 
         logging.setLevel LogLevel.INFO

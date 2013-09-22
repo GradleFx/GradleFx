@@ -27,4 +27,13 @@ class Tasks {
     public static final String COPY_TEST_RESOURCES_TASK_NAME = 'copytestresources'
     public static final String CREATE_HTML_WRAPPER = 'createHtmlWrapper'
     public static final String CLEAN_SDKS = 'cleanSdks'
+    public static final String PACKAGE_MOBILE_TASK_NAME = 'packageMobile'
+    public static final String INSTALL_MOBILE_TASK_NAME = 'installMobile'
+    public static final String INSTALL_SIMULATOR_MOBILE_TASK_NAME = 'installSimulatorMobile'
+    public static final String UNINSTALL_MOBILE_TASK_NAME = 'uninstallMobile'
+    public static final String LAUNCH_MOBILE_TASK_NAME = 'launchMobile'
+    public static final String LAUNCH_SIMULATOR_MOBILE_TASK_NAME = 'launchSimulatorMobile'
+    public static final String LAUNCH_ADL_TASK_NAME = 'launchAdl'
+    public static final String PACKAGE_SIMULATOR_MOBILE_TASK_NAME = 'packageSimulatorMobile'
+    public static final String UNINSTALL_SIMULATOR_MOBILE_TASK_NAME = 'uninstallSimulatorMobile'
 }

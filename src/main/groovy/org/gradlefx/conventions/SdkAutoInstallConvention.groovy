@@ -18,8 +18,15 @@ package org.gradlefx.conventions
 
 import org.gradle.util.ConfigureUtil
 
+/**
+ * Convention properties related to the automatic installation of an SDK.
+ */
 class SdkAutoInstallConvention {
 
+    /**
+     * Whether to show prompts during the installation or let it run in full auto mode.
+     * Make sure you agree with all the licenses before turning this off
+     */
     private boolean showPrompts     = true
 
     void configure(Closure closure) {

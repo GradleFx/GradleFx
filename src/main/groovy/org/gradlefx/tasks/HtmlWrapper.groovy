@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 package org.gradlefx.tasks
 
 import org.gradle.api.tasks.TaskAction
@@ -23,17 +23,18 @@ import org.gradlefx.conventions.HtmlWrapperConvention;
 class HtmlWrapper extends DefaultTask {
 
     public HtmlWrapper() {
+        group = TaskGroups.BUILD
         description = 'Creates an HTML wrapper for the generated swf'
     }
 
 	@TaskAction
 	def generateHtmlWrapper() {
         HtmlWrapperConvention wrapper = project.convention.plugins.flex.htmlWrapper
-        
+
         createOutputDirectoryIfNotExists wrapper.output
-        
+
         File source = wrapper.source ? project.file(wrapper.source) : null
-        
+
         if(source && source.exists()) {
             generateCustomWrapper(source, wrapper)
         }
@@ -41,7 +42,7 @@ class HtmlWrapper extends DefaultTask {
             generateDefaultWrapper(wrapper)
         }
 	}
-    
+
     private def generateDefaultWrapper(HtmlWrapperConvention wrapper) {
         ant.'html-wrapper'(
             title:               wrapper.title,
@@ -56,7 +57,7 @@ class HtmlWrapper extends DefaultTask {
             output:              wrapper.output
         )
     }
-    
+
     private def generateCustomWrapper(File source, HtmlWrapperConvention wrapper) {
         def defaultTokens = [
             application:    wrapper.application,
@@ -65,9 +66,9 @@ class HtmlWrapper extends DefaultTask {
             swf:            wrapper.swf,
             title:          wrapper.title
         ]
-        
+
         def tokens = defaultTokens + wrapper.tokenReplacements
-        
+
         ant.copy(file: source, tofile: "${wrapper.output}/${wrapper.file}") {
             filterchain() {
                 tokenfilter() {
@@ -81,7 +82,7 @@ class HtmlWrapper extends DefaultTask {
             }
         }
     }
-    
+
     private def createOutputDirectoryIfNotExists(String outputPath) {
         File output = project.file outputPath
         if (!output.exists()) output.mkdir()

@@ -21,9 +21,11 @@ import org.gradle.api.DefaultTask
 class Build extends DefaultTask {
 
     public Build() {
+        group = TaskGroups.BUILD
         description = 'Assembles and tests this project.'
+
         dependsOn(Tasks.COMPILE_TASK_NAME)
         dependsOn(Tasks.TEST_TASK_NAME)
     }
-    
+
 }

@@ -26,16 +26,18 @@ import org.gradlefx.conventions.FlexType;
 import org.gradlefx.conventions.GradleFxConvention
 
 class AirPackage extends DefaultTask {
-    
+
     private static final String ANT_RESULT_PROPERTY = 'airPackageResult'
     private static final String ANT_OUTPUT_PROPERTY = 'airPackageOutput'
 
     GradleFxConvention flexConvention;
 
     public AirPackage() {
+        group = TaskGroups.BUILD
         description = 'Packages the generated swf file into an .air package'
+
         flexConvention = (GradleFxConvention) project.convention.plugins.flex
-        
+
         dependsOn Tasks.COMPILE_TASK_NAME
     }
 
@@ -47,6 +49,7 @@ class AirPackage extends DefaultTask {
 
         ant.java(jar: flexConvention.flexHome + '/lib/adt.jar',
                 fork: true,
+                dir: flexConvention.air.packageWorkDir,
                 resultproperty: ANT_RESULT_PROPERTY,
                 outputproperty: ANT_OUTPUT_PROPERTY) {
 
@@ -67,8 +70,8 @@ class AirPackage extends DefaultTask {
 
         airOptions.addAll([
             project.file(project.buildDir.name + '/' + flexConvention.output).absolutePath,
-            project.relativePath(flexConvention.air.applicationDescriptor),
-            project.relativePath("${project.buildDir}/${flexConvention.output}.${FlexType.swf}")
+            project.file(flexConvention.air.applicationDescriptor),
+            project.file("${project.buildDir}/${flexConvention.output}.${FlexType.swf}")
         ])
 
         addFiles(airOptions)
@@ -78,7 +81,7 @@ class AirPackage extends DefaultTask {
 
     private void addFiles(List compilerOptions) {
         flexConvention.air.includeFileTrees.each { ConfigurableFileTree fileTree ->
-            compilerOptions.add "-C"
+            compilerOptions.add CompilerOption.CHANGE_DIRECTORY.optionName
             compilerOptions.add fileTree.dir.absolutePath
 
             fileTree.visit { FileTreeElement file ->
@@ -91,11 +94,11 @@ class AirPackage extends DefaultTask {
 
     private void addAirSigningOptions(List compilerOptions) {
         compilerOptions.addAll ([
-                "-storetype",
+                CompilerOption.STORE_TYPE,
                 "pkcs12",
-                "-keystore",
+                CompilerOption.KEYSTORE,
                 flexConvention.air.keystore,
-                "-storepass",
+                CompilerOption.STOREPASS,
                 flexConvention.air.storepass
         ])
     }
@@ -109,5 +112,5 @@ class AirPackage extends DefaultTask {
     def showAntOutput(antOutput) {
         println antOutput
     }
-    
+
 }

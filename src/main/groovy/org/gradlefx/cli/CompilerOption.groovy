@@ -134,7 +134,7 @@ public enum CompilerOption {
     DEBUG_PASSWORD("-debug-password"),
     
     /**
-     * Sets the applicationís frame rate.
+     * Sets the applicationÔøΩs frame rate.
      * 
      * type: int
      * default: 24
@@ -142,7 +142,7 @@ public enum CompilerOption {
     DEFAULT_FRAME_RATE("-default-frame-rate"),
     
     /**
-     * Defines the applicationís script execution limits.
+     * Defines the applicationÔøΩs script execution limits.
      * The max-recursion-depth value specifies the maximum depth of Adobe Flash Player call stack before Flash Player stops. 
      * This is essentially the stack overflow limit. 
      * The max-execution-time value specifies the maximum duration, in seconds, that an ActionScript event handler can execute 
@@ -165,7 +165,7 @@ public enum CompilerOption {
      * Inserts CSS files into the output the same way that a per-SWC defaults.css file works, 
      * but without having to re-archive the SWC file to test each change.
      * CSS files included in the output with this option have a higher precedence than default CSS files in existing SWCs. 
-     * For example, a CSS file included with this option overrides definitions in framework.swcís defaults.css file, 
+     * For example, a CSS file included with this option overrides definitions in framework.swcÔøΩs defaults.css file, 
      * but it has the same overall precedence as other included CSS files inside the SWC file.
      * This option does not actually insert the CSS file into the SWC file; it simulates it. 
      * When you finish developing the CSS file, you should rebuild the SWC file with the new integrated CSS file.
@@ -346,7 +346,7 @@ public enum CompilerOption {
     
     /**
      * Specifies the resource bundles to link into a resource module. 
-     * All resource bundles specified with this option must be in the compilerís source path. 
+     * All resource bundles specified with this option must be in the compilerÔøΩs source path. 
      * You specify this using the <code>source-path</code> compiler option. 
      * 
      * type: bundle [...]
@@ -400,7 +400,7 @@ public enum CompilerOption {
     KEEP_AS3_METADATA("-keep-as3-metadata"),
     
     /**
-     * Instructs the compiler to keep a style sheetís type selector in a SWF file, even if that type (the class) is not used in the application. 
+     * Instructs the compiler to keep a style sheetÔøΩs type selector in a SWF file, even if that type (the class) is not used in the application. 
      * This is useful when you have a modular application that loads other applications. 
      * For example, the loading SWF file might define a type selector for a type used in the loaded (or, target) SWF file. 
      * If you set this option to true when compiling the loading SWF file, then the target SWF file will have access to that type selector when it is loaded. 
@@ -494,7 +494,7 @@ public enum CompilerOption {
      * If you do not specify a locale, then the compiler uses the default locale from the flex-config.xml file. 
      * You can append additional locales to the default locale by using the += operator. 
      * If you remove the default locale from the flex-config.xml file, and do not specify one on the command line, 
-     * then the compiler will use the machineís locale.
+     * then the compiler will use the machineÔøΩs locale.
      * 
      * type: locale[,...]
      * default: en_US, or null without flex-config.xml
@@ -558,7 +558,7 @@ public enum CompilerOption {
     
     /**
      * Enables the ActionScript optimizer. 
-     * This optimizer reduces file size and increases performance by optimizing the SWF fileís bytecode.
+     * This optimizer reduces file size and increases performance by optimizing the SWF fileÔøΩs bytecode.
      * 
      * type: boolean
      * default: true
@@ -595,8 +595,8 @@ public enum CompilerOption {
      * type: classname
      * default:
      * <ul>
-     *  <li>ìmx.preloaders.SparkDownloadProgressBarî when compatibility-version is 4.0.0 or greater</li>
-     *  <li>ìmx.preloaders.DownloadProgressBarî when compatibility-version is less than 4.0.0</li>
+     *  <li>ÔøΩmx.preloaders.SparkDownloadProgressBarÔøΩ when compatibility-version is 4.0.0 or greater</li>
+     *  <li>ÔøΩmx.preloaders.DownloadProgressBarÔøΩ when compatibility-version is less than 4.0.0</li>
      * </ul>
      * <a href="http://help.adobe.com/en_US/flex/using/WS2db454920e96a9e51e63e3d11c0bf69084-7e3c.html">Showing the download progress of an application</a>
      */
@@ -761,17 +761,17 @@ public enum CompilerOption {
      * that are used in your applications and includes those that are required at compile time. 
      * You can use wildcards to include all files and subdirectories of a directory. 
      * To link an entire library SWC file and not individual classes or directories, use the library-path option. 
-     * The source path is also used as the search path for the component compilerís include-classes and include-resource-bundles options. 
+     * The source path is also used as the search path for the component compilerÔøΩs include-classes and include-resource-bundles options. 
      * You can also use the += operator to append the new argument to the list of existing source path entries.
      * 
      * type: path-element [...]
      * default:
      * <ul>
-     *  <li>If source-path is empty, the target fileís directory will be added to source-path.</li>
-     *  <li>If source-path is not empty and if the target fileís directory is a subdirectory of 
+     *  <li>If source-path is empty, the target fileÔøΩs directory will be added to source-path.</li>
+     *  <li>If source-path is not empty and if the target fileÔøΩs directory is a subdirectory of 
      *  one of the directories in source-path, source-path remains unchanged.</li>
-     *  <li>If source-path is not empty and if the target fileís directory is not a subdirectory of 
-     *  any one of the directories in source-path, the target fileís directory is prepended to source-path.</li>
+     *  <li>If source-path is not empty and if the target fileÔøΩs directory is not a subdirectory of 
+     *  any one of the directories in source-path, the target fileÔøΩs directory is prepended to source-path.</li>
      * </ul>
      */
     SOURCE_PATH("-source-path"),
@@ -820,8 +820,8 @@ public enum CompilerOption {
      * For Flex 4.5, the default value is 10.2.0. For Flex 4.6, the default value is 11.1.
      * If you do not explicitly set the value of this option, the compiler uses the default from the flex-config.xml file. 
      * The value in flex-config.xml is the version of Flash Player that shipped with the SDK. 
-     * This option is useful if your applicationís audience has a specific Player and cannot upgrade. 
-     * You can use this option to ìdowngradeî your application for that audience. 
+     * This option is useful if your applicationÔøΩs audience has a specific Player and cannot upgrade. 
+     * You can use this option to ÔøΩdowngradeÔøΩ your application for that audience. 
      * 
      * type: major_version[.minor_version.revision]
      * <a href="http://help.adobe.com/en_US/flex/using/WS2db454920e96a9e51e63e3d11c0bf69084-7ee0.html">Targeting Flash Player versions</a>
@@ -908,7 +908,7 @@ public enum CompilerOption {
     /**
      * Instructs the application to check the digest of the RSL SWF file against the digest that was compiled into the application at compile time. 
      * This is a security measure that lets you load RSLs from remote domains or different sub-domains. 
-     * It also lets you enforce versioning of your RSLs by forcing an applicationís digest to match the RSLís digest. 
+     * It also lets you enforce versioning of your RSLs by forcing an applicationÔøΩs digest to match the RSLÔøΩs digest. 
      * If the digests are out of sync, you must recompile your application or load a different RSL SWF file.
      * 
      * type: boolean
@@ -964,7 +964,7 @@ public enum CompilerOption {
     /**
      * Specifies classes to include in the SWC file. You provide the class name (for example, MyClass) rather than 
      * the file name (for example, MyClass.as) to the file for this option. As a result, all classes specified with 
-     * this option must be in the compilerís source path. You specify this by using the source-path compiler option. 
+     * this option must be in the compilerÔøΩs source path. You specify this by using the source-path compiler option. 
      * You can use packaged and unpackaged classes. To use components in namespaces, use the include-namespaces option. 
      * If the components are in packages, ensure that you use dot-notation rather than slashes to separate package levels. 
      * This is the default option for the component compiler.
@@ -1097,6 +1097,116 @@ public enum CompilerOption {
      * uninstalls the AIR runtime currently installed from a device or device emulator.
      */
     UNINSTALL_RUNTIME("-uninstallRuntime"),
+
+    /**
+     * -C dir files_and_dirs Changes the working directory to the value of dir before processing subsequent files and
+     * directories added to the application package (specified in files_and_dirs). The files or directories are added to
+     * the root of the application package. The ‚ÄìC option can be used any number of times to include files from multiple
+     * points in the file system. If a relative path is specified for dir, the path is always resolved from the original
+     * working directory.
+     */
+    CHANGE_DIRECTORY("-C"),
+
+    /**
+     * The type of keystore, determined by the keystore implementation. The default keystore implementation included with
+     * most installations of Java supports the JKS and PKCS12 types. Java 5.0 includes support for the PKCS11 type, for
+     * accessing keystores on hardware tokens, and Keychain type, for accessing the Mac OS X keychain. Java 6.0 includes
+     * support for the MSCAPI type (on Windows). If other JCA providers have been installed and configured, additional
+     * keystore types might be available. If no keystore type is specified, the default type for the default JCA provider is used.
+     */
+    STORE_TYPE("-storetype"),
+
+    /**
+     * The path to the keystore file for file-based store types.
+     */
+    KEYSTORE("-keystore"),
+
+    /**
+     * The password required to access the keystore. If not specified, ADT prompts for the password.
+     */
+    STOREPASS("-storepass"),
+
+    /**
+     * -extdir dir The value of dir is the name of a directory to search for native extensions (ANE files).
+     * Specify either an absolute path, or a path relative to the current directory. You can specify the -extdir option multiple times.
+     */
+    EXTDIR("-extdir"),
+
+    /**
+     * The SWC file containing the ActionScript code and resources for the native extension.
+     */
+    SWC("-swc"),
+
+    /**
+     * The name of the platform that this ANE file supports. You can include multiple -platform options, each with its own FILE_OPTIONS.
+     */
+    PLATFORM("-platform"),
+
+    /**
+     * The path to a platform options (platform.xml) file. Use this file to specify non-default linker options, shared
+     * libraries, and third-party static libraries used by the extension.
+     */
+    PLATFORM_OPTIONS("-platformoptions"),
+
+    /**
+     * The path to the platform SDK for the target device:
+     * Android - The AIR 2.6+ SDK includes the tools from the Android SDK needed to implement the relevant ADT commands.
+     *      Only set this value to use a different version of the Android SDK. Also, the platform SDK path does not need
+     *      to be supplied on the command line if the AIR_ANDROID_SDK_HOME environment variable is already set. (If both
+     *      are set, then the path provided on the command line is used.)
+     * iOS - The AIR SDK ships with a captive iOS SDK. The -platformsdk option lets you package applications with an
+     *      external SDK so that you are not restricted to using the captive iOS SDK. For example, if you have built an
+     *      extension with the latest iOS SDK, you can specify that SDK when packaging your application. Additionally,
+     *      when using ADT with the iOS Simulator, you must always include the -platformsdk option, specifying the path to the iOS Simulator SDK.
+     */
+    PLATFORM_SDK("-platformsdk"),
+
+    /**
+     * Specify ios_simulator or the serial number of the device. The device only needs to be specified when more than one
+     * Android device or emulator is attached to your computer and running. If the specified device is not connected,
+     * ADT returns exit code 14: Device error. If more than one device or emulator is connected and a device is not specified,
+     * ADT returns exit code 2: Usage error.
+     */
+    DEVICE("-device"),
+
+    /**
+     * The type of package to create. The supported package types are:
+     * air ‚Äî an AIR package. ‚Äúair‚Äù is the default value and the -target flag does not need to be specified when creating AIR or AIRI files.
+     * airn ‚Äî a native application package for devices in the extended television profile.
+     * ane ‚Äîan AIR native extension package
+     * Android package targets:
+     *      apk ‚Äî an Android package. A package produced with this target can only be installed on an Android device, not an emulator.
+     *      apk‚Äëcaptive‚Äëruntime ‚Äî an Android package that includes both the application and a captive version of the AIR runtime. A package produced with this target can only be installed on an Android device, not an emulator.
+     *      apk-debug ‚Äî an Android package with extra debugging information. (The SWF files in the application must also be compiled with debugging support.)
+     *      apk-emulator ‚Äî an Android package for use on an emulator without debugging support. (Use the apk-debug target to permit debugging on both emulators and devices.)
+     *      apk-profile ‚Äî an Android package that supports application performance and memory profiling.
+     * iOS package targets:
+     *      ipa-ad-hoc ‚Äî an iOS package for ad hoc distribution.
+     *      ipa-app-store ‚Äî an iOS package for Apple App store distribution.
+     *      ipa-debug ‚Äî an iOS package with extra debugging information. (The SWF files in the application must also be compiled with debugging support.)
+     *      ipa-test ‚Äî an iOS package compiled without optimization or debugging information.
+     *      ipa-debug-interpreter ‚Äî functionally equivalent to a debug package, but compiles more quickly. However, the ActionScript bytecode is interpreted and not translated to machine code. As a result, code execution is slower in an interpreter package.
+     *      ipa-debug-interpreter-simulator ‚Äî functionally equivalent to ipa-debug-interpreter, but packaged for the iOS simulator. Macintosh-only. If you use this option, you must also include the -platformsdk option, specifying the path to the iOS Simulator SDK.
+     *      ipa-test-interpreter ‚Äî functionally equivalent to a test package, but compiles more quickly. However, the ActionScript bytecode is interpreted and not translated to machine code. As a result, code execution is slower in an interpreter package.
+     *      ipa-test-interpreter-simulator ‚Äî functionally equivalent to ipa-test-interpreter, but packaged for the iOS simulator. Macintosh-only. If you use this option, you must also include the -platformsdk option, specifying the path to the iOS Simulator SDK.
+     * native ‚Äî a native desktop installer. The type of file produced is the native installation format of the operating system on which the command is run:
+     *      EXE ‚Äî Windows
+     *      DMG ‚Äî Mac
+     *      DEB ‚Äî Ubuntu Linux (AIR 2.6 or earlier)
+     *      RPM ‚Äî Fedora or OpenSuse Linux (AIR 2.6 or earlier)
+     */
+    TARGET("-target"),
+
+    /**
+     * -provisioning-profile PROFILE_PATH. The path to your iOS provisioning profile.
+     */
+    PROVISIONING_PROFILE("-provisioning-profile"),
+
+    /**
+     * The AIR application ID of the installed application. If no application with the specified ID is installed on the
+     * device, then ADT returns exit code 14: Device error.
+     */
+    APP_ID("-appid"),
     
     //---------------//
     //---- asdoc ----//

@@ -25,6 +25,7 @@ class Publish extends DefaultTask {
     GradleFxConvention flexConvention;
 
     public Publish() {
+        group = TaskGroups.UPLOAD
         description = "Publish build artifacts to specified directory."
 
         flexConvention = project.convention.plugins.flex

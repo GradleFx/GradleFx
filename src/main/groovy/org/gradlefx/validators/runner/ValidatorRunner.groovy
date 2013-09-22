@@ -1,7 +1,3 @@
-package org.gradlefx.validators.runner
-
-import org.gradlefx.validators.ProjectPropertyValidator
-
 /*
  * Copyright (c) 2011 the original author or authors
  *
@@ -17,6 +13,11 @@ import org.gradlefx.validators.ProjectPropertyValidator
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package org.gradlefx.validators.runner
+
+import org.gradlefx.validators.ProjectPropertyValidator
+
 public interface ValidatorRunner extends Runnable {
     ValidatorRunner add(ProjectPropertyValidator validator)
 }
