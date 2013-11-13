@@ -6,7 +6,7 @@
 			fteInMXComponents="false" 
 			generateAccessible="true" 
 			htmlExpressInstall="true" 
-			htmlGenerate="false" 
+			htmlGenerate="true"
 			htmlHistoryManagement="true" 
 			htmlPlayerVersionCheck="true" 
 			includeNetmonSwc="false" 
