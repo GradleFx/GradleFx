@@ -56,6 +56,7 @@ abstract class AbstractInstallSdkState implements SdkInitState {
         try {
             unpackSdk()
             downloadSdkDependencies()
+            allowExecutionPermissionsOnSdkFiles()
         } catch (Exception e) {
             revertInstall()
 
@@ -88,6 +89,13 @@ abstract class AbstractInstallSdkState implements SdkInitState {
      * Override this method when addition dependencies are required for the SDK.
      */
     protected void downloadSdkDependencies() {
+    }
+
+    /**
+     * Set execution permissions on all SDK files to avoid problems with this.
+     */
+    void allowExecutionPermissionsOnSdkFiles() {
+        sdkInstallLocation.directory.traverse { it.setExecutable(true, false) }
     }
 
 }

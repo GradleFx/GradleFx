@@ -23,7 +23,7 @@ apply plugin: 'signing'
 apply plugin: 'idea'
 
 group = 'org.gradlefx'
-version = '0.7'
+version = '0.7.1'
 ext.packaging = 'jar'
 
 def isDevBuild
