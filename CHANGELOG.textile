@@ -1,5 +1,13 @@
 h2. GradleFx changelog
 
+h3. v0.7.1
+
+h5. Improvements
+* issue 111: Turning on html wrapper generation for swf-based projects when generating Flash Builder project files to make it consistent with the IDE behaviour.
+
+h5. Bugfixes
+* issue 108: SDK files are now granted execution permission on installation to avoid permission issues during compilation/packaging.
+
 h3. v0.7
 
 h5. New Features
