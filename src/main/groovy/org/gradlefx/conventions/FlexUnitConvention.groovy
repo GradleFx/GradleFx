@@ -41,6 +41,7 @@ class FlexUnitConvention {
     private int display             = 99
     private List <String> includes  = ['**/*Test.as']
     private List <String> excludes  = []
+    private String swfName          = 'TestRunner.swf'
     
     public FlexUnitConvention(Project project) {
         toDir       = "${project.buildDir}/reports"
@@ -169,5 +170,13 @@ class FlexUnitConvention {
 
     void excludes(List<String> excludes) {
         this.excludes = excludes
+    }
+
+    String getSwfName() {
+        return swfName
+    }
+
+    void swfName(String name) {
+        this.swfName = name
     }
 }

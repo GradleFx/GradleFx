@@ -73,7 +73,7 @@ abstract class CommandLineInstruction {
 
     /** Adds the <code>-source-path</code> argument based on project.srcDirs and project.localeDir */
     public void addSourcePaths() {
-        addAll CompilerOption.SOURCE_PATH, getValidSourcePaths()
+        addAll CompilerOption.SOURCE_PATH, filterValidSourcePaths(flexConvention.srcDirs)
 
         //add locale path to source paths if any locales are defined
         if (flexConvention.locales && flexConvention.locales.size()) {
@@ -81,10 +81,10 @@ abstract class CommandLineInstruction {
         }
     }
 
-    protected Collection<String> getValidSourcePaths() {
+    protected Collection<String> filterValidSourcePaths(List<String> sourcePaths) {
         //don't allow non existing source paths unless they contain a token (e.g. {locale})
         //TODO {} tokens can be validated earlier: locale paths should be in localeDir property
-        return flexConvention.srcDirs
+        return sourcePaths
                 .findAll { String path -> project.file(path).exists() || path.contains('{') }
                 .collect { project.file(it).path }
     }
