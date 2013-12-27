@@ -47,6 +47,11 @@ class CompileFlexUnitCommandLineInstruction extends ApplicationCommandLineInstru
         //do nothing
     }
 
+    @Override
+    public void addAdditionalCompilerOptions() {
+        addAll flexConvention.flexUnit.additionalCompilerOptions
+    }
+
     public void addTestLibraries() {
         Configuration test = project.configurations.test
         addLibraries test.files, test, CompilerOption.LIBRARY_PATH

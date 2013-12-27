@@ -159,6 +159,7 @@ class Test extends DefaultTask {
             haltonfailure:   flexUnit.haltOnFailure,
             verbose:         flexUnit.verbose,
             localTrusted:    flexUnit.localTrusted,
+            port:            flexUnit.port,
             buffer:          flexUnit.buffer,
             timeout:         flexUnit.timeout,
             failureproperty: flexUnit.failureProperty,

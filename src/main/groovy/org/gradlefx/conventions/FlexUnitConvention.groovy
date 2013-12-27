@@ -43,6 +43,8 @@ class FlexUnitConvention {
     private List <String> includes  = ['**/*Test.as']
     private List <String> excludes  = []
     private String swfName          = 'TestRunner.swf'
+    //list of additional compiler options as defined by the compc or mxmlc compiler
+    private List <String> additionalCompilerOptions = []
     
     public FlexUnitConvention(Project project) {
         toDir       = "${project.buildDir}/reports"
@@ -187,5 +189,13 @@ class FlexUnitConvention {
 
     void swfName(String name) {
         this.swfName = name
+    }
+
+    List<String> getAdditionalCompilerOptions() {
+        return additionalCompilerOptions
+    }
+
+    void additionalCompilerOptions(List<String> options) {
+        this.additionalCompilerOptions = options
     }
 }
