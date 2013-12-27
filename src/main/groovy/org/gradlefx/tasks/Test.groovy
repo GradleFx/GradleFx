@@ -84,8 +84,7 @@ class Test extends DefaultTask {
     }
 
     private void createFlexUnitRunnerFromTemplate() {
-        String templatePath = "/templates/flexunit/FlexUnitRunner.mxml"
-        def templateText = getClass().getResourceAsStream(templatePath).text
+        String templateText = retreiveTemplateText()
 
         Set<String> fullyQualifiedNames = gatherFullyQualifiedTestClassNames()
         Set<String> classNames = gatherTestClassNames()
@@ -103,6 +102,19 @@ class Test extends DefaultTask {
         File destinationFile = project.file("${flexConvention.flexUnit.toDir}/FlexUnitRunner.mxml")
         destinationFile.createNewFile()
         destinationFile.write(template.toString())
+    }
+
+    private String retreiveTemplateText() {
+        def templateText
+        if(flexConvention.flexUnit.template == null) {
+            //use the standard template
+            String templatePath = "/templates/flexunit/FlexUnitRunner.mxml"
+            templateText = getClass().getResourceAsStream(templatePath).text
+        } else {
+            templateText = project.file(flexConvention.flexUnit.template).text
+        }
+
+        templateText
     }
 
     def Set<String> gatherFullyQualifiedTestClassNames() {

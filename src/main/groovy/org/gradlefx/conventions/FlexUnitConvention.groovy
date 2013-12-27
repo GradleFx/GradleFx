@@ -25,7 +25,8 @@ import org.gradle.util.ConfigureUtil
  * Documentation of all the options can be found here: http://docs.flexunit.org/index.php?title=Ant_Task
  */
 class FlexUnitConvention {
-    
+
+    private String template //can be used for a custom template
     private String player           = 'flash'
     private String command          = System.getenv()['FLASH_PLAYER_EXE']
     private String toDir
@@ -50,6 +51,14 @@ class FlexUnitConvention {
 
     void configure(Closure closure) {
         ConfigureUtil.configure(closure, this)
+    }
+
+    String getTemplate() {
+        return template
+    }
+
+    void template(String template) {
+        this.template = template
     }
 
     String getPlayer() {
