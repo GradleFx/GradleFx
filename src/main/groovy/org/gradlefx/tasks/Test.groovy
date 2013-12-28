@@ -15,12 +15,15 @@
  */
 
 package org.gradlefx.tasks
+
+import groovy.text.SimpleTemplateEngine
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.FileTree
 import org.gradle.api.file.FileTreeElement
 import org.gradle.api.logging.LogLevel
 import org.gradle.api.tasks.TaskAction
-import org.gradlefx.cli.CompilerOption
+import org.gradlefx.cli.CommandLineInstruction
+import org.gradlefx.cli.CompileFlexUnitCommandLineInstruction
 import org.gradlefx.configuration.FlexUnitAntTasksConfigurator
 import org.gradlefx.conventions.FlexUnitConvention
 import org.gradlefx.conventions.GradleFxConvention
@@ -34,6 +37,7 @@ class Test extends DefaultTask {
     private static final Logger LOG = LoggerFactory.getLogger Test
 
     GradleFxConvention flexConvention;
+    CommandLineInstruction cli;
 
     public Test() {
         group = TaskGroups.VERIFICATION
@@ -42,6 +46,7 @@ class Test extends DefaultTask {
         logging.setLevel LogLevel.INFO
 
         flexConvention = project.convention.plugins.flex
+        cli = new CompileFlexUnitCommandLineInstruction(project);
 
         dependsOn Tasks.COPY_TEST_RESOURCES_TASK_NAME
     }
@@ -49,6 +54,12 @@ class Test extends DefaultTask {
     @TaskAction
     def runFlexUnit() {
         if(hasTests()) {
+            createFlexUnitRunnerFromTemplate()
+
+            //compiler the test runner
+            cli.setConventionArguments()
+            cli.execute ant, 'mxmlc'
+
             configureAntWithFlexUnit()
             runTests()
         } else {
@@ -72,6 +83,66 @@ class Test extends DefaultTask {
         return nonEmptyTestDir != null
     }
 
+    private void createFlexUnitRunnerFromTemplate() {
+        String templateText = retreiveTemplateText()
+
+        Set<String> fullyQualifiedNames = gatherFullyQualifiedTestClassNames()
+        Set<String> classNames = gatherTestClassNames()
+        def binding = [
+            "fullyQualifiedNames": fullyQualifiedNames,
+            "testClasses": classNames
+        ]
+        def engine = new SimpleTemplateEngine()
+        def template = engine.createTemplate(templateText).make(binding)
+
+        // you can't write to a directory that doesn't exist
+        def outputDir = project.file(flexConvention.flexUnit.toDir)
+        if (!outputDir.exists()) outputDir.mkdirs()
+
+        File destinationFile = project.file("${flexConvention.flexUnit.toDir}/FlexUnitRunner.mxml")
+        destinationFile.createNewFile()
+        destinationFile.write(template.toString())
+    }
+
+    private String retreiveTemplateText() {
+        def templateText
+        if(flexConvention.flexUnit.template == null) {
+            //use the standard template
+            String templatePath = "/templates/flexunit/FlexUnitRunner.mxml"
+            templateText = getClass().getResourceAsStream(templatePath).text
+        } else {
+            templateText = project.file(flexConvention.flexUnit.template).text
+        }
+
+        templateText
+    }
+
+    def Set<String> gatherFullyQualifiedTestClassNames() {
+        List<String> paths = []
+        flexConvention.testDirs.each { String testDir ->
+            FileTree fileTree = project.fileTree(testDir)
+            fileTree.includes = flexConvention.flexUnit.includes
+            fileTree.excludes = flexConvention.flexUnit.excludes
+
+            fileTree.visit { FileTreeElement includedFile ->
+                if(!includedFile.isDirectory()) {
+                    def fullyQualifiedClassname = includedFile.relativePath.pathString
+                            .replaceAll("[\\/]", ".") - '.as' - '.mxml'
+                    paths.add(fullyQualifiedClassname)
+                }
+            }
+        }
+
+        return paths
+    }
+
+    def Set<String> gatherTestClassNames() {
+        //transform list of fully qualified names to a list of classnames
+        gatherFullyQualifiedTestClassNames().collect {
+            it.tokenize('.')[-1]
+        }
+    }
+
     private void runTests() {
         FlexUnitConvention flexUnit = flexConvention.flexUnit
         File reportDir = project.file flexUnit.toDir
@@ -79,12 +150,8 @@ class Test extends DefaultTask {
         // you can't write to a directory that doesn't exist
         if (!reportDir.exists()) reportDir.mkdirs()
 
-        Set<File> libraries = project.configurations.internal.files +
-                project.configurations.external.files +
-                project.configurations.merged.files +
-                project.configurations.test.files
-
         ant.flexunit (
+            swf:             "${flexConvention.flexUnit.toDir}/${flexConvention.flexUnit.swfName}",
             player:          flexUnit.player,
             command:         flexUnit.command,
             toDir:           flexUnit.toDir,
@@ -97,41 +164,7 @@ class Test extends DefaultTask {
             timeout:         flexUnit.timeout,
             failureproperty: flexUnit.failureProperty,
             headless:        flexUnit.headless,
-            display:         flexUnit.display) {
-
-            flexConvention.srcDirs.each { String srcDir ->
-                source(dir: project.file(srcDir).path)
-            }
-
-            flexConvention.testResourceDirs.each { String testResourceDir ->
-                if(project.file(testResourceDir).exists()) {
-                    source(dir: project.file(testResourceDir).path)
-                }
-            }
-
-            if (flexConvention.locales?.size()) {
-                source(dir: project.file(flexConvention.localeDir).path + '/{locale}')
-            }
-
-            flexConvention.testDirs.each { String testDir ->
-                FileTree fileTree = project.fileTree(testDir)
-                fileTree.includes = flexUnit.includes
-                fileTree.excludes = flexUnit.excludes
-
-                testSource(dir: project.file(testDir).path) {
-                    fileTree.visit { FileTreeElement includedFile ->
-                        include(name: includedFile.relativePath)
-                    }
-                }
-            }
-
-            libraries.each { File libraryFile ->
-                library(dir: libraryFile.parent) {
-                    include(name: libraryFile.name)
-                }
-            }
-
-        }
+            display:         flexUnit.display)
 
         if (ant.properties[flexUnit.failureProperty] == "true") {
             throw new Exception("Tests failed");

@@ -35,7 +35,7 @@ class CopyTestResources extends DefaultTask {
     def copyResources() {
         flexConvention.testResourceDirs.each { resourceDir ->
             def fromLocation = project.file(resourceDir).path
-            def toLocation = project.buildDir.path
+            def toLocation = project.file(flexConvention.flexUnit.toDir).path
 
             logger.info('from ' + fromLocation + ' to ' + toLocation)
 

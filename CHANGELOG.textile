@@ -1,5 +1,15 @@
 h2. GradleFx changelog
 
+h3. v0.8
+
+This release includes a complete rework of the FlexUnit integration. This allows more customization options and fixes several issues such as not being able to provide custom compiler options to the tests.
+To make your build compatible with this rework you'll have to add the flexunit-uilistener-x.x.swc as a test dependency to your project. This library is included in the FlexUnit distribution.
+For more information about the new FlexUnit integration check out http://doc.gradlefx.org/en/latest/flexunit.html
+
+h5. Improvements
+* issue 77: It's not possible to keep metadata when running FlexUnit tests
+* issue 53: Running AIR module unit tests fails
+
 h3. v0.7.1
 
 h5. Improvements
