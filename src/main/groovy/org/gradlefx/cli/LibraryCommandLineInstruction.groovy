@@ -72,7 +72,7 @@ class LibraryCommandLineInstruction extends CommandLineInstruction {
             addAll CompilerOption.INCLUDE_SOURCES, paths
         }
         else {
-            addAll CompilerOption.INCLUDE_SOURCES, getValidSourcePaths()
+            addAll CompilerOption.INCLUDE_SOURCES, filterValidSourcePaths(flexConvention.srcDirs)
         }
     }
     
