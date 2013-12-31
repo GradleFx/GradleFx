@@ -1,5 +1,10 @@
 h2. GradleFx changelog
 
+h3. v0.8.1
+
+h5. Bugfixes
+* issue 115: Unable to automatically run unit tests on SWC project that have external dependencies
+
 h3. v0.8
 
 This release includes a complete rework of the FlexUnit integration. This allows more customization options and fixes several issues such as not being able to provide custom compiler options to the tests.
