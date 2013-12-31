@@ -52,6 +52,14 @@ class CompileFlexUnitCommandLineInstruction extends ApplicationCommandLineInstru
         addAll flexConvention.flexUnit.additionalCompilerOptions
     }
 
+    @Override
+    public void addExternalLibraries() {
+        Configuration internal = project.configurations.internal
+        Configuration external = project.configurations.external
+        Configuration merged = project.configurations.merged
+        addLibraries external.files - internal.files - merged.files, external, CompilerOption.LIBRARY_PATH
+    }
+
     public void addTestLibraries() {
         Configuration test = project.configurations.test
         addLibraries test.files, test, CompilerOption.LIBRARY_PATH
