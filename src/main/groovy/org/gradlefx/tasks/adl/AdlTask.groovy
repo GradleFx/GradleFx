@@ -15,6 +15,7 @@
  */
 package org.gradlefx.tasks.adl
 
+import org.apache.tools.ant.taskdefs.condition.Os
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 import org.gradlefx.conventions.GradleFxConvention
@@ -52,7 +53,8 @@ class AdlTask extends DefaultTask {
 
     @TaskAction
     def launch() {
-        addArgs flexConvention.flexHome + '/bin/adl.exe'
+        def adlExecutablePath = (Os.isFamily(Os.FAMILY_WINDOWS))? '/bin/adl.exe' : '/bin/adl'
+        addArgs flexConvention.flexHome + adlExecutablePath
         addArgs flexConvention.air.applicationDescriptor
 
         addArgThatNotNull '-profile', flexConvention.adl.profile
