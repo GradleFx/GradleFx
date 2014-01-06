@@ -55,12 +55,12 @@ class AdlTask extends DefaultTask {
     def launch() {
         def adlExecutablePath = (Os.isFamily(Os.FAMILY_WINDOWS))? '/bin/adl.exe' : '/bin/adl'
         addArgs flexConvention.flexHome + adlExecutablePath
-        addArgs flexConvention.air.applicationDescriptor
 
         addArgThatNotNull '-profile', flexConvention.adl.profile
         addArgThatNotNull '-screensize', flexConvention.adl.screenSize
 
-        addArgs project.buildDir
+        addArgs flexConvention.air.applicationDescriptor
+        addArgs project.projectDir
         def stdOut = new ByteArrayOutputStream();
 
         project.exec {
