@@ -41,9 +41,29 @@ class AIRConvention {
     /**
      * A list of FileTree objects which reference the files to include into the AIR package, like application icons
      * which are specified in your application descriptor.
+     * This is primarily to include individual files, it won't add directories.
      * Can have a value such as this: [fileTree(dir: ‘src/main/actionscript/’, include: ‘assets/appIcon.png’)]
      */
     private List<ConfigurableFileTree> includeFileTrees = null
+    /**
+     * Similar purpose as the includeFileTrees property, but allows you more freedom without the convenience of a
+     * FileTree. It allows you to specify files/directories that should be included into the AIR package.
+     *
+     * This allows you to easily define directories to include into the AIR package, something which isn't possible
+     * with the includeFileTrees option. This is sometimes necessary when having to include many files, in which case
+     * the adt task would possibly complain that the command length is too long, something which can be sircumvented
+     * by adding them as directories instead of as individual files.
+     *
+     * fileOptions = [
+     *   '-C',
+     *   'release/bin',
+     *   'images',
+     *   '-C',
+     *   'src/main/resources',
+     *   'assets'
+     * ]
+     */
+    private List<String> fileOptions = []
     /**
      * The directory in which the adt packager will be executed. By default uses the project directory.
      */
@@ -91,6 +111,13 @@ class AIRConvention {
         this.includeFileTrees = includeFileTrees
     }
 
+    List<String> getFileOptions() {
+        return fileOptions
+    }
+
+    void fileOptions(List<String> fileOptions) {
+        this.fileOptions = fileOptions
+    }
 
     String getPackageWorkDir() {
         return packageWorkDir
