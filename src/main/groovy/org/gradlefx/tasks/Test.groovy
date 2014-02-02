@@ -126,14 +126,18 @@ class Test extends DefaultTask {
 
             fileTree.visit { FileTreeElement includedFile ->
                 if(!includedFile.isDirectory()) {
-                    def fullyQualifiedClassname = includedFile.relativePath.pathString
-                            .replaceAll("[\\/]", ".") - '.as' - '.mxml'
+                    def fullyQualifiedClassname =
+                        convertPathStringToFullyQualifiedClassname(includedFile.relativePath.pathString)
                     paths.add(fullyQualifiedClassname)
                 }
             }
         }
 
         return paths
+    }
+
+    def String convertPathStringToFullyQualifiedClassname(path) {
+        return path.replaceAll("[\\/]", ".") - '.as' - '.mxml'
     }
 
     def Set<String> gatherTestClassNames() {
