@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.gradlefx.util
+package org.gradlefx.tasks
 
 import spock.lang.Specification
 import org.gradlefx.tasks.TestHelper
@@ -25,6 +25,34 @@ class TestHelperTest extends Specification {
 
     def setup() {
         testHelper = new TestHelper()
+    }
+
+    def "fileExtensionPattern matches '.as'"() {
+        when:
+            String string = ".as"
+        then:
+            string =~ testHelper.fileExtensionPattern
+    }
+
+    def "fileExtensionPattern does not match '.asother'"() {
+        when:
+            String string = ".asother"
+        then:
+            !(string =~ testHelper.fileExtensionPattern)
+    }
+
+    def "fileExtensionPattern matches '.mxml'"() {
+        when:
+            String string = ".mxml"
+        then:
+            string =~ testHelper.fileExtensionPattern
+    }
+
+    def "fileExtensionPattern matches '.mxmlother'"() {
+        when:
+            String string = ".mxmlother"
+        then:
+            !(string =~ testHelper.fileExtensionPattern)
     }
 
     def "convertPathStringToFullyQualifiedClassname parse .as path that does not contain package that starts with 'as' or 'mxml'"() {

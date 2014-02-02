@@ -16,25 +16,14 @@
 
 package org.gradlefx.tasks
 
-import groovy.text.SimpleTemplateEngine
-import org.gradle.api.DefaultTask
-import org.gradle.api.file.FileTree
-import org.gradle.api.file.FileTreeElement
-import org.gradle.api.logging.LogLevel
-import org.gradle.api.tasks.TaskAction
-import org.gradlefx.cli.CommandLineInstruction
-import org.gradlefx.cli.CompileFlexUnitCommandLineInstruction
-import org.gradlefx.configuration.FlexUnitAntTasksConfigurator
-import org.gradlefx.conventions.FlexUnitConvention
-import org.gradlefx.conventions.GradleFxConvention
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 /*
  * A Helper methods for Gradle task to execute FlexUnit tests.
  */
 class TestHelper {
 
+    def fileExtensionPattern = /\.(as|mxml)$/
+
     def String convertPathStringToFullyQualifiedClassname(path) {
-        return path.replaceAll("[\\/]", ".") - '.as' - '.mxml'
+        return path.replaceAll("[\\/]", ".").replaceAll(fileExtensionPattern,"")
     }
 }
