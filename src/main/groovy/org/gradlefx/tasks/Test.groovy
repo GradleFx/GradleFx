@@ -141,10 +141,9 @@ class Test extends DefaultTask {
     }
 
     def Set<String> gatherTestClassNames() {
-        //transform list of fully qualified names to a list of classnames
-        gatherFullyQualifiedTestClassNames().collect {
-            it.tokenize('.')[-1]
-        }
+        //fully qualified test class names are required because test 
+        //classes can have the same name but in different package structures.
+        gatherFullyQualifiedTestClassNames()
     }
 
     private void runTests() {
