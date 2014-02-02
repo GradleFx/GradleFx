@@ -49,6 +49,8 @@ class Test extends DefaultTask {
         cli = new CompileFlexUnitCommandLineInstruction(project);
 
         dependsOn Tasks.COPY_TEST_RESOURCES_TASK_NAME
+
+        helper = new TestHelper()
     }
 
     @TaskAction
@@ -127,17 +129,13 @@ class Test extends DefaultTask {
             fileTree.visit { FileTreeElement includedFile ->
                 if(!includedFile.isDirectory()) {
                     def fullyQualifiedClassname =
-                        convertPathStringToFullyQualifiedClassname(includedFile.relativePath.pathString)
+                        helper.convertPathStringToFullyQualifiedClassname(includedFile.relativePath.pathString)
                     paths.add(fullyQualifiedClassname)
                 }
             }
         }
 
         return paths
-    }
-
-    def String convertPathStringToFullyQualifiedClassname(path) {
-        return path.replaceAll("[\\/]", ".") - '.as' - '.mxml'
     }
 
     def Set<String> gatherTestClassNames() {
