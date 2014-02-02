@@ -27,6 +27,7 @@ import org.gradlefx.cli.CompileFlexUnitCommandLineInstruction
 import org.gradlefx.configuration.FlexUnitAntTasksConfigurator
 import org.gradlefx.conventions.FlexUnitConvention
 import org.gradlefx.conventions.GradleFxConvention
+import org.gradlefx.util.PathToClassNameExtractor
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 /*
@@ -36,8 +37,9 @@ class Test extends DefaultTask {
 
     private static final Logger LOG = LoggerFactory.getLogger Test
 
-    GradleFxConvention flexConvention;
-    CommandLineInstruction cli;
+    GradleFxConvention flexConvention
+    CommandLineInstruction cli
+    PathToClassNameExtractor pathToClassNameExtractor
 
     public Test() {
         group = TaskGroups.VERIFICATION
@@ -50,7 +52,7 @@ class Test extends DefaultTask {
 
         dependsOn Tasks.COPY_TEST_RESOURCES_TASK_NAME
 
-        helper = new TestHelper()
+        pathToClassNameExtractor = new PathToClassNameExtractor()
     }
 
     @TaskAction
@@ -129,7 +131,7 @@ class Test extends DefaultTask {
             fileTree.visit { FileTreeElement includedFile ->
                 if(!includedFile.isDirectory()) {
                     def fullyQualifiedClassname =
-                        helper.convertPathStringToFullyQualifiedClassname(includedFile.relativePath.pathString)
+                        pathToClassNameExtractor.convertPathStringToFullyQualifiedClassName(includedFile.relativePath.pathString)
                     paths.add(fullyQualifiedClassname)
                 }
             }
