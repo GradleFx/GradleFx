@@ -69,6 +69,8 @@ class BaseAirMobilePackage extends AdtTask {
             }
         }
 
+        addArgs flexConvention.air.fileOptions
+
         if (StringUtils.isNotEmpty(flexConvention.airMobile.extensionDir)) {
             addArg(CompilerOption.EXTDIR.optionName)
             addArg(flexConvention.airMobile.extensionDir)
