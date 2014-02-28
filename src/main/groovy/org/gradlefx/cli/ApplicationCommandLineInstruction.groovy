@@ -63,7 +63,7 @@ class ApplicationCommandLineInstruction extends CommandLineInstruction {
     }
     
     public void addOutput() {
-        addOutput "${project.buildDir.name}/${flexConvention.output}.swf"
+        addOutput "${project.buildDir.path}/${flexConvention.output}.swf"
     }
     
     public void addMainClass() {
