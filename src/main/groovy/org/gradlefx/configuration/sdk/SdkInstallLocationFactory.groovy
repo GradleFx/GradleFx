@@ -47,7 +47,7 @@ class SdkInstallLocationFactory {
         Boolean isAirSdkDeclaredAsDependency = isAirSdkDeclaredAsDependency()
 
         File flexSdkArchive = getSdkArchiveForConfiguration(Configurations.FLEXSDK_CONFIGURATION_NAME)
-        File airSdkArchive = getSdkArchiveForConfiguration(Configurations.FLEXSDK_CONFIGURATION_NAME)
+        File airSdkArchive = getSdkArchiveForConfiguration(Configurations.AIRSDK_CONFIGURATION_NAME)
 
         FileResolver installBaseDirResolver = new BaseDirFileResolver(FileSystems.default, sdksInstallBaseDirectory)
         File sdkInstallDirectory = null
@@ -59,8 +59,12 @@ class SdkInstallLocationFactory {
             //air SDK is assumed to be in the flex sdk archive
             String hashedSdkDirectoryName = filesToHash(flexSdkArchive)
             sdkInstallDirectory = installBaseDirResolver.resolve(hashedSdkDirectoryName)
-        } else if (!isFlexSdkDeclaredAsDependency) {
-            //install the air sdk in the flexHome location
+        } else if (!isFlexSdkDeclaredAsDependency && isAirSdkDeclaredAsDependency) {
+            //air SDK is assumed not to be in the flex sdk archive
+            String hashedSdkDirectoryName = filesToHash(airSdkArchive)
+            sdkInstallDirectory = installBaseDirResolver.resolve(hashedSdkDirectoryName)
+        } else {
+            //custom path
             sdkInstallDirectory = new File(gradleFxConvention.flexHome)
         }
 
