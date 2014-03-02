@@ -16,14 +16,14 @@
 
 package org.gradlefx.tasks
 
-import org.gradle.api.DefaultTask;
-import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.DefaultTask
+import org.gradle.api.artifacts.Configuration
 import org.gradle.api.tasks.TaskAction
 import org.gradlefx.cli.ASDocCommandLineInstruction
-import org.gradlefx.cli.CommandLineInstruction;
+import org.gradlefx.cli.CommandLineInstruction
 import org.gradlefx.configuration.Configurations
-import org.gradlefx.conventions.GradleFxConvention;
-
+import org.gradlefx.configuration.sdk.SdkType
+import org.gradlefx.conventions.GradleFxConvention
 
 class ASDoc extends DefaultTask {
 
@@ -75,7 +75,18 @@ class ASDoc extends DefaultTask {
 
             CommandLineInstruction cli = new ASDocCommandLineInstruction(project)
             cli.setConventionArguments()
-            cli.execute ant, 'asdoc'
+
+            Set sdkTypes = project.getProperties().get("sdkTypes")
+            def taskName = ""
+
+            //if Flex and AIR are defined, Flex's mxmlc will be used
+            if (sdkTypes.contains(SdkType.Flex)) {
+                taskName = "asdoc";
+            } else if (sdkTypes.contains(SdkType.AIR)) {
+                taskName = "legacy/asdoc";
+            }
+
+            cli.execute ant, taskName
         }
     }
 
