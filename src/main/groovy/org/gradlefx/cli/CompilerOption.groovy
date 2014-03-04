@@ -55,7 +55,7 @@ public enum CompilerOption {
      * type: boolean
      * default: true
      */
-    AS3("as3"),
+    AS3("-as3"),
     
     /**
      * Prints detailed compile times to the standard output.
@@ -88,7 +88,7 @@ public enum CompilerOption {
      * type: context-path
      * default: null
      */
-    CONTEXT_ROOT("context-root"),
+    CONTEXT_ROOT("-context-root"),
     
     /**
      * Sets metadata in the resulting SWF file.
@@ -221,7 +221,7 @@ public enum CompilerOption {
      * type: boolean
      * default: false
      */
-    ES("es"),
+    ES("-es"),
     
     /**
      * Sets a list of classes to exclude from linking when compiling a SWF file. 

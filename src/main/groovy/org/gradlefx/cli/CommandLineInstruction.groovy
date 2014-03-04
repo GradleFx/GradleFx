@@ -19,6 +19,8 @@ package org.gradlefx.cli
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ResolveException
+import org.gradlefx.configuration.Configurations
+import org.gradlefx.configuration.sdk.SdkType
 import org.gradlefx.conventions.FlexType
 import org.gradlefx.conventions.FrameworkLinkage
 import org.gradlefx.conventions.GradleFxConvention
@@ -48,7 +50,9 @@ abstract class CommandLineInstruction {
 
         if (!linkage.usesFlex()) {
             //it's a pure AS project: we don't want to load the Flex configuration
-            reset CompilerOption.LOAD_CONFIG
+            if ((project.getProperties().get("sdkTypes") as Set).contains(SdkType.Flex)) {
+                reset CompilerOption.LOAD_CONFIG
+            }
 
             //but we need to add playerglobal.swc to the build path explicitly
             def flexConfig = new XmlSlurper().parse(flexConvention.configPath)

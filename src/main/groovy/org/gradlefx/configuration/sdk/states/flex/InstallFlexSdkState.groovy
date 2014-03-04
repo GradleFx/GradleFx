@@ -19,12 +19,11 @@ package org.gradlefx.configuration.sdk.states.flex
 import org.gradle.api.internal.file.BaseDirFileResolver
 import org.gradle.api.internal.file.FileResolver
 import org.gradle.internal.nativeplatform.filesystem.FileSystems
-import org.gradlefx.configuration.sdk.SdkInitState
+import org.gradlefx.configuration.sdk.SdkInstallLocation
 import org.gradlefx.configuration.sdk.states.AbstractInstallSdkState
 import org.gradlefx.conventions.GradleFxConvention
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.gradlefx.configuration.sdk.SdkInstallLocation
 
 class InstallFlexSdkState extends AbstractInstallSdkState {
 
@@ -34,10 +33,6 @@ class InstallFlexSdkState extends AbstractInstallSdkState {
 
     InstallFlexSdkState(SdkInstallLocation sdkInstallLocation, File packagedSdkFile) {
         super(sdkInstallLocation, packagedSdkFile, SOME_FLEX_SDK_ROOT_DIRECTORY)
-    }
-
-    SdkInitState nextState() {
-        return new SetFlexHomeBasedOnSdkInstallLocationState(sdkInstallLocation)
     }
 
     /**

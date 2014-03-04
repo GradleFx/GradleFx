@@ -28,11 +28,6 @@ class DetermineAirSdkDeclarationTypeState extends AbstractDetermineSdkDeclaratio
 
     @Override
     SdkInitState nextState() {
-        if(hasDeclaredSdkAsDependency) {
-            LOG.info("Using the Air SDK dependency")
-            return new CreateAirSdkInstallLocationState()
-        } else {
-            return null; //AIR SDK is/should be installed in flexHome, so do nothing
-        }
+        return new CreateAirSdkInstallLocationState(hasDeclaredSdkAsDependency)
     }
 }
