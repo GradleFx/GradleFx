@@ -29,16 +29,14 @@ abstract class AbstractGradleFxPlugin implements Plugin<Project> {
     
     protected Project project
     protected GradleFxConvention flexConvention
-    
-    
+
+
     @Override
     public void apply(Project project) {
         this.project = project
         
         applyPlugins()
         addDefaultConfigurations()
-
-        project.setProperty("sdkTypes", new HashSet<SdkType>());
 
         if (!project.convention.plugins.flex) {
             GradleFxConvention pluginConvention = new GradleFxConvention(project)
@@ -52,7 +50,7 @@ abstract class AbstractGradleFxPlugin implements Plugin<Project> {
             configure(project)
         }
     }
-    
+
     protected void applyPlugins() {
         applyPlugin 'base'
     }

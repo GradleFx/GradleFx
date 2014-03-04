@@ -50,7 +50,7 @@ abstract class CommandLineInstruction {
 
         if (!linkage.usesFlex()) {
             //it's a pure AS project: we don't want to load the Flex configuration
-            if ((project.getProperties().get("sdkTypes") as Set).contains(SdkType.Flex)) {
+            if (flexConvention.sdkTypes.contains(SdkType.Flex)) {
                 reset CompilerOption.LOAD_CONFIG
             }
 

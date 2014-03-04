@@ -43,9 +43,8 @@ class CommandLineInstructionTest extends Specification {
         flexConvention.type = FlexType.swf
         flexConvention.frameworkLinkage = FrameworkLinkage.none
 
-        Set sdkTypes = project.getProperties().get("sdkTypes");
-        sdkTypes.add(SdkType.Flex);
-        sdkTypes.add(SdkType.AIR);
+        flexConvention.sdkTypes.add(SdkType.Flex);
+        flexConvention.sdkTypes.add(SdkType.AIR);
 
         when:
             commandLineInstruction.addFramework()
@@ -61,8 +60,7 @@ class CommandLineInstructionTest extends Specification {
         flexConvention.type = FlexType.swf
         flexConvention.frameworkLinkage = FrameworkLinkage.none
 
-        Set sdkTypes = project.getProperties().get("sdkTypes");
-        sdkTypes.add(SdkType.AIR);
+        flexConvention.sdkTypes.add(SdkType.AIR);
 
         when:
         commandLineInstruction.addFramework()

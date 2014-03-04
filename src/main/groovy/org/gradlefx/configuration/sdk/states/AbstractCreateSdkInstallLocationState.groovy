@@ -30,6 +30,7 @@ abstract class AbstractCreateSdkInstallLocationState implements SdkInitState {
     protected static final Logger LOG = LoggerFactory.getLogger 'gradlefx'
 
     Project project
+    GradleFxConvention flexConvention
     SdkType sdkType
     SdkInstallLocation installLocation
     String sdkFile
@@ -51,7 +52,7 @@ abstract class AbstractCreateSdkInstallLocationState implements SdkInitState {
         SdkInstallLocationFactory locationFactory = new SdkInstallLocationFactory(context.project)
         installLocation = locationFactory.createSdkLocation(sdkType)
 
-        GradleFxConvention flexConvention = (GradleFxConvention) context.project.convention.plugins.flex
+        flexConvention = (GradleFxConvention) context.project.convention.plugins.flex
         flexConvention.flexHome = installLocation.directory.absolutePath
 
         project = context.project
