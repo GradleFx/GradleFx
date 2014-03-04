@@ -18,7 +18,10 @@ package org.gradlefx.tasks.compile
 
 import org.gradle.api.Task;
 import org.gradle.api.tasks.TaskAction;
-import org.gradlefx.cli.CommandLineInstruction;
+import org.gradlefx.cli.CommandLineInstruction
+import org.gradlefx.cli.CompilerOption
+import org.gradlefx.configuration.Configurations
+import org.gradlefx.configuration.sdk.SdkType
 import org.gradlefx.tasks.Tasks
 import org.gradlefx.validators.actions.ValidateCompcTaskPropertiesAction
 
@@ -26,7 +29,7 @@ import org.gradlefx.validators.actions.ValidateCompcTaskPropertiesAction
  * Gradle task to execute Flex's Compc compiler.
  */
 class Compc extends CompileTaskDelegate {
-	
+
     public Compc(Task task, CommandLineInstruction cli) {
         super(task, cli)
         task.description = 'Compiles Flex component (*.swc) using the compc compiler'
@@ -42,7 +45,17 @@ class Compc extends CompileTaskDelegate {
         new ValidateCompcTaskPropertiesAction().execute(this)
 
         cli.setConventionArguments()
-        cli.execute task.ant, 'compc'
+
+        def taskName = ""
+
+        //if Flex and AIR are defined, Flex's mxmlc will be used
+        if (flexConvention.sdkTypes.contains(SdkType.Flex)) {
+            taskName = "compc";
+        } else if (flexConvention.sdkTypes.contains(SdkType.AIR)) {
+            taskName = "compc-cli";
+        }
+
+        cli.execute task.ant, taskName
 
         if (flexConvention.fatSwc) {
             addAsdocToSwc()

@@ -19,13 +19,15 @@ package org.gradlefx.tasks.compile
 import org.gradle.api.Task
 import org.gradle.api.artifacts.ResolveException
 import org.gradlefx.cli.CommandLineInstruction
+import org.gradlefx.configuration.Configurations
+import org.gradlefx.configuration.sdk.SdkType
 import org.gradlefx.conventions.FrameworkLinkage
 import org.gradlefx.tasks.Tasks
 import org.gradlefx.validators.actions.ValidateMxmlcTaskPropertiesAction
 import org.apache.commons.lang.StringUtils
 
 class Mxmlc extends CompileTaskDelegate {
-	
+
     public Mxmlc(Task task, CommandLineInstruction cli) {
         super(task, cli)
         task.description = 'Compiles Flex application/module (*.swf) using the mxmlc compiler'
@@ -35,23 +37,33 @@ class Mxmlc extends CompileTaskDelegate {
     void compileFlex() {
         new ValidateMxmlcTaskPropertiesAction().execute(this)
 
-		cli.setConventionArguments()
-        cli.execute task.ant, 'mxmlc'
-        
+        cli.setConventionArguments()
+
+        def taskName = ""
+
+        //if Flex and AIR are defined, Flex's mxmlc will be used
+        if (flexConvention.sdkTypes.contains(SdkType.Flex)) {
+            taskName = "mxmlc";
+        } else if (flexConvention.sdkTypes.contains(SdkType.AIR)) {
+            taskName = "mxmlc-cli";
+        }
+
+        cli.execute task.ant, taskName
+
         if (flexConvention.frameworkLinkage == FrameworkLinkage.rsl)
             copyFrameworkRSLs()
     }
-    
+
     /**
-     * Extracts the library swf's from the swc's and moves them to the build directory 
+     * Extracts the library swf's from the swc's and moves them to the build directory
      * in the location defined as failover RSL url.
      */
     private void copyFrameworkRSLs() {
         AntBuilder ant = new AntBuilder()
         ant.project.getBuildListeners()[0].setMessageOutputLevel(0)
-        
+
         def flexConfig = new XmlSlurper().parse(flexConvention.configPath)
-        
+
         flexConfig['runtime-shared-library-path'].each {
             String swcName = it['path-element'].text()
             File swc = new File("${flexConvention.flexHome}/frameworks/${swcName}")

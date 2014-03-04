@@ -20,6 +20,7 @@ import org.gradle.api.Project
 import org.gradle.api.internal.file.FileResolver
 import org.gradle.api.internal.file.BaseDirFileResolver
 import org.gradle.internal.nativeplatform.filesystem.FileSystems
+import org.gradlefx.configuration.sdk.SdkType
 import org.gradlefx.conventions.adl.AdlConvention
 
 
@@ -137,6 +138,10 @@ class GradleFxConvention {
         sdkAutoInstall  = new SdkAutoInstallConvention()
         adl             = new AdlConvention()
     }
+
+    /**
+     * Complex convention setters
+     */
 
     def htmlWrapper(Closure closure) {
         htmlWrapper.configure(closure)

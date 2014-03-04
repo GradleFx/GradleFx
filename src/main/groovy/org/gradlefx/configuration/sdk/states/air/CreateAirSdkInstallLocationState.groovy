@@ -16,44 +16,29 @@
 
 package org.gradlefx.configuration.sdk.states.air
 
+import org.gradle.api.artifacts.Configuration
 import org.gradlefx.configuration.sdk.SdkInitState
 import org.gradlefx.configuration.sdk.SdkType
 import org.gradlefx.configuration.sdk.states.AbstractCreateSdkInstallLocationState
-import org.gradle.api.internal.file.FileResolver
-import org.gradle.api.internal.file.BaseDirFileResolver
-import org.gradle.internal.nativeplatform.filesystem.FileSystems
-import org.gradle.api.artifacts.Configuration
-import org.gradlefx.configuration.sdk.SdkInitialisationContext
-import org.gradle.api.Project
 import org.gradlefx.configuration.Configurations
 
 class CreateAirSdkInstallLocationState extends AbstractCreateSdkInstallLocationState {
-
-    Project project
-
-    CreateAirSdkInstallLocationState() {
-        super(SdkType.AIR)
-    }
-
-    @Override
-    void process(SdkInitialisationContext context) {
-        super.process(context)
-
-        project = context.project
+    CreateAirSdkInstallLocationState(Boolean isInstallationRequired) {
+        super(SdkType.AIR, "lib/adt.jar", Configurations.AIRSDK_CONFIGURATION_NAME.configName(), isInstallationRequired)
     }
 
     @Override
     SdkInitState nextState() {
-        if (!isAirSdkInstalled()) {
-            Configuration flexSdkConfiguration = project.configurations.getByName(Configurations.AIRSDK_CONFIGURATION_NAME.configName())
+        //if lib/adt.jar is found from FLEX_HOME or the Gradle SDK Location, it will mark a AIR dependency flag for CommandLineInstruction, Compc, Mxmlc, ASDoc
+        if (isInstalled || isInstallationRequired) {
+            flexConvention.sdkTypes.add(SdkType.AIR);
+        }
+
+        if (!isInstalled && isInstallationRequired) {
+            Configuration flexSdkConfiguration = project.configurations.getByName(configName)
             return new InstallAirSdkState(installLocation, flexSdkConfiguration.singleFile)
         } else {
-            return null; //it's already installed
+            return null;
         }
-    }
-
-    private Boolean isAirSdkInstalled() {
-        FileResolver sdkInstallDirectoryResolver = new BaseDirFileResolver(FileSystems.default, installLocation.directory)
-        return sdkInstallDirectoryResolver.resolve("lib/adt.jar").exists()
     }
 }

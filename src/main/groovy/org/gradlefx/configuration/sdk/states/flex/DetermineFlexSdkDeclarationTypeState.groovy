@@ -19,12 +19,8 @@ package org.gradlefx.configuration.sdk.states.flex
 import org.gradlefx.configuration.Configurations
 import org.gradlefx.configuration.sdk.SdkInitState
 import org.gradlefx.configuration.sdk.states.AbstractDetermineSdkDeclarationTypeState
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 
 class DetermineFlexSdkDeclarationTypeState extends AbstractDetermineSdkDeclarationTypeState {
-
-    protected static final Logger LOG = LoggerFactory.getLogger 'gradlefx'
 
     DetermineFlexSdkDeclarationTypeState() {
         super(Configurations.FLEXSDK_CONFIGURATION_NAME)
@@ -32,13 +28,6 @@ class DetermineFlexSdkDeclarationTypeState extends AbstractDetermineSdkDeclarati
 
     @Override
     SdkInitState nextState() {
-        if(hasDeclaredSdkAsDependency) {
-            LOG.info("Using the Flex SDK dependency")
-            return new CreateFlexSdkInstallLocationState()
-        } else {
-            LOG.info("Using the flexHome convention")
-            //use the default flexHome convention in case the sdk isn't specified as a dependency.
-            return null;
-        }
+        return new CreateFlexSdkInstallLocationState(hasDeclaredSdkAsDependency)
     }
 }

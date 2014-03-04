@@ -16,7 +16,6 @@
 
 package org.gradlefx.configuration.sdk.states.air
 
-import org.gradlefx.configuration.sdk.SdkInitState
 import org.gradlefx.configuration.sdk.SdkInstallLocation
 import org.gradlefx.configuration.sdk.states.AbstractInstallSdkState
 
@@ -26,9 +25,5 @@ class InstallAirSdkState extends AbstractInstallSdkState {
 
     InstallAirSdkState(SdkInstallLocation sdkInstallLocation, File packagedSdkFile) {
         super(sdkInstallLocation, packagedSdkFile, SOME_AIR_SDK_ROOT_DIRECTORY)
-    }
-
-    SdkInitState nextState() {
-        return null //the end
     }
 }
