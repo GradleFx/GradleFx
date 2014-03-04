@@ -168,8 +168,8 @@ class Test extends DefaultTask {
 
         if (ant.properties[flexUnit.failureProperty] == "true") {
             def msg = 'Tests failed'
-	        if (flexUnit.ignoreFailures) { LOG.warn(msg) }
-	        else { throw new Exception(msg) }
+            if (flexUnit.ignoreFailures) { LOG.warn(msg) }
+            else { throw new Exception(msg) }
         }
     }
 

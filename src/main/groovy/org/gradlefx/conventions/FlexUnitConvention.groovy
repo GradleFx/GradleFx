@@ -34,7 +34,7 @@ class FlexUnitConvention {
     private Boolean haltOnFailure   = false
     private Boolean verbose         = false
     private Boolean localTrusted    = true
-	private Boolean ignoreFailures  = true
+    private Boolean ignoreFailures  = true
     private int port                = 1024
     private int buffer              = 262144
     private int timeout             = 60000 //60 seconds
@@ -120,13 +120,13 @@ class FlexUnitConvention {
         this.localTrusted = localTrusted
     }
 
-	Boolean getIgnoreFailures() {
-		return ignoreFailures
-	}
+    Boolean getIgnoreFailures() {
+        return ignoreFailures
+    }
 
-	void ignoreFailures(Boolean ignoreFailures) {
-		this.ignoreFailures = ignoreFailures
-	}
+    void ignoreFailures(Boolean ignoreFailures) {
+        this.ignoreFailures = ignoreFailures
+    }
 
     int getPort() {
         return port
