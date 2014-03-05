@@ -27,6 +27,7 @@ import org.gradlefx.cli.CompileFlexUnitCommandLineInstruction
 import org.gradlefx.configuration.FlexUnitAntTasksConfigurator
 import org.gradlefx.conventions.FlexUnitConvention
 import org.gradlefx.conventions.GradleFxConvention
+import org.gradlefx.util.PathToClassNameExtractor
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 /*
@@ -36,8 +37,9 @@ class Test extends DefaultTask {
 
     private static final Logger LOG = LoggerFactory.getLogger Test
 
-    GradleFxConvention flexConvention;
-    CommandLineInstruction cli;
+    GradleFxConvention flexConvention
+    CommandLineInstruction cli
+    PathToClassNameExtractor pathToClassNameExtractor
 
     public Test() {
         group = TaskGroups.VERIFICATION
@@ -49,6 +51,8 @@ class Test extends DefaultTask {
         cli = new CompileFlexUnitCommandLineInstruction(project);
 
         dependsOn Tasks.COPY_TEST_RESOURCES_TASK_NAME
+
+        pathToClassNameExtractor = new PathToClassNameExtractor()
     }
 
     @TaskAction
@@ -126,8 +130,8 @@ class Test extends DefaultTask {
 
             fileTree.visit { FileTreeElement includedFile ->
                 if(!includedFile.isDirectory()) {
-                    def fullyQualifiedClassname = includedFile.relativePath.pathString
-                            .replaceAll("[\\/]", ".") - '.as' - '.mxml'
+                    def fullyQualifiedClassname =
+                        pathToClassNameExtractor.convertPathStringToFullyQualifiedClassName(includedFile.relativePath.pathString)
                     paths.add(fullyQualifiedClassname)
                 }
             }
@@ -137,10 +141,9 @@ class Test extends DefaultTask {
     }
 
     def Set<String> gatherTestClassNames() {
-        //transform list of fully qualified names to a list of classnames
-        gatherFullyQualifiedTestClassNames().collect {
-            it.tokenize('.')[-1]
-        }
+        //fully qualified test class names are required because test 
+        //classes can have the same name but in different package structures.
+        gatherFullyQualifiedTestClassNames()
     }
 
     private void runTests() {
@@ -167,7 +170,9 @@ class Test extends DefaultTask {
             display:         flexUnit.display)
 
         if (ant.properties[flexUnit.failureProperty] == "true") {
-            throw new Exception("Tests failed");
+            def msg = 'Tests failed'
+            if (flexUnit.ignoreFailures) { LOG.warn(msg) }
+            else { throw new Exception(msg) }
         }
     }
 

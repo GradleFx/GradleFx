@@ -14,20 +14,16 @@
  * limitations under the License.
  */
 
-package org.gradlefx.configuration.sdk.states.flex
+package org.gradlefx.util
 
-import org.gradlefx.configuration.Configurations
-import org.gradlefx.configuration.sdk.SdkInitState
-import org.gradlefx.configuration.sdk.states.AbstractDetermineSdkDeclarationTypeState
+/*
+ * Extracts a (fully qualified) class name from a certain file path.
+ */
+class PathToClassNameExtractor {
 
-class DetermineFlexSdkDeclarationTypeState extends AbstractDetermineSdkDeclarationTypeState {
+    def fileExtensionPattern = /\.(as|mxml)$/
 
-    DetermineFlexSdkDeclarationTypeState() {
-        super(Configurations.FLEXSDK_CONFIGURATION_NAME)
-    }
-
-    @Override
-    SdkInitState nextState() {
-        return new CreateFlexSdkInstallLocationState(hasDeclaredSdkAsDependency)
+    def String convertPathStringToFullyQualifiedClassName(path) {
+        return path.replaceAll("[\\/]", ".").replaceAll(fileExtensionPattern,"")
     }
 }

@@ -16,6 +16,8 @@
 
 package org.gradlefx.conventions
 
+import org.gradlefx.configuration.sdk.SdkType
+
 import static java.util.UUID.randomUUID
 import java.io.File;
 import java.util.List;
@@ -24,6 +26,8 @@ import org.gradlefx.cli.CompilerOption;
 
 
 class GradleFxDerivedProperties {
+
+    public HashSet<SdkType> sdkTypes = new HashSet<SdkType>()
     
     /** A generated unique ID for this project */
     String uuid

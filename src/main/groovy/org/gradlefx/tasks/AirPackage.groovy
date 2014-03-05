@@ -90,6 +90,8 @@ class AirPackage extends DefaultTask {
                 }
             }
         }
+
+        compilerOptions.addAll(flexConvention.air.fileOptions)
     }
 
     private void addAirSigningOptions(List compilerOptions) {

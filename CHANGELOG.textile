@@ -1,5 +1,18 @@
 h2. GradleFx changelog
 
+h3. v0.8.2
+
+h5. Bugfixes
+* issue 117: The launchAdl task only works on windows
+* issue 118: Specifying too many files via the air.includeFileTrees option can make the AIR packager fail. The new air.fileOptions property should now allow you to specify directories.
+* issue 120: imports in FlexUnitRunner.mxml are wrong if test file as a package that starts with "as"
+* issue 123: Test phase fails if multiple test files have the same class name
+* issue 126: When using a directory path for the build dir, GradleFx only used the last directory name.
+
+h5. New Features
+* issue 127: You can now ignore test failures with the flexUnit.ignoreFailures property
+* issue 125: GradleFx now supports the standalone AIR SDK, which has the mxmlc-cli and compc-cli compilers bundled in it.
+
 h3. v0.8.1
 
 h5. Bugfixes
