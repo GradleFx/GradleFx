@@ -34,7 +34,7 @@ class FlexUnitConvention {
     private Boolean haltOnFailure   = false
     private Boolean verbose         = false
     private Boolean localTrusted    = true
-    private Boolean ignoreFailures  = true
+    private Boolean ignoreFailures  = false
     private int port                = 1024
     private int buffer              = 262144
     private int timeout             = 60000 //60 seconds
