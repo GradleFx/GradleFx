@@ -199,7 +199,6 @@ abstract class CommandLineInstruction {
                 jar: "$flexConvention.flexHome/lib/${antTask}.jar",
                 dir: "$flexConvention.flexHome/frameworks",
                 fork: true,
-                maxmemory: "1024m",
                 resultproperty: antResultProperty,
                 outputproperty: antOutputProperty
         ) {
