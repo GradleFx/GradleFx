@@ -259,7 +259,6 @@ class IdeaProject extends AbstractIDEProject {
             def parent = new Node(component, 'content', [url: "file://\$MODULE_DIR\$"])
 
             def addSrcFolder = { folder, isTest ->
-                println "adding source folder: " + folder
                 return new Node(parent, 'sourceFolder', [
                         url: "file://\$MODULE_DIR\$/" + folder,
                         isTestSource: "$isTest"
