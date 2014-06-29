@@ -43,6 +43,7 @@ class GradleFxConvention {
     public void setFlexHome(String flexHome) {
         //convert relative paths to absolute ones to prevent ANT from freaking out
         this.flexHome = flexHome ? new File(flexHome).absolutePath : null
+        this.configPath = null // Reset configPath when flexHome changes so it can be rebuilt
     }
 
     //The name you want to give to the SDK
