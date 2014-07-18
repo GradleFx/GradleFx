@@ -39,16 +39,19 @@ class LibraryCommandLineInstructionTest extends Specification {
     def "call addResources, should add all resource file locations to compiler arguments with -include-file"() {
         File level1File = new File(getClass().getResource("/stub-project-dir/stub-resource-dir/level1file.txt").toURI())
         File level2File = new File(getClass().getResource("/stub-project-dir/stub-resource-dir/level2/level2file.txt").toURI())
+        List expectedLevel1Arguments = [CompilerOption.INCLUDE_FILE.optionName, "level1file.txt", level1File.path]
+        List expectedLevel2Arguments = [CompilerOption.INCLUDE_FILE.optionName, "level2/level2file.txt", level2File.path]
 
         when:
             flexConvention.resourceDirs = ['stub-resource-dir']
             commandLineInstruction.addResources()
         then:
-            commandLineInstruction.arguments.get(0) == CompilerOption.INCLUDE_FILE.optionName
-            commandLineInstruction.arguments.get(1) == "level1file.txt"
-            commandLineInstruction.arguments.get(2) == level1File.path
-            commandLineInstruction.arguments.get(3) == CompilerOption.INCLUDE_FILE.optionName
-            commandLineInstruction.arguments.get(4) == "level2/level2file.txt"
-            commandLineInstruction.arguments.get(5) == level2File.path
+            Collections.indexOfSubList(commandLineInstruction.arguments, expectedLevel1Arguments) != -1
+            Collections.indexOfSubList(commandLineInstruction.arguments, expectedLevel2Arguments) != -1
+
+    }
+
+    def containsInOrder(List listToVerify, List expectedList) {
+        listToVerify.indexOf
     }
 }
