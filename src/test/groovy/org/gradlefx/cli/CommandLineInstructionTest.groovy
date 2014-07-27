@@ -84,4 +84,50 @@ class CommandLineInstructionTest extends Specification {
             commandLineInstruction.arguments.contains("${CompilerOption.INCLUDE_LIBRARIES.optionName}+=${domainSwc.path}")
     }
 
+    def "calling addFrameworkRsls with an Adobe Flex SDK and useDebugRSLSwfs turned on should add framework rsls to compiler arguments"() {
+        GradleFxConvention flexConvention = project.convention.plugins.flex
+        flexConvention.flexHome = './src/test/resources/adobe-flex-rsl-sdk'
+        flexConvention.type = FlexType.swf
+        flexConvention.useDebugRSLSwfs = true
+
+        when:
+        commandLineInstruction.addFrameworkRsls()
+        then:
+        commandLineInstruction.arguments.contains("${CompilerOption.RUNTIME_SHARED_LIBRARY_PATH.optionName}+=${toFullPath(flexConvention, "libs/framework.swc")},framework_4.6.0.23201.swf")
+        commandLineInstruction.arguments.contains("${CompilerOption.RUNTIME_SHARED_LIBRARY_PATH.optionName}+=${toFullPath(flexConvention, "libs/textLayout.swc")},textLayout_2.0.0.232.swf")
+        commandLineInstruction.arguments.contains("${CompilerOption.RUNTIME_SHARED_LIBRARY_PATH.optionName}+=${toFullPath(flexConvention, "libs/spark.swc")},spark_4.6.0.23201.swf")
+        commandLineInstruction.arguments.contains("${CompilerOption.RUNTIME_SHARED_LIBRARY_PATH.optionName}+=${toFullPath(flexConvention, "libs/sparkskins.swc")},sparkskins_4.6.0.23201.swf")
+        commandLineInstruction.arguments.contains("${CompilerOption.RUNTIME_SHARED_LIBRARY_PATH.optionName}+=${toFullPath(flexConvention, "libs/rpc.swc")},rpc_4.6.0.23201.swf")
+        commandLineInstruction.arguments.contains("${CompilerOption.RUNTIME_SHARED_LIBRARY_PATH.optionName}+=${toFullPath(flexConvention, "libs/charts.swc")},charts_4.6.0.23201.swf")
+        commandLineInstruction.arguments.contains("${CompilerOption.RUNTIME_SHARED_LIBRARY_PATH.optionName}+=${toFullPath(flexConvention, "libs/spark_dmv.swc")},spark_dmv_4.6.0.23201.swf")
+        commandLineInstruction.arguments.contains("${CompilerOption.RUNTIME_SHARED_LIBRARY_PATH.optionName}+=${toFullPath(flexConvention, "libs/osmf.swc")},osmf_1.0.0.16316.swf")
+        commandLineInstruction.arguments.contains("${CompilerOption.RUNTIME_SHARED_LIBRARY_PATH.optionName}+=${toFullPath(flexConvention, "libs/mx/mx.swc")},mx_4.6.0.23201.swf")
+        commandLineInstruction.arguments.contains("${CompilerOption.RUNTIME_SHARED_LIBRARY_PATH.optionName}+=${toFullPath(flexConvention, "libs/advancedgrids.swc")},advancedgrids_4.6.0.23201.swf")
+    }
+
+    def "calling addFrameworkRsls with an Apache Flex SDK and useDebugRSLSwfs turned on should add framework rsls to compiler arguments"() {
+        GradleFxConvention flexConvention = project.convention.plugins.flex
+        flexConvention.flexHome = './src/test/resources/apache-flex-rsl-sdk'
+        flexConvention.type = FlexType.swf
+        flexConvention.useDebugRSLSwfs = true
+
+        when:
+        commandLineInstruction.addFrameworkRsls()
+        then:
+        commandLineInstruction.arguments.contains("${CompilerOption.RUNTIME_SHARED_LIBRARY_PATH.optionName}+=${toFullPath(flexConvention, "libs/framework.swc")},framework_4.9.0.1425567.swf")
+        commandLineInstruction.arguments.contains("${CompilerOption.RUNTIME_SHARED_LIBRARY_PATH.optionName}+=${toFullPath(flexConvention, "libs/textLayout.swc")},textLayout_4.9.0.1425567.swf")
+        commandLineInstruction.arguments.contains("${CompilerOption.RUNTIME_SHARED_LIBRARY_PATH.optionName}+=${toFullPath(flexConvention, "libs/spark.swc")},spark_4.9.0.1425567.swf")
+        commandLineInstruction.arguments.contains("${CompilerOption.RUNTIME_SHARED_LIBRARY_PATH.optionName}+=${toFullPath(flexConvention, "libs/sparkskins.swc")},sparkskins_4.9.0.1425567.swf")
+        commandLineInstruction.arguments.contains("${CompilerOption.RUNTIME_SHARED_LIBRARY_PATH.optionName}+=${toFullPath(flexConvention, "libs/rpc.swc")},rpc_4.9.0.1425567.swf")
+        commandLineInstruction.arguments.contains("${CompilerOption.RUNTIME_SHARED_LIBRARY_PATH.optionName}+=${toFullPath(flexConvention, "libs/charts.swc")},charts_4.9.0.1425567.swf")
+        commandLineInstruction.arguments.contains("${CompilerOption.RUNTIME_SHARED_LIBRARY_PATH.optionName}+=${toFullPath(flexConvention, "libs/spark_dmv.swc")},spark_dmv_4.9.0.1425567.swf")
+        commandLineInstruction.arguments.contains("${CompilerOption.RUNTIME_SHARED_LIBRARY_PATH.optionName}+=${toFullPath(flexConvention, "libs/osmf.swc")},osmf_4.9.0.1425567.swf")
+        commandLineInstruction.arguments.contains("${CompilerOption.RUNTIME_SHARED_LIBRARY_PATH.optionName}+=${toFullPath(flexConvention, "libs/mx/mx.swc")},mx_4.9.0.1425567.swf")
+        commandLineInstruction.arguments.contains("${CompilerOption.RUNTIME_SHARED_LIBRARY_PATH.optionName}+=${toFullPath(flexConvention, "libs/advancedgrids.swc")},advancedgrids_4.9.0.1425567.swf")
+    }
+
+    def toFullPath(GradleFxConvention flexConvention, String frameworkLibPathFromFrameworkDir) {
+        new File("${flexConvention.flexHome}/frameworks/${frameworkLibPathFromFrameworkDir}").path
+    }
+
 }

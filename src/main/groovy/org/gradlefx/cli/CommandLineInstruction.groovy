@@ -16,6 +16,7 @@
 
 package org.gradlefx.cli
 
+import groovy.util.slurpersupport.NodeChild
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ResolveException
@@ -152,7 +153,7 @@ abstract class CommandLineInstruction {
             def flexConfig = new XmlSlurper().parse(flexConvention.configPath)
             flexConfig['runtime-shared-library-path'].each {
                 String swcName = "${flexConvention.flexHome}/frameworks/" + it['path-element'].text()
-                String libName = it['rsl-url'][1].text()[0..-2] + 'f'
+                String libName = findRslLibNameInRuntimeSharedLibraryPath(it)
 
                 File dependency = new File(swcName)
                 if (!dependency.exists()) {
@@ -166,6 +167,16 @@ abstract class CommandLineInstruction {
         }
     }
 
+    def String findRslLibNameInRuntimeSharedLibraryPath(NodeChild runtimeSharedLibraryPathElement) {
+        String primaryRslUrl = runtimeSharedLibraryPathElement['rsl-url'][0].text()
+        if(primaryRslUrl.endsWith(".swf")) {
+            //Apache version of the sdk detected which has no swz rsls anymore
+            primaryRslUrl
+        } else {
+            //old version of the sdk which still supported swz rsls
+            runtimeSharedLibraryPathElement['rsl-url'][1].text()[0..-2] + 'f'
+        }
+    }
 
     private void validateFilesExist(Collection<File> files, Configuration configuration) {
         Collection<File> ghosts = files.findAll { !it.exists() }
