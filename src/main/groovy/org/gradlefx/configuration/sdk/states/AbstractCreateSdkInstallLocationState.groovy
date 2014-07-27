@@ -17,9 +17,6 @@
 package org.gradlefx.configuration.sdk.states
 
 import org.gradle.api.Project
-import org.gradle.api.internal.file.BaseDirFileResolver
-import org.gradle.api.internal.file.FileResolver
-import org.gradle.internal.nativeplatform.filesystem.FileSystems
 import org.gradlefx.conventions.GradleFxConvention
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -57,7 +54,6 @@ abstract class AbstractCreateSdkInstallLocationState implements SdkInitState {
 
         project = context.project
 
-        FileResolver sdkInstallDirectoryResolver = new BaseDirFileResolver(FileSystems.default, installLocation.directory)
-        isInstalled = sdkInstallDirectoryResolver.resolve(sdkFile).exists()
+        isInstalled = new File(installLocation.directory, sdkFile).exists()
     }
 }
