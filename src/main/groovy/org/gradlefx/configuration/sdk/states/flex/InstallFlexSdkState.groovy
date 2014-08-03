@@ -38,7 +38,11 @@ class InstallFlexSdkState extends AbstractInstallSdkState {
      */
     @Override
     void downloadSdkDependencies() {
-        if (sdkRequiresAdditionalDownloads()) {
+        //Prefer the installer.xml script when present (for newest versions of the sdk)
+        if (isInstallerScriptPresent()) {
+            executeSdkInstallerScript()
+        } else if (isAdditionalDownloadScriptPresent()) {
+            //for older versions of the Apache SDK
             executeSdkDownloadsScript()
             downloadPlayerGlobalSwc()
             updateFrameworkConfigFiles()
@@ -58,12 +62,20 @@ class InstallFlexSdkState extends AbstractInstallSdkState {
         }
     }
 
-    private boolean sdkRequiresAdditionalDownloads() {
+    private boolean isAdditionalDownloadScriptPresent() {
         return getAdditionalDownloadsAntScriptFile().exists()
+    }
+
+    private boolean isInstallerScriptPresent() {
+        return getInstallerScriptFile().exists()
     }
 
     private File getAdditionalDownloadsAntScriptFile() {
         return new File(sdkInstallLocation.directory, "frameworks/downloads.xml")
+    }
+
+    private File getInstallerScriptFile() {
+        return new File(sdkInstallLocation.directory, "installer.xml")
     }
 
     private void executeSdkDownloadsScript() {
@@ -73,6 +85,17 @@ class InstallFlexSdkState extends AbstractInstallSdkState {
         ant.ant(antfile: getAdditionalDownloadsAntScriptFile(), dir: getAdditionalDownloadsAntScriptDirectory()) {
             if(!showPrompts) {
                 property(name: 'build.noprompt', value: true)
+            }
+        }
+    }
+
+    private void executeSdkInstallerScript() {
+        boolean showPrompts = ((GradleFxConvention) project.convention.plugins.flex).sdkAutoInstall.showPrompts
+
+        AntBuilder ant = new AntBuilder()
+        ant.ant(antfile: getInstallerScriptFile(), dir: sdkInstallLocation.directory) {
+            if(!showPrompts) {
+                property(name: 'installer', value: true)
             }
         }
     }
