@@ -1,5 +1,17 @@
 h2. GradleFx changelog
 
+h3. v0.8.3
+
+h5. Bugfixes
+* issue 129: GradleFx doesn't rebuild dependent modules
+* issue 130: The jvmArguments property is overwritten
+* issue 137: Reset configPath when flexHome changes so the value can be rebuilt using the correct path
+* issue 138: Using useDebugRSLSwfs=true with an Apache Flex SDK can cause the build to fail
+
+h5. New Features
+* issue 131: Support for Gradle 1.12
+* issue 139: SDK auto-install: support new installer.xml instead of build.xml for newer Apache Flex versions
+
 h3. v0.8.2
 
 h5. Bugfixes

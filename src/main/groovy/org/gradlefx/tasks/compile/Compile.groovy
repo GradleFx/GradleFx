@@ -22,6 +22,7 @@ import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.api.logging.LogLevel
 import org.gradle.api.tasks.TaskAction
 import org.gradlefx.cli.CommandLineInstruction
+import org.gradlefx.configuration.Configurations
 import org.gradlefx.conventions.FlexType
 import org.gradlefx.conventions.GradleFxConvention
 import org.gradlefx.tasks.TaskGroups
@@ -59,6 +60,15 @@ class Compile extends DefaultTask implements CompileTask {
     protected void initInputDirectory() {
         flexConvention.srcDirs.each { sourceDirectory ->
             inputs.dir sourceDirectory
+        }
+
+        //when a project dependency changes, we also want to rebuild this project
+        project.configurations.each { Configuration configuration ->
+            configuration.getDependencies().withType(ProjectDependency).each { ProjectDependency dependency ->
+                Configurations.ARTIFACT_CONFIGURATIONS.each { Configurations configValue ->
+                    inputs.files dependency.dependencyProject.configurations.getByName(configValue.configName()).allArtifacts.files
+                }
+            }
         }
     }
 

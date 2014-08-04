@@ -17,10 +17,6 @@
 package org.gradlefx.conventions
 
 import org.gradle.api.Project
-import org.gradle.api.internal.file.FileResolver
-import org.gradle.api.internal.file.BaseDirFileResolver
-import org.gradle.internal.nativeplatform.filesystem.FileSystems
-import org.gradlefx.configuration.sdk.SdkType
 import org.gradlefx.conventions.adl.AdlConvention
 
 
@@ -43,6 +39,7 @@ class GradleFxConvention {
     public void setFlexHome(String flexHome) {
         //convert relative paths to absolute ones to prevent ANT from freaking out
         this.flexHome = flexHome ? new File(flexHome).absolutePath : null
+        this.configPath = null // Reset configPath when flexHome changes so it can be rebuilt
     }
 
     //The name you want to give to the SDK
@@ -127,8 +124,7 @@ class GradleFxConvention {
     def GradleFxConvention(Project project) {
         this.project = project
 
-        FileResolver gradleFxUserHomeDirResolver = new BaseDirFileResolver(FileSystems.default, project.gradle.gradleUserHomeDir)
-        gradleFxUserHomeDir = gradleFxUserHomeDirResolver.resolve("gradleFx")
+        gradleFxUserHomeDir = new File(project.gradle.gradleUserHomeDir, "gradleFx")
 
         htmlWrapper     = new HtmlWrapperConvention(project)
         flexUnit        = new FlexUnitConvention(project)

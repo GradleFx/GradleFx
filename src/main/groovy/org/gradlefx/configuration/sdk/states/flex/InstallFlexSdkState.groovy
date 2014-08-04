@@ -16,9 +16,6 @@
 
 package org.gradlefx.configuration.sdk.states.flex
 
-import org.gradle.api.internal.file.BaseDirFileResolver
-import org.gradle.api.internal.file.FileResolver
-import org.gradle.internal.nativeplatform.filesystem.FileSystems
 import org.gradlefx.configuration.sdk.SdkInstallLocation
 import org.gradlefx.configuration.sdk.states.AbstractInstallSdkState
 import org.gradlefx.conventions.GradleFxConvention
@@ -41,7 +38,11 @@ class InstallFlexSdkState extends AbstractInstallSdkState {
      */
     @Override
     void downloadSdkDependencies() {
-        if (sdkRequiresAdditionalDownloads()) {
+        //Prefer the installer.xml script when present (for newest versions of the sdk)
+        if (isInstallerScriptPresent()) {
+            executeSdkInstallerScript()
+        } else if (isAdditionalDownloadScriptPresent()) {
+            //for older versions of the Apache SDK
             executeSdkDownloadsScript()
             downloadPlayerGlobalSwc()
             updateFrameworkConfigFiles()
@@ -53,22 +54,28 @@ class InstallFlexSdkState extends AbstractInstallSdkState {
      * path to playerglobal (it points to the playerglobal.swc installed in the flex install directory)
      */
     private void updateFrameworkConfigFiles() {
-        FileResolver sdkInstallDirectoryResolver = new BaseDirFileResolver(FileSystems.default, sdkInstallLocation.directory)
-        File ideConfigDir = sdkInstallDirectoryResolver.resolve("ide/flashbuilder/config")
-        File frameworksDir = sdkInstallDirectoryResolver.resolve("frameworks")
+        File ideConfigDir = new File(sdkInstallLocation.directory, "ide/flashbuilder/config")
+        File frameworksDir = new File(sdkInstallLocation.directory, "frameworks")
 
         new AntBuilder().copy(toDir: frameworksDir) {
             fileset(dir: ideConfigDir)
         }
     }
 
-    private boolean sdkRequiresAdditionalDownloads() {
+    private boolean isAdditionalDownloadScriptPresent() {
         return getAdditionalDownloadsAntScriptFile().exists()
     }
 
+    private boolean isInstallerScriptPresent() {
+        return getInstallerScriptFile().exists()
+    }
+
     private File getAdditionalDownloadsAntScriptFile() {
-        FileResolver sdkInstallDirectoryResolver = new BaseDirFileResolver(FileSystems.default, sdkInstallLocation.directory)
-        return sdkInstallDirectoryResolver.resolve("frameworks/downloads.xml")
+        return new File(sdkInstallLocation.directory, "frameworks/downloads.xml")
+    }
+
+    private File getInstallerScriptFile() {
+        return new File(sdkInstallLocation.directory, "installer.xml")
     }
 
     private void executeSdkDownloadsScript() {
@@ -82,16 +89,24 @@ class InstallFlexSdkState extends AbstractInstallSdkState {
         }
     }
 
+    private void executeSdkInstallerScript() {
+        boolean showPrompts = ((GradleFxConvention) project.convention.plugins.flex).sdkAutoInstall.showPrompts
+
+        AntBuilder ant = new AntBuilder()
+        ant.ant(antfile: getInstallerScriptFile(), dir: sdkInstallLocation.directory) {
+            if(!showPrompts) {
+                property(name: 'installer', value: true)
+            }
+        }
+    }
+
     private File getAdditionalDownloadsAntScriptDirectory() {
-        FileResolver sdkInstallDirectoryResolver = new BaseDirFileResolver(FileSystems.default, sdkInstallLocation.directory)
-        return sdkInstallDirectoryResolver.resolve("frameworks")
+        return new File(sdkInstallLocation.directory, "frameworks")
     }
 
     private void downloadPlayerGlobalSwc() {
-        FileResolver sdkInstallDirectoryResolver = new BaseDirFileResolver(FileSystems.default, sdkInstallLocation.directory)
-        File playerGlobalSwcInstallLocation = sdkInstallDirectoryResolver.resolve("frameworks/libs/player/11.1")
-        FileResolver playerGlobalSwcInstallLocationResolver = new BaseDirFileResolver(FileSystems.default, playerGlobalSwcInstallLocation)
-        File playerGlobalSwcInstallFile = playerGlobalSwcInstallLocationResolver.resolve("playerglobal.swc")
+        File playerGlobalSwcInstallLocation = new File(sdkInstallLocation.directory, "frameworks/libs/player/11.1")
+        File playerGlobalSwcInstallFile = new File(playerGlobalSwcInstallLocation, "playerglobal.swc")
         String playerGlobalSwcDownloadUrl = getPlayerGlobalSwcDownloadUrl()
 
         playerGlobalSwcInstallLocation.mkdirs()

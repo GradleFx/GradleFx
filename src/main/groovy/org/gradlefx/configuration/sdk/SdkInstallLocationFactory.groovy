@@ -18,9 +18,6 @@ package org.gradlefx.configuration.sdk
 
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
-import org.gradle.api.internal.file.BaseDirFileResolver
-import org.gradle.api.internal.file.FileResolver
-import org.gradle.internal.nativeplatform.filesystem.FileSystems
 import org.gradlefx.configuration.Configurations
 import org.gradlefx.conventions.GradleFxConvention
 
@@ -37,9 +34,7 @@ class SdkInstallLocationFactory {
     SdkInstallLocationFactory(Project project) {
         this.project = project
         gradleFxConvention = (GradleFxConvention) project.convention.plugins.flex
-        File gradleFxUserHomeDir = gradleFxConvention.gradleFxUserHomeDir
-        FileResolver sdksBaseDirResolver = new BaseDirFileResolver(FileSystems.default, gradleFxUserHomeDir)
-        sdksInstallBaseDirectory = sdksBaseDirResolver.resolve(SDKS_BASE_DIR_NAME)
+        sdksInstallBaseDirectory = new File(gradleFxConvention.gradleFxUserHomeDir, SDKS_BASE_DIR_NAME)
     }
 
     SdkInstallLocation createSdkLocation(SdkType sdkType) {
@@ -49,20 +44,19 @@ class SdkInstallLocationFactory {
         File flexSdkArchive = getSdkArchiveForConfiguration(Configurations.FLEXSDK_CONFIGURATION_NAME)
         File airSdkArchive = getSdkArchiveForConfiguration(Configurations.AIRSDK_CONFIGURATION_NAME)
 
-        FileResolver installBaseDirResolver = new BaseDirFileResolver(FileSystems.default, sdksInstallBaseDirectory)
         File sdkInstallDirectory = null
         if(isFlexSdkDeclaredAsDependency && isAirSdkDeclaredAsDependency) {
             //hash of both flex and air sdk archives define the directory name
             String hashedSdkDirectoryName = filesToHash(flexSdkArchive, airSdkArchive)
-            sdkInstallDirectory = installBaseDirResolver.resolve(hashedSdkDirectoryName)
+            sdkInstallDirectory = new File(sdksInstallBaseDirectory, hashedSdkDirectoryName)
         } else if (isFlexSdkDeclaredAsDependency && !isAirSdkDeclaredAsDependency) {
             //air SDK is assumed to be in the flex sdk archive
             String hashedSdkDirectoryName = filesToHash(flexSdkArchive)
-            sdkInstallDirectory = installBaseDirResolver.resolve(hashedSdkDirectoryName)
+            sdkInstallDirectory = new File(sdksInstallBaseDirectory, hashedSdkDirectoryName)
         } else if (!isFlexSdkDeclaredAsDependency && isAirSdkDeclaredAsDependency) {
             //air SDK is assumed not to be in the flex sdk archive
             String hashedSdkDirectoryName = filesToHash(airSdkArchive)
-            sdkInstallDirectory = installBaseDirResolver.resolve(hashedSdkDirectoryName)
+            sdkInstallDirectory = new File(sdksInstallBaseDirectory, hashedSdkDirectoryName)
         } else {
             //custom path
             sdkInstallDirectory = new File(gradleFxConvention.flexHome)

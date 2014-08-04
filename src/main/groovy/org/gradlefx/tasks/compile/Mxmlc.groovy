@@ -79,7 +79,7 @@ class Mxmlc extends CompileTaskDelegate {
                     )
                 }
             } else {
-                throw new ResolveException("Couldn't find the ${swc.name} file - are you sure the framework has all the files?")
+                throw new RuntimeException("Couldn't find the ${swc.name} file - are you sure the framework has all the files?")
             }
         }
     }
