@@ -258,19 +258,19 @@ class IdeaProject extends AbstractIDEProject {
 
             def parent = new Node(component, 'content', [url: "file://\$MODULE_DIR\$"])
 
-            def addSrcFolder = { isTest ->
-                return {
-                    new Node(parent, 'sourceFolder', [
-                        url: "file://\$MODULE_DIR\$/" + it,
+            def addSrcFolder = { folder, isTest ->
+                return new Node(parent, 'sourceFolder', [
+                        url: "file://\$MODULE_DIR\$/" + folder,
                         isTestSource: "$isTest"
-                ]) }
-            };
+                ])
+            }
 
-            flexConvention.srcDirs.each addSrcFolder(false)
-            flexConvention.resourceDirs.each addSrcFolder(false)
+            flexConvention.srcDirs.each { addSrcFolder(it, false) }
+            flexConvention.resourceDirs.each { addSrcFolder(it, false) }
+            addSrcFolder(flexConvention.localeDir, false)
 
-            flexConvention.testDirs.each addSrcFolder(true)
-            flexConvention.testResourceDirs.each addSrcFolder(true)
+            flexConvention.testDirs.each { addSrcFolder(it, true) }
+            flexConvention.testResourceDirs.each { addSrcFolder(it, true) }
         }
     }
 }
