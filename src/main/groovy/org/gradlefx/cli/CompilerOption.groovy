@@ -1345,7 +1345,14 @@ public enum CompilerOption {
      * type: string
      * default: API documentation
      */
-    WINDOW_TITLE("-window-title")
+    WINDOW_TITLE("-window-title"),
+
+    /**
+     * (iOS only, AIR 3.4 and higher) Enables the telemetry-based ActionScript sampler in iOS applications.
+     * Using this flag lets you profile the application with Adobe Scout.
+     * Note that using this flag will have a slight performance impact, so do not use it for production applications.
+     */
+    IOS_SAMPLER("-sampler")
     
 
     private String optionName;
