@@ -14,7 +14,7 @@
 * limitations under the License.
 */
 
-package org.gradlefx.ide.tasks
+package org.gradlefx.ide.tasks.idea
 
 import org.apache.commons.io.FilenameUtils
 import org.gradle.api.artifacts.Dependency
@@ -25,6 +25,8 @@ import org.gradle.api.internal.artifacts.dependencies.DefaultSelfResolvingDepend
 import org.gradlefx.configuration.Configurations
 import org.gradlefx.conventions.FlexType
 import org.gradlefx.conventions.FrameworkLinkage
+import org.gradlefx.ide.tasks.AbstractIDEProject
+
 import static java.util.UUID.randomUUID
 
 class IdeaProject extends AbstractIDEProject {

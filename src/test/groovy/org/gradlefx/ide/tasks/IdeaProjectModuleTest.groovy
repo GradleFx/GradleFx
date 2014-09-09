@@ -22,6 +22,7 @@ import org.gradlefx.configuration.Configurations
 import org.gradlefx.conventions.FlexType
 import org.gradlefx.conventions.FrameworkLinkage
 import org.gradlefx.conventions.GradleFxConvention
+import org.gradlefx.ide.tasks.idea.IdeaProject
 import spock.lang.Specification
 
 /**
