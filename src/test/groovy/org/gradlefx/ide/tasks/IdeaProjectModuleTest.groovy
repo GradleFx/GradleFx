@@ -22,6 +22,7 @@ import org.gradlefx.configuration.Configurations
 import org.gradlefx.conventions.FlexType
 import org.gradlefx.conventions.FrameworkLinkage
 import org.gradlefx.conventions.GradleFxConvention
+import org.gradlefx.ide.tasks.idea.IdeaProject
 import spock.lang.Specification
 
 /**
@@ -45,6 +46,30 @@ class IdeaProjectModuleTest extends Specification {
     String testResourceDir = './src/test/resources/'
 
     def setup() {
+    }
+
+    def "test generation idea project directory"() {
+        given:
+        setupProjectWithName "test"
+        when:
+        ideaProjectTask.createProjectConfig()
+        then:
+        File modulesFile = project.file(".idea/modules.xml")
+        modulesFile.exists()
+    }
+
+    def "test module is added"() {
+        given:
+        setupProjectWithName "test"
+        when:
+        ideaProjectTask.createProjectConfig()
+        then:
+        File modulesFile = project.file(".idea/modules.xml")
+        def xml = new XmlParser().parse(modulesFile);
+
+        String filepath = xml.component.modules.module.'@filepath'.text()
+        String expectedFilepath = "\$PROJECT_DIR\$/${project.name}.iml"
+        filepath.equals(expectedFilepath)
     }
 
     def "test generation empty project"() {

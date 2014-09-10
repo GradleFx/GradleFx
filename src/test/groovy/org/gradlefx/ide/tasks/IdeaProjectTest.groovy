@@ -19,13 +19,11 @@ import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 import org.gradlefx.configuration.Configurations
 import org.gradlefx.conventions.GradleFxConvention
-import org.junit.Before
+import org.gradlefx.ide.tasks.idea.IdeaProject
 import org.junit.Test
 
 import static junit.framework.Assert.assertFalse
 import static junit.framework.Assert.assertTrue
-import static org.hamcrest.MatcherAssert.assertThat
-import static org.hamcrest.core.StringContains.containsString
 
 class IdeaProjectTest {
 
