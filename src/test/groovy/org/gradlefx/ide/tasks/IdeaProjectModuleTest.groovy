@@ -48,6 +48,30 @@ class IdeaProjectModuleTest extends Specification {
     def setup() {
     }
 
+    def "test generation idea project directory"() {
+        given:
+        setupProjectWithName "test"
+        when:
+        ideaProjectTask.createProjectConfig()
+        then:
+        File modulesFile = project.file(".idea/modules.xml")
+        modulesFile.exists()
+    }
+
+    def "test module is added"() {
+        given:
+        setupProjectWithName "test"
+        when:
+        ideaProjectTask.createProjectConfig()
+        then:
+        File modulesFile = project.file(".idea/modules.xml")
+        def xml = new XmlParser().parse(modulesFile);
+
+        String filepath = xml.component.modules.module.'@filepath'.text()
+        String expectedFilepath = "\$PROJECT_DIR\$/${project.name}.iml"
+        filepath.equals(expectedFilepath)
+    }
+
     def "test generation empty project"() {
         given:
             setupProjectWithName "test"

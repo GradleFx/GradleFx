@@ -46,13 +46,32 @@ class IdeaProject extends AbstractIDEProject {
 
     @Override
     protected void createProjectConfig() {
+        createIdeaDirectory();
         imlFilename = project.name + ".iml"
         createImlFile()
+        addModule()
         updateConfiguration()
         addSourceDirs()
         addDependencies()
         updateFlexSdk()
         addCompilerOptions()
+    }
+
+    def addModule() {
+        editXmlFile ".idea/modules.xml", { xml ->
+            def moduleManager = xml.component.find { it.'@name' == 'ProjectModuleManager' }
+            def modules = new Node(moduleManager, "modules")
+            String imlFile = "${project.name}.iml"
+            new Node(modules, "module", ['fileurl':"file://\$PROJECT_DIR\$/${imlFile}", 'filepath':"\$PROJECT_DIR\$/${imlFile}"])
+        }
+    }
+
+    def createIdeaDirectory() {
+        project.file(".idea").mkdir()
+        ["modules.xml"].each { entry ->
+            InputStream stream = getClass().getResourceAsStream("/templates/idea/template-${entry}")
+            writeContent stream, project.file(".idea/${entry}"), true
+        }
     }
 
     def addCompilerOptions() {
