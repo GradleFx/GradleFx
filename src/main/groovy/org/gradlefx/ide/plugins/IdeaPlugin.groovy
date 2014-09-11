@@ -16,8 +16,8 @@
 
 package org.gradlefx.ide.plugins
 
-import org.gradlefx.ide.tasks.IdeaClean
-import org.gradlefx.ide.tasks.IdeaProject
+import org.gradlefx.ide.tasks.idea.IdeaClean
+import org.gradlefx.ide.tasks.idea.IdeaProject
 import org.gradlefx.plugins.AbstractGradleFxPlugin
 
 class IdeaPlugin extends AbstractGradleFxPlugin {

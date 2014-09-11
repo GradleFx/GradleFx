@@ -14,7 +14,7 @@
 * limitations under the License.
 */
 
-package org.gradlefx.ide.tasks
+package org.gradlefx.ide.tasks.idea
 
 import org.gradle.api.Project
 

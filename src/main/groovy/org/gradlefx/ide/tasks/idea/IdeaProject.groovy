@@ -14,7 +14,7 @@
 * limitations under the License.
 */
 
-package org.gradlefx.ide.tasks
+package org.gradlefx.ide.tasks.idea
 
 import org.apache.commons.io.FilenameUtils
 import org.gradle.api.artifacts.Dependency
@@ -25,6 +25,8 @@ import org.gradle.api.internal.artifacts.dependencies.DefaultSelfResolvingDepend
 import org.gradlefx.configuration.Configurations
 import org.gradlefx.conventions.FlexType
 import org.gradlefx.conventions.FrameworkLinkage
+import org.gradlefx.ide.tasks.AbstractIDEProject
+
 import static java.util.UUID.randomUUID
 
 class IdeaProject extends AbstractIDEProject {
@@ -44,13 +46,32 @@ class IdeaProject extends AbstractIDEProject {
 
     @Override
     protected void createProjectConfig() {
+        createIdeaDirectory();
         imlFilename = project.name + ".iml"
         createImlFile()
+        addModule()
         updateConfiguration()
         addSourceDirs()
         addDependencies()
         updateFlexSdk()
         addCompilerOptions()
+    }
+
+    def addModule() {
+        editXmlFile ".idea/modules.xml", { xml ->
+            def moduleManager = xml.component.find { it.'@name' == 'ProjectModuleManager' }
+            def modules = new Node(moduleManager, "modules")
+            String imlFile = "${project.name}.iml"
+            new Node(modules, "module", ['fileurl':"file://\$PROJECT_DIR\$/${imlFile}", 'filepath':"\$PROJECT_DIR\$/${imlFile}"])
+        }
+    }
+
+    def createIdeaDirectory() {
+        project.file(".idea").mkdir()
+        ["modules.xml"].each { entry ->
+            InputStream stream = getClass().getResourceAsStream("/templates/idea/template-${entry}")
+            writeContent stream, project.file(".idea/${entry}"), true
+        }
     }
 
     def addCompilerOptions() {
