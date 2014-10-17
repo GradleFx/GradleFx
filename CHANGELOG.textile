@@ -1,5 +1,12 @@
 h2. GradleFx changelog
 
+h3. v1.0
+
+h5. New Features
+* issue 143: Add support for pure ActionScript test runner
+* issue 144: 'sampler' convention property has been added to enable the telemetry-based ActionScript sampler in iOS applications
+* issue 145: Adding support for Gradle 2.1
+
 h3. v0.8.3
 
 h5. Bugfixes

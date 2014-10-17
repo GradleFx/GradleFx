@@ -42,6 +42,11 @@ class ASDoc extends DefaultTask {
         ].each {
             addDependsOnTaskInOtherProjects Tasks.COMPILE_TASK_NAME, it
         }
+
+        project.afterEvaluate {
+            initInputDirectory()
+            initOutputDirectory()
+        }
     }
 
     /**
@@ -57,22 +62,19 @@ class ASDoc extends DefaultTask {
         dependsOn(configuration.getTaskDependencyFromProjectDependency(true, otherProjectTaskName));
     }
 
-    private void initInputDirectory() {
+    protected void initInputDirectory() {
         flexConvention.srcDirs.each { sourceDirectory ->
             inputs.dir sourceDirectory
         }
     }
 
-    private void initOutputDirectory() {
+    protected void initOutputDirectory() {
         outputs.dir flexConvention.asdoc.outputDir
     }
 
     @TaskAction
     public void generateAsDoc() {
         if (hasDocSources()) {
-            initInputDirectory()
-            initOutputDirectory()
-
             CommandLineInstruction cli = new ASDocCommandLineInstruction(project)
             cli.setConventionArguments()
 

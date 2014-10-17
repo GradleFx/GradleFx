@@ -102,12 +102,17 @@ class AIRMobileConvention  {
      */
     private String simulatorTargetDevice
 
+    /**
+     * Specifies whether -sampler option is used at the packaging phase
+     */
+    private Boolean sampler
 
     public AIRMobileConvention(Project project) {
         target = 'apk'
         simulatorTarget = 'apk'
         outputExtension = 'apk'
         platform = 'android'
+        sampler = false
     }
 
     void configure(Closure closure) {
@@ -198,5 +203,11 @@ class AIRMobileConvention  {
         this.simulatorPlatformSdk = platformSdk
     }
 
+    Boolean getSampler() {
+        return sampler
+    }
 
+    void sampler(Boolean sampler) {
+        this.sampler = sampler
+    }
 }

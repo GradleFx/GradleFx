@@ -14,12 +14,13 @@
 * limitations under the License.
 */
 
-package org.gradlefx.ide.tasks
+package org.gradlefx.ide.tasks.idea
 
 import groovy.io.FileType
 import org.gradle.api.DefaultTask
 import org.gradle.api.logging.LogLevel
 import org.gradle.api.tasks.TaskAction
+import org.gradlefx.ide.tasks.CleanTask
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
