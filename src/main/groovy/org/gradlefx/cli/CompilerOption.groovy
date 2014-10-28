@@ -1352,8 +1352,17 @@ public enum CompilerOption {
      * Using this flag lets you profile the application with Adobe Scout.
      * Note that using this flag will have a slight performance impact, so do not use it for production applications.
      */
-    IOS_SAMPLER("-sampler")
-    
+    IOS_SAMPLER("-sampler"),
+
+    /**
+     * Enables to using the new non legacy compiler for packaging IPA
+     *
+     * target platform: IOS
+     * version: AIR 14 and higher
+     *
+     */
+    USE_LEGACY_COMPILER("-useLegacyAOT")
+
 
     private String optionName;
 
