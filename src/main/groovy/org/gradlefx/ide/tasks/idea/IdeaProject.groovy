@@ -244,9 +244,13 @@ class IdeaProject extends AbstractIDEProject {
                         configuration.'packaging-ios'.@'enabled' = true
 
                         def attrs = ['keystore-path':"\$MODULE_DIR\$/${FilenameUtils.separatorsToUnix(project.relativePath(flexConvention.air.keystore))}",
-                                     'use-temp-certificate':false,
-                                     sdk:flexConvention.airMobile.platformSdk
+                                     'use-temp-certificate':false
                                     ];
+                        if (flexConvention.airMobile.platformSdk != null)
+                        {
+                            attrs['sdk'] = flexConvention.airMobile.platformSdk
+                        }
+
                         if (flexConvention.airMobile.provisioningProfile != null) {
                             attrs['provisioning-profile-path']  = "\$MODULE_DIR\$/${FilenameUtils.separatorsToUnix(project.relativePath(flexConvention.airMobile.provisioningProfile))}"
                         }
