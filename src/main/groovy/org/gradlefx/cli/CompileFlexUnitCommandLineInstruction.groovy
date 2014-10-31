@@ -34,12 +34,22 @@ class CompileFlexUnitCommandLineInstruction extends ApplicationCommandLineInstru
 
     @Override
     public void addMainClass() {
-        File mainClassFile = project.file("${flexConvention.flexUnit.toDir}/FlexUnitRunner.mxml")
+        File mainClassFile = project.file("${flexConvention.flexUnit.toDir}/${getTemplateFileName()}")
         LOG.warn("test main class file: " + mainClassFile.absolutePath)
         if (!mainClassFile.isAbsolute()) {
             mainClassFile = findFile flexConvention.srcDirs, flexConvention.mainClassPath
         }
         add mainClassFile.absolutePath
+    }
+
+    private String getTemplateFileName() {
+        def name
+        if(flexConvention.flexUnit.template != null && flexConvention.flexUnit.template.endsWith(".as")) {
+            name = "FlexUnitRunner.as"
+        } else {
+            name = "FlexUnitRunner.mxml"
+        }
+        return name
     }
 
     @Override
