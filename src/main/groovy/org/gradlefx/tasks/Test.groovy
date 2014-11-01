@@ -165,6 +165,13 @@ class Test extends DefaultTask {
         // you can't write to a directory that doesn't exist
         if (!reportDir.exists()) reportDir.mkdirs()
 
+        if (flexUnit.command == null) {
+            throw new Exception(
+                "The Flash player executable is not found. Either set the FLASH_PLAYER_EXE " +
+                "environment variable or set the 'flexUnit.command' property."
+            )
+        }
+
         ant.flexunit (
             swf:             "${flexConvention.flexUnit.toDir}/${flexConvention.flexUnit.swfName}",
             player:          flexUnit.player,

@@ -129,9 +129,9 @@ abstract class CommandLineInstruction {
      * @param compilerOption
      */
     protected void addLibraries(Set<File> libraryFiles, Configuration configuration, CompilerOption compilerOption) {
-        //only add swc dependencies, no use in adding pom dependencies
+        //only add swc or ane dependencies, no use in adding pom dependencies
         Collection<File> files = libraryFiles.findAll {
-            it.name.endsWith(FlexType.swc.toString()) || it.isDirectory()
+            it.name.endsWith(FlexType.swc.toString()) || it.name.endsWith(".ane") || it.isDirectory()
         }
         validateFilesExist files, configuration
 

@@ -20,6 +20,7 @@ import org.apache.commons.io.FilenameUtils
 import org.gradle.api.artifacts.Dependency
 import org.gradle.api.file.ConfigurableFileTree
 import org.gradle.api.file.FileTreeElement
+import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDependency
 import org.gradle.api.internal.artifacts.dependencies.DefaultProjectDependency
 import org.gradle.api.internal.artifacts.dependencies.DefaultSelfResolvingDependency
 import org.gradlefx.configuration.Configurations
@@ -135,23 +136,32 @@ class IdeaProject extends AbstractIDEProject {
                     } else if (dependency instanceof DefaultSelfResolvingDependency) {
                         def selfDependency = dependency as DefaultSelfResolvingDependency;
                         selfDependency.source.files.each { file ->
-                            def String uuid = file.name
-                            def entry = new Node(entries, 'entry', ['library-id': uuid])
-                            new Node(entry, 'dependency', ['linkage':configTypeToLinkageType(configType)])
-
-                            def orderEntry = new Node(rootMgr, 'orderEntry', [type:"module-library"]);
-                            def libNode = new Node(orderEntry, 'library', [name:file.name, type:"flex"])
-                            new Node(libNode, 'properties', [id:uuid])
-                            def classes = new Node(libNode, 'CLASSES')
-                            new Node(classes, 'root', [url:"jar://\$MODULE_DIR\$/${FilenameUtils.separatorsToUnix(project.relativePath(file))}!/"]);
-                            new Node(libNode, 'JAVADOC');
-                            new Node(libNode, 'SOURCES');
+                            generateDependencyNode(file, entries, rootMgr, configType);
+                        }
+                    } else if (dependency instanceof DefaultExternalModuleDependency) {
+                        DefaultExternalModuleDependency externalDependency = dependency as DefaultExternalModuleDependency;
+                        def files = project.configurations[configType].files(externalDependency);
+                        files.each { file ->
+                            generateDependencyNode(file, entries, rootMgr, configType);
                         }
                     }
                 }
-
             }
         }
+    }
+
+    def generateDependencyNode(File file, Node entries, Node rootMgr, String configType) {
+        def String uuid = file.name
+        def entry = new Node(entries, 'entry', ['library-id': uuid])
+        new Node(entry, 'dependency', ['linkage':configTypeToLinkageType(configType)])
+
+        def orderEntry = new Node(rootMgr, 'orderEntry', [type:"module-library"]);
+        def libNode = new Node(orderEntry, 'library', [name:file.name, type:"flex"])
+        new Node(libNode, 'properties', [id:uuid])
+        def classes = new Node(libNode, 'CLASSES')
+        new Node(classes, 'root', [url:"jar://\$MODULE_DIR\$/${FilenameUtils.separatorsToUnix(project.relativePath(file))}!/"]);
+        new Node(libNode, 'JAVADOC');
+        new Node(libNode, 'SOURCES');
     }
 
     def configTypeToLinkageType(String configType) {
