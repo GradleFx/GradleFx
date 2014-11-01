@@ -107,6 +107,11 @@ class AIRMobileConvention  {
      */
     private Boolean sampler
 
+    /**
+     * Specifies whether -useLegacyAOT with flag 'no' option is used at the packaging phase
+     */
+    private Boolean nonLegacyCompiler
+
     public AIRMobileConvention(Project project) {
         target = 'apk'
         simulatorTarget = 'apk'
@@ -209,5 +214,13 @@ class AIRMobileConvention  {
 
     void sampler(Boolean sampler) {
         this.sampler = sampler
+    }
+
+    Boolean getNonLegacyCompiler() {
+        return nonLegacyCompiler
+    }
+
+    void setNonLegacyCompiler(Boolean nonLegacyCompiler) {
+        this.nonLegacyCompiler = nonLegacyCompiler
     }
 }
