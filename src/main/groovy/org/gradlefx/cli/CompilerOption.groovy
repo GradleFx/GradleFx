@@ -1127,10 +1127,11 @@ public enum CompilerOption {
     STOREPASS("-storepass"),
 
     /**
-     * DEPRECATED. This compiler option is added automatically to AIR builds.
+     * Deprecated. This option is added automatically to AIR mobile builds if they have native extension dependencies.
      * -extdir dir The value of dir is the name of a directory to search for native extensions (ANE files).
      * Specify either an absolute path, or a path relative to the current directory. You can specify the -extdir option multiple times.
      */
+    @Deprecated
     EXTDIR("-extdir"),
 
     /**
