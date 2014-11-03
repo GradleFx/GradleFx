@@ -86,13 +86,18 @@ class BaseAirMobilePackage extends AdtTask {
             addArg(flexConvention.airMobile.extensionDir)
         }
 
-        project.configurations.each {
-            Set<File> files = it.files;
+        HashSet<String> aneFolders = new HashSet<String>()
+        project.configurations.getAsMap().each {
+            Set<File> files = it.value.files
             files.each {
                 if (it.name.endsWith(".ane"))
                 {
-                    addArg CompilerOption.EXTDIR.optionName
-                    addArg it.getParent()
+                    String folder = it.getParent()
+                    if ( !aneFolders.contains(folder) ) {
+                        aneFolders.add(it.getParent())
+                        addArg CompilerOption.EXTDIR.optionName
+                        addArg folder
+                    }
                 }
             }
         }
