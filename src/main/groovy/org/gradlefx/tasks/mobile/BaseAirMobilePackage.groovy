@@ -86,6 +86,17 @@ class BaseAirMobilePackage extends AdtTask {
             addArg(flexConvention.airMobile.extensionDir)
         }
 
+        project.configurations.each {
+            Set<File> files = it.files;
+            files.each {
+                if (it.name.endsWith(".ane"))
+                {
+                    addArg CompilerOption.EXTDIR.optionName
+                    addArg it.getParent()
+                }
+            }
+        }
+
         addPlatformSdkParams()
 
         super.launch()
