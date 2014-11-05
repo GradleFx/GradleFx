@@ -23,6 +23,7 @@ import org.gradle.api.file.FileTreeElement
 import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDependency
 import org.gradle.api.internal.artifacts.dependencies.DefaultProjectDependency
 import org.gradle.api.internal.artifacts.dependencies.DefaultSelfResolvingDependency
+import org.gradlefx.cli.CompilerOption
 import org.gradlefx.configuration.Configurations
 import org.gradlefx.conventions.FlexType
 import org.gradlefx.conventions.FrameworkLinkage
@@ -278,10 +279,27 @@ class IdeaProject extends AbstractIDEProject {
 
     private void addFilesInPackage(parent) {
         def filesParent = new Node(parent, 'files-to-package', [])
+
         flexConvention.air.includeFileTrees.each { ConfigurableFileTree fileTree ->
             fileTree.visit { FileTreeElement file ->
                 if (!file.isDirectory()) {
                     new Node(filesParent, 'FilePathAndPathInPackage', ['file-path':file.file.absoluteFile, 'path-in-package':file.relativePath.toString()])
+                }
+            }
+        }
+
+        List<String> opts = flexConvention.air.fileOptions
+        if (opts) {
+            File currentDir = project.rootDir
+            String currDir = ''
+            for (int i; i<opts.size(); i++) {
+                if (opts[i] == CompilerOption.CHANGE_DIRECTORY.optionName) {
+                    i++
+                    currentDir = new File(project.rootDir, opts[i])
+                    currDir = opts[i]
+                } else {
+                    File toAdd = new File(currentDir, opts[i])
+                    new Node(filesParent, 'FilePathAndPathInPackage', ['file-path':'$MODULE_DIR$/'+currDir+'/'+opts[i], 'path-in-package':opts[i]])
                 }
             }
         }
