@@ -290,15 +290,12 @@ class IdeaProject extends AbstractIDEProject {
 
         List<String> opts = flexConvention.air.fileOptions
         if (opts) {
-            File currentDir = project.rootDir
             String currDir = ''
             for (int i; i<opts.size(); i++) {
                 if (opts[i] == CompilerOption.CHANGE_DIRECTORY.optionName) {
                     i++
-                    currentDir = new File(project.rootDir, opts[i])
                     currDir = opts[i]
                 } else {
-                    File toAdd = new File(currentDir, opts[i])
                     new Node(filesParent, 'FilePathAndPathInPackage', ['file-path':'$MODULE_DIR$/'+currDir+'/'+opts[i], 'path-in-package':opts[i]])
                 }
             }
