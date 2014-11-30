@@ -59,6 +59,7 @@ class TemplateUtil {
                              .replaceAll(/\$\{artifact\}/, artifact())
                              .replaceAll(/\$\{useDebugRSLSwfs\}/, {flexConvention.useDebugRSLSwfs.toString()})
                              .replaceAll(/\$\{useApolloConfig\}/, {useApolloConfig})
+                             .replaceAll(/\$\{buildDir\}/, {project.buildDir.name})
            }
        }
    }
