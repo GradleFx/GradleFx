@@ -20,7 +20,6 @@ import groovy.util.slurpersupport.NodeChild
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ResolveException
-import org.gradlefx.configuration.Configurations
 import org.gradlefx.configuration.sdk.SdkType
 import org.gradlefx.conventions.FlexType
 import org.gradlefx.conventions.FrameworkLinkage
@@ -45,32 +44,51 @@ abstract class CommandLineInstruction {
 
     abstract public void setConventionArguments()
 
+    public void linkPlayerGlobalIfNeeded() {
+        // no need to add it if its a Flex project, it will be added from flex-config.xml.
+        if (!flexConvention.linkPlayerGlobal || flexConvention.frameworkLinkage != FrameworkLinkage.none) {
+            return
+        }
+        if(flexConvention.type.isAir()) {
+            // We cannot simply load air-config.xml, because it sets Flex SDK libraries too if it was bundled with Flex
+            def airConfig = new XmlSlurper().parse("$flexConvention.flexHome/frameworks/air-config.xml")
+            def externalAIRLibs = airConfig['compiler']['external-library-path']['path-element']
+            addAll CompilerOption.EXTERNAL_LIBRARY_PATH, externalAIRLibs.collect{"$flexConvention.flexHome/frameworks/$it"}
+
+            def mergedAIRLibs = airConfig['compiler']['library-path']['path-element']
+            addAll CompilerOption.LIBRARY_PATH, mergedAIRLibs.collect{"$flexConvention.flexHome/frameworks/$it"}
+        } else {
+            def flexConfig = new XmlSlurper().parse(flexConvention.configPath)
+            String playerGlobalVersion = flexConfig['target-player'].toString()
+            add CompilerOption.EXTERNAL_LIBRARY_PATH, "$flexConvention.flexHome/frameworks/libs/player/$playerGlobalVersion"
+        }
+    }
+
     /** Adds the framework libraries to the arguments based on the {@link FrameworkLinkage} */
     public void addFramework() {
         FrameworkLinkage linkage = flexConvention.frameworkLinkage
 
-        if (!linkage.usesFlex()) {
-            //it's a pure AS project: we don't want to load the Flex configuration
-            if (flexConvention.sdkTypes.contains(SdkType.Flex)) {
+        if (linkage == FrameworkLinkage.none) {
+            if (!flexConvention.type.isAir()) {
+                // The flash compiler (mxmlc) automatically loads flex-config.xml, which contains the Flex SWCs and playerglobal.swc,
+                // to prevent this we set the load-config parameter explicitly to nothing.
                 reset CompilerOption.LOAD_CONFIG
             }
-
-            //but we need to add playerglobal.swc to the build path explicitly
-            def flexConfig = new XmlSlurper().parse(flexConvention.configPath)
-            def relativeSwcPaths = flexConfig['compiler']['external-library-path']['path-element']
-
-            def swcPathNode = relativeSwcPaths.find { it.text().contains 'playerglobal.swc' }
-            add CompilerOption.EXTERNAL_LIBRARY_PATH, "$flexConvention.flexHome/frameworks/${swcPathNode.text()}"
+            return
         }
-        //when FrameworkLinkage is the default for this compiler and it's not a swc, we don't have to do anything
-        else if (!linkage.isCompilerDefault(flexConvention.type) || (flexConvention.type == FlexType.swc)) {
-            //remove RSL's defined in config.xml
+
+        // The AIR compiler (mxmlc-cli) does not load flex-config.xml automatically, thus we add it here
+        if (flexConvention.type.isAir()) {
+            add CompilerOption.CONFIGNAME, flexConvention.type.configName
+        }
+
+        if (!linkage.isCompilerDefault(flexConvention.type) || (flexConvention.type == FlexType.swc)) {
+            //remove RSL's defined in flex-config.xml
             reset CompilerOption.RUNTIME_SHARED_LIBRARY_PATH
 
-            //set the RSL's defined in config.xml on the library path
+            //set the RSL's defined in flex-config.xml on the library path
             def flexConfig = new XmlSlurper().parse(flexConvention.configPath)
             def relativeSwcPaths = flexConfig['runtime-shared-library-path']['path-element']
-
             Collection<String> paths = relativeSwcPaths.collect { "$flexConvention.flexHome/frameworks/$it" }
             addAll linkage.getCompilerOption(), paths
         }
@@ -205,26 +223,30 @@ abstract class CommandLineInstruction {
 
         String antResultProperty = antTask + 'Result'
         String antOutputProperty = antTask + 'Output'
+        String antErrorProperty = antTask + 'Error'
 
         ant.java(
                 jar: "$flexConvention.flexHome/lib/${antTask}.jar",
                 dir: "$flexConvention.flexHome/frameworks",
                 fork: true,
                 resultproperty: antResultProperty,
-                outputproperty: antOutputProperty
-        ) {
+                outputproperty: antOutputProperty,
+                errorproperty: antErrorProperty,
+                failOnError: false
+        )
+        {
             flexConvention.jvmArguments.each {
                 jvmarg(value: it)
             }
-
             arguments.each {
                 arg(value: it)
             }
         }
-
         String output = ant.properties[antOutputProperty]
+        String errorStr =  ant.properties[antErrorProperty]
+
         if (ant.properties[antResultProperty] == '0') LOG.info "[$antTask] $output"
-        else handleError antTask, output
+        else handleError antTask, output + errorStr
     }
 
     protected void handleError(String antTask, String message) {

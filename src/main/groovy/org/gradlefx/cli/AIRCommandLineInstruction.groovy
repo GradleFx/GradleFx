@@ -25,10 +25,4 @@ class AIRCommandLineInstruction extends ApplicationCommandLineInstruction {
         super(project)
     }
     
-    @Override
-    public void addPlayerLibrary() {
-        String libPath = "${flexConvention.flexHome}/frameworks/libs/air/airglobal.swc"
-        add CompilerOption.EXTERNAL_LIBRARY_PATH, libPath
-    }
-    
 }

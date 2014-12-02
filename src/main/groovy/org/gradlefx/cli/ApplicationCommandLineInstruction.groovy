@@ -28,8 +28,7 @@ class ApplicationCommandLineInstruction extends CommandLineInstruction {
     
     @Override
     public void setConventionArguments() {
-        addConfigFile()
-        
+        linkPlayerGlobalIfNeeded()
         //add framework
         addFramework()
 
@@ -48,10 +47,6 @@ class ApplicationCommandLineInstruction extends CommandLineInstruction {
         addAdditionalCompilerOptions()
         addOutput()
         addMainClass()
-    }
-    
-    public void addConfigFile() {
-        set CompilerOption.CONFIGNAME, flexConvention.type.configName
     }
     
     @Override
