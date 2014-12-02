@@ -15,7 +15,6 @@
  */
 package org.gradlefx.tasks.mobile
 
-import org.apache.commons.io.FileUtils
 import org.apache.commons.lang.StringUtils
 import org.gradle.api.file.ConfigurableFileTree
 import org.gradle.api.file.FileTreeElement
@@ -65,16 +64,7 @@ class BaseAirMobilePackage extends AdtTask {
         addArgs outputPath
         addArgs project.file(flexConvention.air.applicationDescriptor)
 
-        addArg CompilerOption.CHANGE_DIRECTORY.optionName
-        addArg project.buildDir.path
-        if (flexConvention.air.mainSwfDir)
-        {
-            File swfDir = new File(project.buildDir, flexConvention.air.mainSwfDir);
-            FileUtils.copyFileToDirectory(new File("${project.buildDir.path}/${flexConvention.output}.${FlexType.swf}"),swfDir)
-            addArg "${flexConvention.air.mainSwfDir}/${flexConvention.output}.${FlexType.swf}"
-        } else {
-            addArg "${flexConvention.output}.${FlexType.swf}"
-        }
+        addArgs "${project.buildDir.name}/${flexConvention.output}.${FlexType.swf}"
 
         flexConvention.air.includeFileTrees.each { ConfigurableFileTree fileTree ->
             addArgs CompilerOption.CHANGE_DIRECTORY.optionName
