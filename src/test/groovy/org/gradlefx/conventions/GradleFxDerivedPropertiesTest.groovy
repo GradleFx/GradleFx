@@ -18,6 +18,7 @@ package org.gradlefx.conventions
 
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
+import org.gradlefx.configuration.sdk.SdkType
 import org.gradlefx.tasks.AirPackage
 import spock.lang.Specification
 import org.gradlefx.cli.CompilerOption;
@@ -39,6 +40,7 @@ class GradleFxDerivedPropertiesTest extends Specification {
     def "default values derived from mainClass are: Main/Main.mxml/Main/[no package]"() {
         when:
             flexConvention.type = FlexType.swf
+            flexConvention.sdkTypes.add(SdkType.Flex)
             project.evaluate()
             
         then:
@@ -51,7 +53,7 @@ class GradleFxDerivedPropertiesTest extends Specification {
     def "values derived from mainClass in a pure AS project are: Main/Main.as/Main/[no package]"() {
         when:
             flexConvention.type = FlexType.swf
-            flexConvention.frameworkLinkage = FrameworkLinkage.none
+            flexConvention.sdkTypes.add(SdkType.AIR)
             project.evaluate()
             
         then:
@@ -90,6 +92,7 @@ class GradleFxDerivedPropertiesTest extends Specification {
     def "a class with package as mainclass sets packageName"() {
         when:
             flexConvention.type = FlexType.swf
+            flexConvention.sdkTypes.add(SdkType.Flex)
             flexConvention.mainClass = 'org.gradlefx.MyApp'
             project.evaluate()
             
@@ -103,8 +106,7 @@ class GradleFxDerivedPropertiesTest extends Specification {
     def "defaultExtension is .as for pure AS projects"() {
         when:
             flexConvention.type = FlexType.swf
-            flexConvention.frameworkLinkage = FrameworkLinkage.none
-            
+            flexConvention.sdkTypes.add(SdkType.AIR)
         then:
             flexConvention.defaultExtension == '.as'
     }
@@ -112,6 +114,7 @@ class GradleFxDerivedPropertiesTest extends Specification {
     def "defaultExtension is .mxml for Flex projects (and thus by default)"() {
         when:
             flexConvention.type = FlexType.swf
+            flexConvention.sdkTypes.add(SdkType.Flex)
             
         then:
             flexConvention.defaultExtension == '.mxml'
@@ -190,16 +193,7 @@ class GradleFxDerivedPropertiesTest extends Specification {
         then:
             flexConvention.defaultFrameworkLinkage == FrameworkLinkage.external
     }
-    
-    def "defaultFrameworkLinkage for swc type must be external for pure AS projects"() {
-        when:
-            flexConvention.type = FlexType.swc
-            flexConvention.frameworkLinkage = FrameworkLinkage.none
-        
-        then:
-            flexConvention.defaultFrameworkLinkage == FrameworkLinkage.external
-    }
-    
+
     def "defaultFrameworkLinkage for Flex application projects must be rsl"() {
         when:
             flexConvention.type = FlexType.swf
@@ -207,16 +201,7 @@ class GradleFxDerivedPropertiesTest extends Specification {
         then:
             flexConvention.defaultFrameworkLinkage == FrameworkLinkage.rsl
     }
-    
-    def "defaultFrameworkLinkage for pure AS application projects must be merged"() {
-        when:
-            flexConvention.type = FlexType.swf
-            flexConvention.frameworkLinkage = FrameworkLinkage.none
-        
-        then:
-            flexConvention.defaultFrameworkLinkage == FrameworkLinkage.merged
-    }
-    
+
     def "allSrcDirs is a flat list of dirs from srcDirs/resourceDirs/testDirs/testResourceDirs"() {
         when:
             flexConvention.type = FlexType.swf

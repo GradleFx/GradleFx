@@ -65,7 +65,7 @@ class Test extends DefaultTask {
             cli.setConventionArguments()
 
             String taskName
-             if (flexConvention.type.isAir()) {
+             if (flexConvention.type.isAir() || !flexConvention.usesFlex()) {
                 taskName = "mxmlc-cli";
             } else {
                 taskName = "mxmlc";

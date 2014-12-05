@@ -20,7 +20,6 @@ import groovy.util.slurpersupport.NodeChild
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ResolveException
-import org.gradlefx.configuration.sdk.SdkType
 import org.gradlefx.conventions.FlexType
 import org.gradlefx.conventions.FrameworkLinkage
 import org.gradlefx.conventions.GradleFxConvention
@@ -44,45 +43,20 @@ abstract class CommandLineInstruction {
 
     abstract public void setConventionArguments()
 
-    public void linkPlayerGlobalIfNeeded() {
-        // no need to add it if its a Flex project, it will be added from flex-config.xml.
-        if (!flexConvention.linkPlayerGlobal || flexConvention.frameworkLinkage != FrameworkLinkage.none) {
-            return
-        }
-        if(flexConvention.type.isAir()) {
-            // We cannot simply load air-config.xml, because it sets Flex SDK libraries too if it was bundled with Flex
-            def airConfig = new XmlSlurper().parse("$flexConvention.flexHome/frameworks/air-config.xml")
-            def externalAIRLibs = airConfig['compiler']['external-library-path']['path-element']
-            addAll CompilerOption.EXTERNAL_LIBRARY_PATH, externalAIRLibs.collect{"$flexConvention.flexHome/frameworks/$it"}
-
-            def mergedAIRLibs = airConfig['compiler']['library-path']['path-element']
-            addAll CompilerOption.LIBRARY_PATH, mergedAIRLibs.collect{"$flexConvention.flexHome/frameworks/$it"}
-        } else {
-            def flexConfig = new XmlSlurper().parse(flexConvention.configPath)
-            String playerGlobalVersion = flexConfig['target-player'].toString()
-            add CompilerOption.EXTERNAL_LIBRARY_PATH, "$flexConvention.flexHome/frameworks/libs/player/$playerGlobalVersion"
-        }
-    }
-
     /** Adds the framework libraries to the arguments based on the {@link FrameworkLinkage} */
     public void addFramework() {
         FrameworkLinkage linkage = flexConvention.frameworkLinkage
+        // The AIR compiler (mxmlc-cli) does not load air-config.xml/airmobile-config.xml/flexconfig.xml automatically,
+        // thus we add it here
+        if (!flexConvention.usesFlex() || flexConvention.type.isAir()) {
+            add CompilerOption.LOAD_CONFIG, flexConvention.configPath
+        }
 
-        if (linkage == FrameworkLinkage.none) {
-            if (!flexConvention.type.isAir()) {
-                // The flash compiler (mxmlc) automatically loads flex-config.xml, which contains the Flex SWCs and playerglobal.swc,
-                // to prevent this we set the load-config parameter explicitly to nothing.
-                reset CompilerOption.LOAD_CONFIG
+        if (flexConvention.usesFlex() && (!linkage.isCompilerDefault(flexConvention.type) || (flexConvention.type == FlexType.swc))) {
+            if ((linkage == FrameworkLinkage.external && flexConvention.type.isApp()) ||
+                (linkage == FrameworkLinkage.rsl && flexConvention.type.isLib())) {
+                throw new Exception('Applications cannot link externally')
             }
-            return
-        }
-
-        // The AIR compiler (mxmlc-cli) does not load flex-config.xml automatically, thus we add it here
-        if (flexConvention.type.isAir()) {
-            add CompilerOption.CONFIGNAME, flexConvention.type.configName
-        }
-
-        if (!linkage.isCompilerDefault(flexConvention.type) || (flexConvention.type == FlexType.swc)) {
             //remove RSL's defined in flex-config.xml
             reset CompilerOption.RUNTIME_SHARED_LIBRARY_PATH
 

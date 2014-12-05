@@ -47,7 +47,7 @@ class Compc extends CompileTaskDelegate {
         cli.setConventionArguments()
 
         def taskName
-        if (flexConvention.type.isAir()) {
+        if (flexConvention.type.isAir() || !flexConvention.usesFlex()) {
             taskName = "compc-cli";
         } else {
             taskName = "compc";

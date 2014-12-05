@@ -72,19 +72,13 @@ class GradleFxConvention {
     // what type of Flex project are we?  either SWF, SWC or AIR
     FlexType type
     
-    //how the Flex framework will be linked in the project: external, RSL, merged or none
+    //how the Flex framework will be linked in the project: external, RSL, merged
     //default: RSL for swf, external for swc
     FrameworkLinkage frameworkLinkage
     
     public FrameworkLinkage getFrameworkLinkage() {
-        return frameworkLinkage ?: FrameworkLinkage.getCompilerDefault(true, type)
+        return frameworkLinkage ?: FrameworkLinkage.getCompilerDefault(type)
     }
-
-    //Whether the playerGlobal.swc/airGlobal.swc should be added automatically from the SDK. Default is true.
-    //Note that even if you set this to false playerglobal.swc will be linked if frameworkLinkage is not 'none'
-    //because Flex loads flex-config.xml/air-config.xml by default. But you can override it by manually by adding
-    //it as a dependency
-    Boolean linkPlayerGlobal = true
 
     //Whether the asdocs should be merged into the swc for use in Flash Builder
     Boolean fatSwc

@@ -37,72 +37,43 @@ class CommandLineInstructionTest extends Specification {
         commandLineInstruction = new StubCommandLineInstruction(project)
     }
 
-    def "call addFramework with FrameworkLinkage.none, and not using AIR removes the LOAD_CONFIG compiler argument"() {
+    def "call addFramework with and using AIR adds the LOAD_CONFIG compiler argument"() {
+        GradleFxConvention flexConvention = project.convention.plugins.flex
+        flexConvention.flexHome = './src/test/resources/valid-flex-sdk'
+        flexConvention.type = FlexType.swcAir
+        flexConvention.sdkTypes.add(SdkType.Flex);
+        flexConvention.sdkTypes.add(SdkType.AIR);
+        when:
+            commandLineInstruction.addFramework()
+        then:
+            List args = commandLineInstruction.arguments
+            args.contains "$CompilerOption.LOAD_CONFIG+=$flexConvention.configPath"
+    }
+
+    def "call addFramework for pure AS projects adds the LOAD_CONFIG compiler argument"() {
         GradleFxConvention flexConvention = project.convention.plugins.flex
         flexConvention.flexHome = './src/test/resources/valid-flex-sdk'
         flexConvention.type = FlexType.swf
-        flexConvention.frameworkLinkage = FrameworkLinkage.none
-        flexConvention.sdkTypes.add(SdkType.Flex);
+        flexConvention.sdkTypes.add(SdkType.AIR)
 
         when:
             commandLineInstruction.addFramework()
         then:
             List args = commandLineInstruction.arguments
-            args.contains "$CompilerOption.LOAD_CONFIG="
+            args.contains "$CompilerOption.LOAD_CONFIG+=$flexConvention.configPath"
     }
 
-    def "call addFramework with FrameworkLinkage.none, and using AIR does not add the LOAD_CONFIG compiler argument"() {
+    def "call addFramework using just Flex does not add flex config to the compiler arguments"() {
         GradleFxConvention flexConvention = project.convention.plugins.flex
         flexConvention.flexHome = './src/test/resources/valid-flex-sdk'
-        flexConvention.type = FlexType.mobile
-        flexConvention.frameworkLinkage = FrameworkLinkage.none
-        flexConvention.sdkTypes.add(SdkType.Flex);
-        when:
-            commandLineInstruction.addFramework()
-        then:
-            List args = commandLineInstruction.arguments
-            !args.contains("$CompilerOption.LOAD_CONFIG=")
-            !args.contains("$CompilerOption.CONFIGNAME+=$FlexType.mobile.configName")
-    }
-
-    def "call addFramework when using AIR and Flex adds flex config to the compiler arguments"() {
-        GradleFxConvention flexConvention = project.convention.plugins.flex
-        flexConvention.flexHome = './src/test/resources/valid-flex-sdk'
-        flexConvention.type = FlexType.air
+        flexConvention.type = FlexType.swf
         flexConvention.frameworkLinkage = FrameworkLinkage.merged
-        flexConvention.sdkTypes.add(SdkType.AIR);
+        flexConvention.sdkTypes.add(SdkType.Flex);
         when:
             commandLineInstruction.addFramework()
         then:
             List args = commandLineInstruction.arguments
             !args.contains("$CompilerOption.LOAD_CONFIG=")
-            args.contains "$CompilerOption.CONFIGNAME+=$FlexType.air.configName"
-    }
-
-    def "call linkPlayerGlobalIfNeeded links playerglobal if FrameworkLinkage is none and its a web project"() {
-        GradleFxConvention flexConvention = project.convention.plugins.flex
-        flexConvention.flexHome = './src/test/resources/valid-flex-sdk'
-        flexConvention.type = FlexType.swf
-        flexConvention.frameworkLinkage = FrameworkLinkage.none
-        flexConvention.sdkTypes.add(SdkType.AIR);
-        when:
-            commandLineInstruction.linkPlayerGlobalIfNeeded()
-        then:
-            List args = commandLineInstruction.arguments
-            args.contains "$CompilerOption.EXTERNAL_LIBRARY_PATH+=$flexConvention.flexHome/frameworks/libs/player/11.1"
-    }
-
-    def "call linkPlayerGlobalIfNeeded links airglobal if FrameworkLinkage is none and its an AIR project"() {
-        GradleFxConvention flexConvention = project.convention.plugins.flex
-        flexConvention.flexHome = './src/test/resources/valid-flex-sdk'
-        flexConvention.type = FlexType.mobile
-        flexConvention.frameworkLinkage = FrameworkLinkage.none
-        flexConvention.sdkTypes.add(SdkType.AIR);
-        when:
-        commandLineInstruction.linkPlayerGlobalIfNeeded()
-        then:
-        List args = commandLineInstruction.arguments
-        args.contains "$CompilerOption.EXTERNAL_LIBRARY_PATH+=$flexConvention.flexHome/frameworks/libs/air/airglobal.swc"
     }
 
     def "call addLibraries, should add valid swc locations to compiler arguments"() {

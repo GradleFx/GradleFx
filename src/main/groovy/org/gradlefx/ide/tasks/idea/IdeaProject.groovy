@@ -95,14 +95,16 @@ class IdeaProject extends AbstractIDEProject {
             def rootMgr = xml.component.find { it.'@name' == 'FlexBuildConfigurationManager' }
             def dependencies = rootMgr.configurations.configuration.dependencies.first()
 
-            switch (flexConvention.frameworkLinkage) {
-                case FrameworkLinkage.none:
-                    dependencies.attributes().remove('framework-linkage')
-                    break;
-                case FrameworkLinkage.external:
-                case FrameworkLinkage.rsl:
-                    dependencies.@'framework-linkage' = 'Runtime'
-                    break;
+            if (!flexConvention.usesFlex()) {
+                dependencies.attributes().remove('framework-linkage')
+            }
+            else {
+                switch (flexConvention.frameworkLinkage) {
+                    case FrameworkLinkage.external:
+                    case FrameworkLinkage.rsl:
+                        dependencies.@'framework-linkage' = 'Runtime'
+                        break;
+                }
             }
 
             if (flexConvention.flexSdkName != null) {
@@ -192,7 +194,8 @@ class IdeaProject extends AbstractIDEProject {
     private void updateConfiguration() {
         editXmlFile imlFilename, { xml ->
             def configuration = xml.component.find { it.'@name' == 'FlexBuildConfigurationManager' }.configurations.configuration.first()
-            configuration.@'pure-as' = flexConvention.frameworkLinkage == FrameworkLinkage.none;
+            //configuration.@'pure-as' = flexConvention.frameworkLinkage == FrameworkLinkage.none;
+            configuration.@'pure-as' = !flexConvention.usesFlex();
 
             //setup main class
             switch (flexConvention.type) {

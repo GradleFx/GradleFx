@@ -40,7 +40,7 @@ class Mxmlc extends CompileTaskDelegate {
         cli.setConventionArguments()
 
         def taskName
-        if (flexConvention.type.isAir()) {
+        if (flexConvention.type.isAir() || !flexConvention.usesFlex()) {
             taskName = "mxmlc-cli";
         } else {
             taskName = "mxmlc";

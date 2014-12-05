@@ -166,7 +166,7 @@ class FlashBuilderProject extends AbstractIDEProject {
 
         List extensions = [FlashBuilderUtil.eclipseProject, FlashBuilderUtil.actionScriptProperties]
         if (flexConvention.type.isLib()) extensions.add FlashBuilderUtil.flexLibProperties
-        else if (flexConvention.frameworkLinkage.usesFlex()) extensions.add FlashBuilderUtil.flexProperties
+        else if (flexConvention.usesFlex()) extensions.add FlashBuilderUtil.flexProperties
             
         extensions.each {
             LOG.info '\t' + it
@@ -294,7 +294,7 @@ class FlashBuilderProject extends AbstractIDEProject {
      * @return A template for a dot-file
      */
     protected InputStream getTemplate(String extension) {
-        String asfx = flexConvention.frameworkLinkage.usesFlex() ? 'fx' : 'as'
+        String asfx = flexConvention.usesFlex() ? 'fx' : 'as'
         String path = "/templates/${getName()}/${flexConvention.type}-${asfx}${extension}"
 
         InputStream stream = getClass().getResourceAsStream(path)

@@ -78,8 +78,6 @@ class FrameworkLinkageValidatorTest extends Specification {
         when:
             //swf with none, RSL or merged
             validator.flexConvention.type = FlexType.swf
-            validator.flexConvention.frameworkLinkage = FrameworkLinkage.none
-            validator.execute();
             
             validator.flexConvention.frameworkLinkage = FrameworkLinkage.rsl
             validator.execute();
@@ -89,8 +87,6 @@ class FrameworkLinkageValidatorTest extends Specification {
             
             //AIR with none, RSL or merged
             validator.flexConvention.type = FlexType.air
-            validator.flexConvention.frameworkLinkage = FrameworkLinkage.none
-            validator.execute();
             
             validator.flexConvention.frameworkLinkage = FrameworkLinkage.rsl
             validator.execute();
@@ -100,8 +96,6 @@ class FrameworkLinkageValidatorTest extends Specification {
             
             //mobile with none, RSL or merged
             validator.flexConvention.type = FlexType.mobile
-            validator.flexConvention.frameworkLinkage = FrameworkLinkage.none
-            validator.execute();
             
             validator.flexConvention.frameworkLinkage = FrameworkLinkage.rsl
             validator.execute();
@@ -111,8 +105,6 @@ class FrameworkLinkageValidatorTest extends Specification {
             
             //swc with none, external or merged
             validator.flexConvention.type = FlexType.swc
-            validator.flexConvention.frameworkLinkage = FrameworkLinkage.none
-            validator.execute();
             
             validator.flexConvention.frameworkLinkage = FrameworkLinkage.external
             validator.execute();

@@ -28,7 +28,6 @@ class LibraryCommandLineInstruction extends CommandLineInstruction {
     
     @Override
     public void setConventionArguments() {
-        linkPlayerGlobalIfNeeded()
         //add framework
         addFramework()
         
