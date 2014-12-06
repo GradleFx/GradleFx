@@ -67,8 +67,7 @@ class BaseAirMobilePackage extends AdtTask {
 
         addArg CompilerOption.CHANGE_DIRECTORY.optionName
         addArg project.buildDir.path
-        if (flexConvention.air.mainSwfDir)
-        {
+        if (flexConvention.air.mainSwfDir) {
             File swfDir = new File(project.buildDir, flexConvention.air.mainSwfDir);
             FileUtils.copyFileToDirectory(new File("${project.buildDir.path}/${flexConvention.output}.${FlexType.swf}"),swfDir)
             addArg "${flexConvention.air.mainSwfDir}/${flexConvention.output}.${FlexType.swf}"

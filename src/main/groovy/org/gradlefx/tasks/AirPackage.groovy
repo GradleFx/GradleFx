@@ -84,8 +84,7 @@ class AirPackage extends DefaultTask {
     private void addMainSwf(List compilerOptions) {
         compilerOptions.add CompilerOption.CHANGE_DIRECTORY.optionName
         compilerOptions.add project.buildDir.path
-        if (flexConvention.air.mainSwfDir)
-        {
+        if (flexConvention.air.mainSwfDir) {
             File swfDir = new File(project.buildDir, flexConvention.air.mainSwfDir);
             FileUtils.copyFileToDirectory(new File("${project.buildDir.path}/${flexConvention.output}.${FlexType.swf}"),swfDir)
             compilerOptions.add "${flexConvention.air.mainSwfDir}/${flexConvention.output}.${FlexType.swf}"
