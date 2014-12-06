@@ -43,6 +43,7 @@ class TemplateUtil {
        if (overwrite && target.exists()) target.delete()
        target.createNewFile()
 
+       String mainSwfDirBase = (flexConvention.air.mainSwfDir)? flexConvention.air.mainSwfDir + '/' : ''
        target.withWriter { out ->
            source.eachLine {
                out.println it.replaceAll(/\$\{class\}/, {flexConvention.className})
@@ -55,7 +56,7 @@ class TemplateUtil {
                              .replaceAll(/\$\{uuid\}/, {flexConvention.uuid})
                              .replaceAll(/\$\{appId\}/, {flexConvention.applicationId})
                              .replaceAll(/\$\{version\}/, {flexConvention.version})
-                             .replaceAll(/\$\{content\}/, {project.buildDir.name + '/' + flexConvention.output + '.swf'})
+                             .replaceAll(/\$\{content\}/, {mainSwfDirBase + flexConvention.output + '.swf'})
                              .replaceAll(/\$\{artifact\}/, artifact())
                              .replaceAll(/\$\{useDebugRSLSwfs\}/, {flexConvention.useDebugRSLSwfs.toString()})
                              .replaceAll(/\$\{useApolloConfig\}/, {useApolloConfig})
