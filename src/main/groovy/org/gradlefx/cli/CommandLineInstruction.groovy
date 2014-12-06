@@ -53,10 +53,6 @@ abstract class CommandLineInstruction {
         }
 
         if (flexConvention.usesFlex() && (!linkage.isCompilerDefault(flexConvention.type) || (flexConvention.type == FlexType.swc))) {
-            if ((linkage == FrameworkLinkage.external && flexConvention.type.isApp()) ||
-                (linkage == FrameworkLinkage.rsl && flexConvention.type.isLib())) {
-                throw new Exception('Applications cannot link externally')
-            }
             //remove RSL's defined in flex-config.xml
             reset CompilerOption.RUNTIME_SHARED_LIBRARY_PATH
 

@@ -24,9 +24,16 @@ class FrameworkLinkageValidator extends AbstractProjectPropertyValidator {
 
     @Override
     public void execute() {
-        if (isLinkageIncompatibleWithFlexType()) {
-            addError("The frameworkLinkage '$flexConvention.frameworkLinkage' is incompatible with " +
-                "Flex project type '$flexConvention.type'")
+        if (flexConvention.usesFlex()) {
+            if (isLinkageIncompatibleWithFlexType()) {
+                addError("The frameworkLinkage '$flexConvention.frameworkLinkage' is incompatible with " +
+                        "Flex project type '$flexConvention.type'")
+            }
+        }
+        else {
+            if (!flexConvention.frameworkLinkage.isCompilerDefault(flexConvention.type)) {
+                addWarning('For non-flex projects the frameworkLinkage parameter has no effect')
+            }
         }
     }
     

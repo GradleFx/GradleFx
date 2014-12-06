@@ -65,10 +65,10 @@ class Test extends DefaultTask {
             cli.setConventionArguments()
 
             String taskName
-             if (flexConvention.type.isAir() || !flexConvention.usesFlex()) {
-                taskName = "mxmlc-cli";
+            if (flexConvention.usesFlex()) {
+                taskName = "mxmlc"
             } else {
-                taskName = "mxmlc";
+                taskName = "mxmlc-cli"
             }
             cli.execute ant, taskName
 

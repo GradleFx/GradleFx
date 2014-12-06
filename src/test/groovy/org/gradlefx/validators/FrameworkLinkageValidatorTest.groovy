@@ -18,6 +18,7 @@ package org.gradlefx.validators
 
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
+import org.gradlefx.configuration.sdk.SdkType
 import spock.lang.Specification
 import org.gradlefx.conventions.FlexType;
 import org.gradlefx.conventions.FrameworkLinkage;
@@ -32,6 +33,7 @@ class FrameworkLinkageValidatorTest extends Specification {
     def setup() {
         validator.project = project
         validator.flexConvention = new GradleFxConvention(project)
+        validator.flexConvention.sdkTypes.add(SdkType.Flex)
     }
 
     def "a combination of library project and RSL linkage should add error message"() {
