@@ -6,7 +6,7 @@
   </component>
   <component name="FlexBuildConfigurationManager" active="${project}">
     <configurations>
-      <configuration name="${project}" pure-as="false" output-type="Library" output-file="${artifact}" output-folder="$MODULE_DIR$/bin-debug">
+      <configuration name="${project}" pure-as="false" output-type="Library" output-file="${artifact}" output-folder="$MODULE_DIR$/${buildDir}">
         <!-- TODO target.player dependency ? -->
         <dependencies target-player="${playerVersion}" framework-linkage="Merged">
             <entries>
@@ -36,8 +36,8 @@
     <compiler-options />
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="false">
-    <output url="file://$MODULE_DIR$/bin-debug" />
-    <output-test url="file://$MODULE_DIR$/bin-debug" />
+    <output url="file://$MODULE_DIR$/${buildDir}" />
+    <output-test url="file://$MODULE_DIR$/${buildDir}" />
     <exclude-output />
       <!--<content url="file://$MODULE_DIR$"> -->
           <!-- TODO sources -->
