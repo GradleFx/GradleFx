@@ -25,6 +25,7 @@ import org.gradle.api.tasks.TaskAction
 import org.gradlefx.cli.CommandLineInstruction
 import org.gradlefx.cli.CompileFlexUnitCommandLineInstruction
 import org.gradlefx.configuration.FlexUnitAntTasksConfigurator
+import org.gradlefx.configuration.sdk.SdkType
 import org.gradlefx.conventions.FlexUnitConvention
 import org.gradlefx.conventions.GradleFxConvention
 import org.gradlefx.util.PathToClassNameExtractor
@@ -62,7 +63,14 @@ class Test extends DefaultTask {
 
             //compiler the test runner
             cli.setConventionArguments()
-            cli.execute ant, 'mxmlc'
+
+            String taskName
+            if (flexConvention.usesFlex()) {
+                taskName = "mxmlc"
+            } else {
+                taskName = "mxmlc-cli"
+            }
+            cli.execute ant, taskName
 
             configureAntWithFlexUnit()
             runTests()

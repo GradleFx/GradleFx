@@ -72,12 +72,12 @@ class GradleFxConvention {
     // what type of Flex project are we?  either SWF, SWC or AIR
     FlexType type
     
-    //how the Flex framework will be linked in the project: external, RSL, merged or none
+    //how the Flex framework will be linked in the project: external, RSL, merged
     //default: RSL for swf, external for swc
     FrameworkLinkage frameworkLinkage
     
     public FrameworkLinkage getFrameworkLinkage() {
-        return frameworkLinkage ?: FrameworkLinkage.getCompilerDefault(true, type)
+        return frameworkLinkage ?: FrameworkLinkage.getCompilerDefault(type)
     }
 
     //Whether the asdocs should be merged into the swc for use in Flash Builder

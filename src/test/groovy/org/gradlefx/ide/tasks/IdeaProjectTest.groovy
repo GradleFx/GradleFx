@@ -18,6 +18,7 @@ package org.gradlefx.ide.tasks
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 import org.gradlefx.configuration.Configurations
+import org.gradlefx.configuration.sdk.SdkType
 import org.gradlefx.conventions.GradleFxConvention
 import org.gradlefx.ide.tasks.idea.IdeaProject
 import org.junit.Test
@@ -153,6 +154,7 @@ class IdeaProjectTest {
             GradleFxConvention pluginConvention = new GradleFxConvention(project)
             _ideaFxProjectTask.flexConvention = pluginConvention
             _ideaFxProjectTask.flexConvention.playerVersion = "11.5"
+            _ideaFxProjectTask.flexConvention.sdkTypes.add(SdkType.Flex)
         }
         return _ideaFxProjectTask;
     }

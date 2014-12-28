@@ -39,15 +39,12 @@ class Mxmlc extends CompileTaskDelegate {
 
         cli.setConventionArguments()
 
-        def taskName = ""
-
-        //if Flex and AIR are defined, Flex's mxmlc will be used
-        if (flexConvention.sdkTypes.contains(SdkType.Flex)) {
-            taskName = "mxmlc";
-        } else if (flexConvention.sdkTypes.contains(SdkType.AIR)) {
-            taskName = "mxmlc-cli";
+        def taskName
+        if (flexConvention.usesFlex()) {
+            taskName = "mxmlc"
+        } else {
+            taskName = "mxmlc-cli"
         }
-
         cli.execute task.ant, taskName
 
         if (flexConvention.frameworkLinkage == FrameworkLinkage.rsl)

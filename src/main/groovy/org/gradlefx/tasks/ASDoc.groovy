@@ -78,13 +78,11 @@ class ASDoc extends DefaultTask {
             CommandLineInstruction cli = new ASDocCommandLineInstruction(project)
             cli.setConventionArguments()
 
-            def taskName = ""
-
-            //if Flex and AIR are defined, Flex's mxmlc will be used
-            if (flexConvention.sdkTypes.contains(SdkType.Flex)) {
-                taskName = "asdoc";
-            } else if (flexConvention.sdkTypes.contains(SdkType.AIR)) {
+            def taskName
+            if (flexConvention.type.isAir()) {
                 taskName = "legacy/asdoc";
+            } else {
+                taskName = "asdoc";
             }
 
             cli.execute ant, taskName

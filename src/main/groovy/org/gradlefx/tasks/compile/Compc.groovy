@@ -46,15 +46,12 @@ class Compc extends CompileTaskDelegate {
 
         cli.setConventionArguments()
 
-        def taskName = ""
-
-        //if Flex and AIR are defined, Flex's mxmlc will be used
-        if (flexConvention.sdkTypes.contains(SdkType.Flex)) {
-            taskName = "compc";
-        } else if (flexConvention.sdkTypes.contains(SdkType.AIR)) {
-            taskName = "compc-cli";
+        def taskName
+        if (flexConvention.usesFlex()) {
+            taskName = "compc"
+        } else {
+            taskName = "compc-cli"
         }
-
         cli.execute task.ant, taskName
 
         if (flexConvention.fatSwc) {

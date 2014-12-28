@@ -38,11 +38,7 @@ public enum FrameworkLinkage {
      * They are not loaded at run time. The result is a larger SWF file, but no external dependencies.
      * This is the default selection for the framework.
      */
-    merged(CompilerOption.LIBRARY_PATH),
-    /**
-     * Framework won't be linked. Primarily used for pure Actionscript projects.
-     */
-    none
+    merged(CompilerOption.LIBRARY_PATH)
     
     private CompilerOption compilerOption
     
@@ -55,37 +51,21 @@ public enum FrameworkLinkage {
     public CompilerOption getCompilerOption() {
         return compilerOption
     }
-    
-    public boolean usesFlex() {
-        return this != none
-    }
-    
-    public boolean isCompilerDefault(FlexType type) {
-        FrameworkLinkage compilerDefault = getCompilerDefault(type)
-        return this == compilerDefault || (this == none && compilerDefault == merged)
-    }
-    
-    public FrameworkLinkage getCompilerDefault(FlexType type) {
-        return getCompilerDefault(this, type)
-    }
-    
+
     /**
     * The framework linkage defaults to 'RSL' for Flex application projects ('swf', 'air' or 'mobile' {@link FlexType}),
-    * 'merged' for pure ActionScript application projects
     * and 'external' for library projects ('swc' {@link FlexType}).
     *
     * @return The default framework linkage
     */
-    public static FrameworkLinkage getCompilerDefault(FrameworkLinkage linkage, FlexType type) {
-        if ((linkage == external && type.isApp()) || (linkage == rsl && type.isLib()))
-            throw new Exception('Applications cannot link externally')
-            
-        return getCompilerDefault(linkage.usesFlex(), type)
-    }
-    
-    public static FrameworkLinkage getCompilerDefault(boolean useFlex, FlexType type) {
+    public static FrameworkLinkage getCompilerDefault(FlexType type) {
         if (type.isLib()) return external
-        return useFlex ? rsl : merged
+        return rsl
     }
-    
+
+    public boolean isCompilerDefault(FlexType type) {
+        FrameworkLinkage compilerDefault = getCompilerDefault(type)
+        return this == compilerDefault
+    }
+
 }

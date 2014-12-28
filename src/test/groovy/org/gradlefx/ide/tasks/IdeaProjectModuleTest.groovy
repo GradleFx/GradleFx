@@ -19,6 +19,7 @@ package org.gradlefx.ide.tasks
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 import org.gradlefx.configuration.Configurations
+import org.gradlefx.configuration.sdk.SdkType
 import org.gradlefx.conventions.FlexType
 import org.gradlefx.conventions.FrameworkLinkage
 import org.gradlefx.conventions.GradleFxConvention
@@ -87,7 +88,7 @@ class IdeaProjectModuleTest extends Specification {
         given:
             setupProjectWithName "test"
             ideaProjectTask.flexConvention.type = "swc"
-            ideaProjectTask.flexConvention.frameworkLinkage = FrameworkLinkage.none
+            ideaProjectTask.flexConvention.sdkTypes.add(SdkType.AIR)
         when:
             ideaProjectTask.createProjectConfig()
         then:
@@ -102,6 +103,7 @@ class IdeaProjectModuleTest extends Specification {
             setupProjectWithName "test"
             ideaProjectTask.flexConvention.type = "swc"
             ideaProjectTask.flexConvention.frameworkLinkage = FrameworkLinkage.external
+            ideaProjectTask.flexConvention.sdkTypes.add(SdkType.Flex)
         when:
             ideaProjectTask.createProjectConfig()
         then:
@@ -176,6 +178,7 @@ class IdeaProjectModuleTest extends Specification {
         setup:
             setupProjectWithName "test"
             ideaProjectTask.flexConvention.frameworkLinkage = frameworkLinkage
+            ideaProjectTask.flexConvention.sdkTypes.add(SdkType.Flex)
             ideaProjectTask.createProjectConfig()
         expect:
             def configuration = getModuleConfNode()
@@ -183,8 +186,8 @@ class IdeaProjectModuleTest extends Specification {
             configuration.dependencies.'@framework-linkage'.text() == ideaSdkLinkage
             getModuleRootMgrNode().orderEntry.find { it.'@type' == "jdk" }.'@jdkName' == 'default_flex_sdk'
         where:
-            frameworkLinkage << [FrameworkLinkage.merged, FrameworkLinkage.none, FrameworkLinkage.rsl]
-            ideaSdkLinkage << ['Merged', '', 'Runtime']
+            frameworkLinkage << [FrameworkLinkage.merged, FrameworkLinkage.rsl]
+            ideaSdkLinkage << ['Merged', 'Runtime']
     }
 
     def "setup flex sdk with custom name"() {
@@ -215,7 +218,7 @@ class IdeaProjectModuleTest extends Specification {
         given:
             setupProjectWithName "test"
             ideaProjectTask.flexConvention.type = 'air'
-            ideaProjectTask.flexConvention.frameworkLinkage = 'none'
+            ideaProjectTask.flexConvention.sdkTypes.add(SdkType.AIR)
         when:
             ideaProjectTask.createProjectConfig()
         then:
@@ -298,6 +301,7 @@ class IdeaProjectModuleTest extends Specification {
         given:
             setupProjectWithName "test"
             ideaProjectTask.flexConvention.type = FlexType.swc
+            ideaProjectTask.flexConvention.sdkTypes.add(SdkType.Flex)
             ideaProjectTask.flexConvention.additionalCompilerOptions << '+configname=air'
         when:
             ideaProjectTask.createProjectConfig()

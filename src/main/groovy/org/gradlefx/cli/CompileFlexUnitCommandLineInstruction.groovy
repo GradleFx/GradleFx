@@ -53,11 +53,6 @@ class CompileFlexUnitCommandLineInstruction extends ApplicationCommandLineInstru
     }
 
     @Override
-    public void addFramework() {
-        //do nothing
-    }
-
-    @Override
     public void addAdditionalCompilerOptions() {
         addAll flexConvention.flexUnit.additionalCompilerOptions
     }

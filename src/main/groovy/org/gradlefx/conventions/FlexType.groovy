@@ -32,6 +32,7 @@ import org.gradlefx.cli.LibraryCommandLineInstruction;
 enum FlexType {
     swf('flex', Mxmlc, ApplicationCommandLineInstruction),
     swc('flex', Compc, LibraryCommandLineInstruction),
+    swcAir('flex', Compc, LibraryCommandLineInstruction),
     air('air', Mxmlc, AIRCommandLineInstruction),
     mobile('airmobile', Mxmlc, AIRCommandLineInstruction)
 
@@ -72,7 +73,7 @@ enum FlexType {
     }
     
     public boolean isLib() {
-        return this == swc
+        return this == swc || this == swcAir
     }
     
     public boolean isWebApp() {
@@ -85,6 +86,10 @@ enum FlexType {
 
     public boolean isMobile() {
         return this == mobile
+    }
+
+    public boolean isAir() {
+        return isNativeApp() || this == swcAir
     }
     
 }
