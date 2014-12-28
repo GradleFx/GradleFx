@@ -20,7 +20,7 @@ import org.apache.commons.lang.StringUtils
 import org.gradle.api.file.ConfigurableFileTree
 import org.gradle.api.file.FileTreeElement
 import org.gradle.api.tasks.TaskAction
-import org.gradlefx.cli.CompilerOption
+import org.gradlefx.cli.compiler.CompilerOption
 import org.gradlefx.conventions.AIRMobileConvention
 import org.gradlefx.conventions.FlexType
 import org.gradlefx.tasks.Tasks

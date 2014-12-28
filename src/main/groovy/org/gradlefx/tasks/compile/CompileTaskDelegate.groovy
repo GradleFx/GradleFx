@@ -16,19 +16,16 @@
 
 package org.gradlefx.tasks.compile
 
-import org.gradlefx.cli.CommandLineInstruction;
 import org.gradlefx.conventions.GradleFxConvention
-import org.gradle.api.Task;
+import org.gradle.api.Task
 
 abstract class CompileTaskDelegate implements CompileTask {
 
     Task task
     GradleFxConvention flexConvention
-    CommandLineInstruction cli
 
-    protected CompileTaskDelegate(Task task, CommandLineInstruction cli) {
+    protected CompileTaskDelegate(Task task) {
         this.task = task
-        this.cli = cli
         flexConvention = task.project.convention.plugins.flex
     }
 

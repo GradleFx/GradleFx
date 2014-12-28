@@ -20,7 +20,7 @@ import org.gradlefx.configuration.sdk.SdkType
 
 import static java.util.UUID.randomUUID
 import org.gradle.api.artifacts.ProjectDependency;
-import org.gradlefx.cli.CompilerOption;
+import org.gradlefx.cli.compiler.CompilerOption;
 
 
 class GradleFxDerivedProperties {
@@ -28,6 +28,10 @@ class GradleFxDerivedProperties {
     public HashSet<SdkType> sdkTypes = new HashSet<SdkType>()
 
     public boolean usesFlex() {
+        return hasFlexSDK() && frameworkLinkage != FrameworkLinkage.none;
+    }
+
+    public boolean hasFlexSDK() {
         return sdkTypes.contains(SdkType.Flex);
     }
 

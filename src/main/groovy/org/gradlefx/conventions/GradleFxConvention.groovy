@@ -81,7 +81,7 @@ class GradleFxConvention {
     }
 
     //Whether the asdocs should be merged into the swc for use in Flash Builder
-    Boolean fatSwc
+    boolean fatSwc = false
 
     // the directory where we should publish the build artifacts
     String publishDir = 'publish'

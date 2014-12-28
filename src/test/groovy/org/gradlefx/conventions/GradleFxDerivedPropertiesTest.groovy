@@ -19,10 +19,8 @@ package org.gradlefx.conventions
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 import org.gradlefx.configuration.sdk.SdkType
-import org.gradlefx.tasks.AirPackage
 import spock.lang.Specification
-import org.gradlefx.cli.CompilerOption;
-import org.gradlefx.conventions.GradleFxConvention
+import org.gradlefx.cli.compiler.CompilerOption
 import org.gradlefx.plugins.GradleFxPlugin;
 
 class GradleFxDerivedPropertiesTest extends Specification {

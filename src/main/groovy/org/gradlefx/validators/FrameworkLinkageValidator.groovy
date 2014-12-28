@@ -30,10 +30,11 @@ class FrameworkLinkageValidator extends AbstractProjectPropertyValidator {
                         "Flex project type '$flexConvention.type'")
             }
         }
-        else {
-            if (!flexConvention.frameworkLinkage.isCompilerDefault(flexConvention.type)) {
-                addWarning('For non-flex projects the frameworkLinkage parameter has no effect')
-            }
+        // A non-flex based project can still use the Flex SDK for compilation, but then it will have to change the
+        // framework linkage to 'none'. Therefore the !hasFlexSDK check here.
+        // Projects that only have the AIR SDK on the other hand should not change the frameworkLinkage, since it doesn't do anything.
+        else if (!flexConvention.hasFlexSDK() && !flexConvention.frameworkLinkage.isCompilerDefault(flexConvention.type)) {
+            addWarning('For non-flex projects the frameworkLinkage parameter has no effect')
         }
     }
     
