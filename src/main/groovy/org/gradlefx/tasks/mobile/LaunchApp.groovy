@@ -15,7 +15,7 @@
  */
 package org.gradlefx.tasks.mobile
 
-import org.gradlefx.cli.CompilerOption
+import org.gradlefx.cli.compiler.CompilerOption
 import org.gradlefx.tasks.adt.AdtTask
 import org.gradlefx.tasks.TaskGroups
 import org.gradlefx.tasks.Tasks

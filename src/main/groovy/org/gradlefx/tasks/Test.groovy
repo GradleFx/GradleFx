@@ -22,8 +22,13 @@ import org.gradle.api.file.FileTree
 import org.gradle.api.file.FileTreeElement
 import org.gradle.api.logging.LogLevel
 import org.gradle.api.tasks.TaskAction
-import org.gradlefx.cli.CommandLineInstruction
-import org.gradlefx.cli.CompileFlexUnitCommandLineInstruction
+import org.gradlefx.cli.compiler.AntBasedCompilerProcess
+import org.gradlefx.cli.compiler.CompilerJar
+import org.gradlefx.cli.compiler.CompilerProcess
+import org.gradlefx.cli.compiler.DefaultCompilerResultHandler
+import org.gradlefx.cli.instructions.CompilerInstructionsBuilder
+import org.gradlefx.cli.instructions.flexsdk.FlexUnitAppInstructions as FlexSDKFlexUnitAppInstructions
+import org.gradlefx.cli.instructions.airsdk.standalone.actionscriptonly.FlexUnitAppInstructions as NoFlexSDKFlexUnitAppInstructions
 import org.gradlefx.configuration.FlexUnitAntTasksConfigurator
 import org.gradlefx.conventions.FlexUnitConvention
 import org.gradlefx.conventions.GradleFxConvention
@@ -38,7 +43,6 @@ class Test extends DefaultTask {
     private static final Logger LOG = LoggerFactory.getLogger Test
 
     GradleFxConvention flexConvention
-    CommandLineInstruction cli
     PathToClassNameExtractor pathToClassNameExtractor
 
     public Test() {
@@ -48,7 +52,6 @@ class Test extends DefaultTask {
         logging.setLevel LogLevel.INFO
 
         flexConvention = project.convention.plugins.flex
-        cli = new CompileFlexUnitCommandLineInstruction(project);
 
         dependsOn Tasks.COPY_TEST_RESOURCES_TASK_NAME
 
@@ -60,14 +63,36 @@ class Test extends DefaultTask {
         if(hasTests()) {
             createFlexUnitRunnerFromTemplate()
 
-            //compiler the test runner
-            cli.setConventionArguments()
-            cli.execute ant, 'mxmlc'
+            compileTestRunner()
 
             configureAntWithFlexUnit()
             runTests()
         } else {
             LOG.info "Skipping tests since no tests exist"
+        }
+    }
+
+    private void compileTestRunner() {
+        def compilerInstructions = createCompilerInstructionsBuilder().buildInstructions()
+        def compilerJar = flexConvention.hasFlexSDK() ? CompilerJar.mxmlc : CompilerJar.mxmlc_cli
+
+        CompilerProcess compilerProcess = new AntBasedCompilerProcess(ant, compilerJar, new File(flexConvention.flexHome))
+        compilerProcess.with {
+            jvmArguments = flexConvention.jvmArguments
+            compilerOptions = compilerInstructions
+            compilerResultHandler = new DefaultCompilerResultHandler()
+        }
+        compilerProcess.compile()
+    }
+
+    /**
+     * Determines which compiler instructions will be used for this project.
+     */
+    private CompilerInstructionsBuilder createCompilerInstructionsBuilder() {
+        if(flexConvention.hasFlexSDK()) {
+            new FlexSDKFlexUnitAppInstructions(project)
+        } else {
+            new NoFlexSDKFlexUnitAppInstructions(project)
         }
     }
 
@@ -164,6 +189,13 @@ class Test extends DefaultTask {
 
         // you can't write to a directory that doesn't exist
         if (!reportDir.exists()) reportDir.mkdirs()
+
+        if (flexUnit.command == null) {
+            throw new Exception(
+                "The Flash player executable is not found. Either set the FLASH_PLAYER_EXE " +
+                "environment variable or set the 'flexUnit.command' property."
+            )
+        }
 
         ant.flexunit (
             swf:             "${flexConvention.flexUnit.toDir}/${flexConvention.flexUnit.swfName}",

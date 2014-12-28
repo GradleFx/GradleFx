@@ -18,6 +18,7 @@ package org.gradlefx.validators
 
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
+import org.gradlefx.conventions.FlexType
 import spock.lang.Specification
 import org.gradlefx.conventions.GradleFxConvention
 
@@ -31,6 +32,8 @@ class FlexSDKSpecifiedValidatorTest extends Specification {
     def setup() {
         validator.project = project
         validator.flexConvention = new GradleFxConvention(project)
+        validator.flexConvention.type = FlexType.swf
+
     }
 
     def "if the 'flexHome' property isn't specified, add an error message"() {

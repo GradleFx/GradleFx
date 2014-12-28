@@ -19,6 +19,6 @@ package org.gradlefx.tasks.compile
 
 public interface CompileTask {
 
-    void compileFlex()
+    void compile()
     
 }

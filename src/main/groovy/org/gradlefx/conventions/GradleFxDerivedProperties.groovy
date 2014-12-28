@@ -19,16 +19,22 @@ package org.gradlefx.conventions
 import org.gradlefx.configuration.sdk.SdkType
 
 import static java.util.UUID.randomUUID
-import java.io.File;
-import java.util.List;
 import org.gradle.api.artifacts.ProjectDependency;
-import org.gradlefx.cli.CompilerOption;
+import org.gradlefx.cli.compiler.CompilerOption;
 
 
 class GradleFxDerivedProperties {
 
     public HashSet<SdkType> sdkTypes = new HashSet<SdkType>()
-    
+
+    public boolean usesFlex() {
+        return hasFlexSDK() && frameworkLinkage != FrameworkLinkage.none;
+    }
+
+    public boolean hasFlexSDK() {
+        return sdkTypes.contains(SdkType.Flex);
+    }
+
     /** A generated unique ID for this project */
     String uuid
     
@@ -73,7 +79,7 @@ class GradleFxDerivedProperties {
     String defaultExtension
     
     public String getDefaultExtension() {
-        if (!defaultExtension) defaultExtension = getFrameworkLinkage().usesFlex() ? '.mxml' : '.as'
+        if (!defaultExtension) defaultExtension = usesFlex() ? '.mxml' : '.as'
         return defaultExtension
     }
     
@@ -113,7 +119,7 @@ class GradleFxDerivedProperties {
     FrameworkLinkage defaultFrameworkLinkage
     
     public getDefaultFrameworkLinkage() {
-        if (!defaultFrameworkLinkage) defaultFrameworkLinkage = FrameworkLinkage.getCompilerDefault getFrameworkLinkage(), getType()
+        if (!defaultFrameworkLinkage) defaultFrameworkLinkage = FrameworkLinkage.getCompilerDefault getType()
         return defaultFrameworkLinkage
     }
     

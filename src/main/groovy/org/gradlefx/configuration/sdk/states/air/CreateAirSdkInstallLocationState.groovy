@@ -29,7 +29,7 @@ class CreateAirSdkInstallLocationState extends AbstractCreateSdkInstallLocationS
 
     @Override
     SdkInitState nextState() {
-        //if lib/adt.jar is found from FLEX_HOME or the Gradle SDK Location, it will mark a AIR dependency flag for CommandLineInstruction, Compc, Mxmlc, ASDoc
+        //if lib/adt.jar is found in the SDK installation, it will mark this project as AIR-enabled.
         if (isInstalled || isInstallationRequired) {
             flexConvention.sdkTypes.add(SdkType.AIR);
         }

@@ -113,7 +113,7 @@ class Scaffold extends DefaultTask {
     * @return A file content template based on the selected {@link FlexType} and {@link FrameworkLinkage}
     */
    private InputStream getTemplate(boolean descriptor) {
-       String extension = flexConvention.frameworkLinkage.usesFlex() ? 'mxml' : 'as'
+       String extension = flexConvention.usesFlex() ? 'mxml' : 'as'
        String path = "/templates/${flexConvention.type}.${extension}"
 
        if (descriptor) path = toDescriptorPath path

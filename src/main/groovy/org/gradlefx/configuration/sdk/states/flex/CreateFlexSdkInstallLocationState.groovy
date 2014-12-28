@@ -29,7 +29,7 @@ class CreateFlexSdkInstallLocationState extends AbstractCreateSdkInstallLocation
 
     @Override
     SdkInitState nextState() {
-        //if lib/mxmlc.jar is found from FLEX_HOME or the Gradle SDK Location, it will mark a FLEX dependency flag for CommandLineInstruction, Compc, Mxmlc, ASDoc
+        //if lib/mxmlc.jar is found in the SDK installation, it will mark this project as Flex-enabled.
         if (isInstalled || isInstallationRequired) {
             flexConvention.sdkTypes.add(SdkType.Flex);
         }

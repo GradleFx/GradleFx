@@ -23,7 +23,7 @@ apply plugin: 'signing'
 apply plugin: 'idea'
 
 group = 'org.gradlefx'
-version = '1.0'
+version = '1.1'
 ext.packaging = 'jar'
 
 def isDevBuild
@@ -52,8 +52,8 @@ dependencies {
     compile gradleApi()
     compile group: 'commons-lang', name: 'commons-lang', version: '2.6'
     compile group: 'commons-io', name: 'commons-io', version: '2.4'
-    compile group: 'org.codehaus.groovy', name: 'groovy-all', version: '1.8.6'
-    testCompile group: 'org.spockframework', name: 'spock-core', version: '0.7-groovy-1.8'
+    compile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.3.3'
+    testCompile group: 'org.spockframework', name: 'spock-core', version: '0.7-groovy-2.0'
 }
 
 task groovydocJar(type: Jar, dependsOn: groovydoc) {
@@ -75,7 +75,7 @@ artifacts {
 task wrapper(type: Wrapper) {
     group = 'Buildmaster'
     description = 'Generates gradlew and gradlew.bat bootstrap scripts'
-    gradleVersion = '1.6'
+    gradleVersion = '2.0'
 }
 
 //********* artifact signing *********

@@ -14,29 +14,29 @@
  * limitations under the License.
  */
 
-package org.gradlefx.cli
+package org.gradlefx.cli.instructions
 
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
-import org.gradlefx.conventions.GradleFxConvention
+import org.gradlefx.cli.compiler.CompilerOption
 import org.gradlefx.plugins.GradleFxPlugin
 import spock.lang.Specification
 
-class ASDocCommandLineInstructionTest extends Specification {
+class ASDocInstructionsTest extends Specification {
 
     Project project
-    ASDocCommandLineInstruction commandLineInstruction
+    ASDocInstructions instructions
 
     def setup() {
         project = ProjectBuilder.builder().build()
         new GradleFxPlugin().apply(project)
-        commandLineInstruction = new ASDocCommandLineInstruction(project)
+        instructions = new ASDocInstructions(project)
     }
 
     def "call keepXML, should add -keep-xml with value true to compiler arguments"() {
         when:
-            commandLineInstruction.keepXML()
+            instructions.keepXML()
         then:
-            commandLineInstruction.arguments.contains("${CompilerOption.KEEP_XML}=true")
+            instructions.compilerOptions.contains("${CompilerOption.KEEP_XML}=true")
     }
 }
