@@ -42,12 +42,4 @@ trait SimpleConventionOptionsInjector implements CompilerOptionsRequirement, Pro
         }
     }
 
-    public void addMainClass() {
-        File mainClassFile = new File(flexConvention.mainClassPath)
-        if (!mainClassFile.isAbsolute()) {
-            ProjectFileSearcher projectFileSearcher = new ProjectFileSearcher(project)
-            mainClassFile = projectFileSearcher.findFile flexConvention.srcDirs, flexConvention.mainClassPath
-        }
-        compilerOptions.add mainClassFile.absolutePath
-    }
 }

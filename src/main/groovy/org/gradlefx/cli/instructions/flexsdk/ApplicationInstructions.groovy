@@ -17,6 +17,7 @@
 package org.gradlefx.cli.instructions.flexsdk
 
 import org.gradle.api.Project
+import org.gradlefx.cli.common.optioninjectors.ApplicationOptionsInjector
 import org.gradlefx.cli.common.optioninjectors.FlexFrameworkRslOptionsInjector
 import org.gradlefx.cli.common.optioninjectors.LibraryOptionsInjector
 import org.gradlefx.cli.common.optioninjectors.SimpleConventionOptionsInjector
@@ -27,7 +28,10 @@ import org.gradlefx.conventions.FrameworkLinkage
 /**
  * Compiler instructions for an application that makes use of the Flex SDK and Flex.
  */
-class ApplicationInstructions extends CompilerInstructionsBuilder implements SimpleConventionOptionsInjector, LibraryOptionsInjector, SourcesOptionsInjector, FlexFrameworkRslOptionsInjector {
+class ApplicationInstructions
+        extends CompilerInstructionsBuilder
+        implements SimpleConventionOptionsInjector, LibraryOptionsInjector, SourcesOptionsInjector,
+                FlexFrameworkRslOptionsInjector, ApplicationOptionsInjector {
 
     ApplicationInstructions(Project project) {
         super(project)
@@ -37,11 +41,14 @@ class ApplicationInstructions extends CompilerInstructionsBuilder implements Sim
     void configure() {
         setDefaultConfigName()
 
-        //add framework
+        /* By default, the *-config.xml files will cause the RSLs to be added to the -runtime-shared-library-path compiler
+           option. But when the user specifies a different way to link the framework (so not rsl, but merged for example),
+           then we first need to remove those instructions set by the config file and the apply those rsls on their
+           other compiler option (e.g. -library-path for 'merged').
+         */
         FrameworkLinkage linkage = flexConvention.frameworkLinkage
         if (!linkage.isCompilerDefault(flexConvention.type)) {
-            removeFrameworkRslsFromRslLibraryPath()
-            addFrameworkRslsToDefaultFrameworkLinkageLibraryPath()
+            reapplyFrameworkRslsAccordingToFrameworkLinkage()
         }
 
         //add every source directory

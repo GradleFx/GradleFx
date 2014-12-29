@@ -32,9 +32,12 @@ class LibraryInstructions extends CompilerInstructionsBuilder implements Library
     
     @Override
     public void configure() {
-        //add framework
-        removeFrameworkRslsFromRslLibraryPath()
-        addFrameworkRslsToDefaultFrameworkLinkageLibraryPath()
+        /* By default, the *-config.xml files will cause the RSLs to be added to the -runtime-shared-library-path compiler
+           option. For libraries however, we don't want to use RSLs. Therefore we first need to remove those instructions
+           set by the config file and the reapply those rsls on their other compiler option (e.g. -external-library-path for 'external',
+           which is typically used for library projects).
+         */
+        reapplyFrameworkRslsAccordingToFrameworkLinkage()
         
         //add every source path
         addSourceDirectories()

@@ -26,6 +26,11 @@ trait FlexFrameworkRslOptionsInjector implements ProjectRequirement, GradleFxCon
         compilerOptions.addAll flexConvention.frameworkLinkage.getCompilerOption(), paths
     }
 
+    void reapplyFrameworkRslsAccordingToFrameworkLinkage() {
+        removeFrameworkRslsFromRslLibraryPath()
+        addFrameworkRslsToDefaultFrameworkLinkageLibraryPath()
+    }
+
     void addFrameworkRsls() {
         if (flexConvention.useDebugRSLSwfs) {
             def flexConfig = new XmlSlurper().parse(flexConvention.configPath)

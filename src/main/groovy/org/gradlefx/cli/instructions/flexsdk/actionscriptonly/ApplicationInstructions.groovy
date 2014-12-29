@@ -17,6 +17,7 @@
 package org.gradlefx.cli.instructions.flexsdk.actionscriptonly
 
 import org.gradle.api.Project
+import org.gradlefx.cli.common.optioninjectors.ApplicationOptionsInjector
 import org.gradlefx.cli.common.optioninjectors.FlexFrameworkRslOptionsInjector
 import org.gradlefx.cli.common.optioninjectors.FlexSDKResourcesOptionsInjector
 import org.gradlefx.cli.common.optioninjectors.LibraryOptionsInjector
@@ -31,7 +32,7 @@ import org.gradlefx.conventions.FrameworkLinkage
  */
 class ApplicationInstructions
         extends CompilerInstructionsBuilder
-        implements LibraryOptionsInjector, SourcesOptionsInjector,
+        implements LibraryOptionsInjector, SourcesOptionsInjector, ApplicationOptionsInjector,
                 FlexFrameworkRslOptionsInjector, FlexSDKResourcesOptionsInjector {
 
     ApplicationInstructions(Project project) {

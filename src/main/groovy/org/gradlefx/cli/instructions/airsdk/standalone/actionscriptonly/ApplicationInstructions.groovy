@@ -1,6 +1,7 @@
 package org.gradlefx.cli.instructions.airsdk.standalone.actionscriptonly
 
 import org.gradle.api.Project
+import org.gradlefx.cli.common.optioninjectors.ApplicationOptionsInjector
 import org.gradlefx.cli.common.optioninjectors.FlexFrameworkRslOptionsInjector
 import org.gradlefx.cli.common.optioninjectors.LibraryOptionsInjector
 import org.gradlefx.cli.common.optioninjectors.SimpleConventionOptionsInjector
@@ -10,7 +11,10 @@ import org.gradlefx.cli.instructions.CompilerInstructionsBuilder
 /**
  * Compiler instructions for an application that only uses the AIR SDK, which also makes it a pure actionscript project.
  */
-class ApplicationInstructions extends CompilerInstructionsBuilder implements SimpleConventionOptionsInjector, LibraryOptionsInjector, SourcesOptionsInjector, FlexFrameworkRslOptionsInjector {
+class ApplicationInstructions
+        extends CompilerInstructionsBuilder
+        implements SimpleConventionOptionsInjector, LibraryOptionsInjector, SourcesOptionsInjector,
+                FlexFrameworkRslOptionsInjector, ApplicationOptionsInjector {
 
     ApplicationInstructions(Project project) {
         super(project)

@@ -16,16 +16,13 @@
 
 package org.gradlefx.tasks.compile
 
-import org.gradle.api.Task;
+import org.gradle.api.Task
 import org.gradle.api.tasks.TaskAction
-import org.gradlefx.cli.compiler.AntBasedCompilerProcess
-import org.gradlefx.cli.compiler.CompilerJar
-import org.gradlefx.cli.compiler.CompilerProcess
-import org.gradlefx.cli.compiler.DefaultCompilerResultHandler;
+import org.gradlefx.cli.compiler.*
 import org.gradlefx.cli.instructions.CompilerInstructionsBuilder
+import org.gradlefx.cli.instructions.airsdk.standalone.actionscriptonly.LibraryInstructions as NoFlexSDKLibraryInstructions
 import org.gradlefx.cli.instructions.flexsdk.LibraryInstructions as FlexSDKLibraryInstructions
 import org.gradlefx.cli.instructions.flexsdk.actionscriptonly.LibraryInstructions as FlexSDKPureASLibraryInstructions
-import org.gradlefx.cli.instructions.airsdk.standalone.actionscriptonly.LibraryInstructions as NoFlexSDKLibraryInstructions
 import org.gradlefx.tasks.Tasks
 import org.gradlefx.validators.actions.ValidateCompcTaskPropertiesAction
 
@@ -46,22 +43,34 @@ class Compc extends CompileTaskDelegate {
     @Override
     @TaskAction
     public void compile() {
-        new ValidateCompcTaskPropertiesAction().execute(this)
-
-        def compilerInstructions = createCompilerInstructionsBuilder().buildInstructions()
-        def compilerJar = flexConvention.hasFlexSDK()? CompilerJar.compc : CompilerJar.compc_cli
-
-        CompilerProcess compilerProcess = new AntBasedCompilerProcess(task.ant, compilerJar, new File(flexConvention.flexHome))
-        compilerProcess.with {
-            jvmArguments = flexConvention.jvmArguments
-            compilerOptions = compilerInstructions
-            compilerResultHandler = new DefaultCompilerResultHandler()
-        }
-        compilerProcess.compile()
+        validate()
+        def settings = prepareCompilerSettings()
+        runCompileProcess(settings)
 
         if (flexConvention.fatSwc) {
             addAsdocToSwc()
         }
+    }
+
+    private void validate() {
+        new ValidateCompcTaskPropertiesAction().execute(this)
+    }
+
+    private CompilerSettings prepareCompilerSettings() {
+        def compilerInstructions = createCompilerInstructionsBuilder().buildInstructions()
+        def compilerJar = flexConvention.hasFlexSDK()? CompilerJar.compc : CompilerJar.compc_cli
+
+        new CompilerSettings(compilerInstructions, compilerJar)
+    }
+
+    private runCompileProcess(CompilerSettings requirements) {
+        CompilerProcess compilerProcess = new AntBasedCompilerProcess(task.ant, requirements.compilerJar, new File(flexConvention.flexHome))
+        compilerProcess.with {
+            jvmArguments = flexConvention.jvmArguments
+            compilerOptions = requirements.compilerOptions
+            compilerResultHandler = new DefaultCompilerResultHandler()
+        }
+        compilerProcess.compile()
     }
 
     private CompilerInstructionsBuilder createCompilerInstructionsBuilder() {
