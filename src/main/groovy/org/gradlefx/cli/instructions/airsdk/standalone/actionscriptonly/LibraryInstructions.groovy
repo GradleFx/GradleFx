@@ -54,7 +54,7 @@ class LibraryInstructions extends CompilerInstructionsBuilder implements SimpleC
     }
 
     public void addOutput() {
-        addOutput "${project.buildDir.name}/${flexConvention.output}.$flexConvention.type"
+        addOutput "${project.buildDir.name}/${flexConvention.output}.swc"
     }
     
 }
