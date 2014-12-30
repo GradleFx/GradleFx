@@ -16,7 +16,7 @@
 
 package org.gradlefx.conventions
 
-import org.gradlefx.cli.CompilerOption;
+import org.gradlefx.cli.compiler.CompilerOption;
 
 /**
  * Defines how the framework will be linked during compilation.
@@ -38,8 +38,12 @@ public enum FrameworkLinkage {
      * They are not loaded at run time. The result is a larger SWF file, but no external dependencies.
      * This is the default selection for the framework.
      */
-    merged(CompilerOption.LIBRARY_PATH)
-    
+    merged(CompilerOption.LIBRARY_PATH),
+    /**
+     * Framework won't be linked. Primarily used for pure Actionscript projects.
+     */
+    none
+
     private CompilerOption compilerOption
     
     private FrameworkLinkage() {}

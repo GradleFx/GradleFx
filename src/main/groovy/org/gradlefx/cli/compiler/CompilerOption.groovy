@@ -14,7 +14,7 @@
 * limitations under the License.
 */
 
-package org.gradlefx.cli
+package org.gradlefx.cli.compiler
 
 public enum CompilerOption {
     

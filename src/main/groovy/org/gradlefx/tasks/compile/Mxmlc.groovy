@@ -16,39 +16,68 @@
 
 package org.gradlefx.tasks.compile
 
+import org.apache.commons.lang.StringUtils
 import org.gradle.api.Task
-import org.gradle.api.artifacts.ResolveException
-import org.gradlefx.cli.CommandLineInstruction
-import org.gradlefx.configuration.Configurations
-import org.gradlefx.configuration.sdk.SdkType
+import org.gradlefx.cli.compiler.*
+import org.gradlefx.cli.instructions.CompilerInstructionsBuilder
+import org.gradlefx.cli.instructions.airsdk.standalone.actionscriptonly.ApplicationInstructions as NoFlexSDKApplicationInstructions
+import org.gradlefx.cli.instructions.flexsdk.ApplicationInstructions as FlexSDKApplicationInstructions
+import org.gradlefx.cli.instructions.flexsdk.actionscriptonly.ApplicationInstructions as FlexSDKPureASApplicationInstructions
 import org.gradlefx.conventions.FrameworkLinkage
 import org.gradlefx.tasks.Tasks
 import org.gradlefx.validators.actions.ValidateMxmlcTaskPropertiesAction
-import org.apache.commons.lang.StringUtils
 
 class Mxmlc extends CompileTaskDelegate {
 
-    public Mxmlc(Task task, CommandLineInstruction cli) {
-        super(task, cli)
+    public Mxmlc(Task task) {
+        super(task)
         task.description = 'Compiles Flex application/module (*.swf) using the mxmlc compiler'
         task.dependsOn Tasks.COPY_RESOURCES_TASK_NAME
     }
 
-    void compileFlex() {
-        new ValidateMxmlcTaskPropertiesAction().execute(this)
-
-        cli.setConventionArguments()
-
-        def taskName
-        if (flexConvention.usesFlex()) {
-            taskName = "mxmlc"
-        } else {
-            taskName = "mxmlc-cli"
-        }
-        cli.execute task.ant, taskName
+    void compile() {
+        validate()
+        def settings = prepareCompilerSettings()
+        runCompileProcess(settings)
 
         if (flexConvention.frameworkLinkage == FrameworkLinkage.rsl)
             copyFrameworkRSLs()
+    }
+
+    private void validate() {
+        new ValidateMxmlcTaskPropertiesAction().execute(this)
+    }
+
+    private CompilerSettings prepareCompilerSettings() {
+        def compilerInstructions = createCompilerInstructionsBuilder().buildInstructions()
+        def compilerJar = flexConvention.hasFlexSDK()? CompilerJar.mxmlc : CompilerJar.mxmlc_cli
+
+        new CompilerSettings(compilerInstructions, compilerJar)
+    }
+
+    private runCompileProcess(CompilerSettings requirements) {
+        CompilerProcess compilerProcess = new AntBasedCompilerProcess(task.ant, requirements.compilerJar, new File(flexConvention.flexHome))
+        compilerProcess.with {
+            jvmArguments = flexConvention.jvmArguments
+            compilerOptions = requirements.compilerOptions
+            compilerResultHandler = new DefaultCompilerResultHandler()
+        }
+        compilerProcess.compile()
+    }
+
+    /**
+     * This determines which compiler instructions are used for this project.
+     */
+    private CompilerInstructionsBuilder createCompilerInstructionsBuilder() {
+        if(flexConvention.hasFlexSDK()) {
+            if(flexConvention.usesFlex()) {
+                new FlexSDKApplicationInstructions(task.project)
+            } else {
+                new FlexSDKPureASApplicationInstructions(task.project)
+            }
+        } else {
+            new NoFlexSDKApplicationInstructions(task.project)
+        }
     }
 
     /**

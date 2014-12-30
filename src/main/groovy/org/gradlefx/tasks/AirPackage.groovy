@@ -22,7 +22,7 @@ import org.gradle.api.file.ConfigurableFileTree
 import org.gradle.api.file.FileTreeElement
 import org.gradle.api.tasks.TaskAction
 import org.gradlefx.validators.actions.ValidateAirPackageTaskPropertiesAction
-import org.gradlefx.cli.CompilerOption;
+import org.gradlefx.cli.compiler.CompilerOption;
 import org.gradlefx.conventions.FlexType;
 import org.gradlefx.conventions.GradleFxConvention
 

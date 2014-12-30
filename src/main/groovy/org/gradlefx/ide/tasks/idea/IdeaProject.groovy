@@ -23,13 +23,11 @@ import org.gradle.api.file.FileTreeElement
 import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDependency
 import org.gradle.api.internal.artifacts.dependencies.DefaultProjectDependency
 import org.gradle.api.internal.artifacts.dependencies.DefaultSelfResolvingDependency
-import org.gradlefx.cli.CompilerOption
+import org.gradlefx.cli.compiler.CompilerOption
 import org.gradlefx.configuration.Configurations
 import org.gradlefx.conventions.FlexType
 import org.gradlefx.conventions.FrameworkLinkage
 import org.gradlefx.ide.tasks.AbstractIDEProject
-
-import static java.util.UUID.randomUUID
 
 class IdeaProject extends AbstractIDEProject {
 

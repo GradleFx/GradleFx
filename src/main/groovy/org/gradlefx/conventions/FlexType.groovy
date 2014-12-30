@@ -16,25 +16,19 @@
 
 package org.gradlefx.conventions
 
-
-import org.gradlefx.cli.AIRCommandLineInstruction
-import org.gradlefx.tasks.compile.Compc;
-import org.gradlefx.tasks.compile.Compile;
-import org.gradlefx.tasks.compile.Mxmlc;
-
-import org.gradlefx.cli.ApplicationCommandLineInstruction;
-import org.gradlefx.cli.CommandLineInstruction;
-import org.gradlefx.cli.LibraryCommandLineInstruction;
+import org.gradlefx.tasks.compile.Compc
+import org.gradlefx.tasks.compile.CompileTask
+import org.gradlefx.tasks.compile.Mxmlc
 
 /**
  * Defines a certain type of Flex application.
  */
 enum FlexType {
-    swf('flex', Mxmlc, ApplicationCommandLineInstruction),
-    swc('flex', Compc, LibraryCommandLineInstruction),
-    swcAir('flex', Compc, LibraryCommandLineInstruction),
-    air('air', Mxmlc, AIRCommandLineInstruction),
-    mobile('airmobile', Mxmlc, AIRCommandLineInstruction)
+    swf('flex', Mxmlc),
+    swc('flex', Compc),
+    swcAir('air', Compc),
+    air('air', Mxmlc),
+    mobile('airmobile', Mxmlc)
 
     /**
      * The name of the type.
@@ -43,29 +37,24 @@ enum FlexType {
     /**
      * The Compile task class which performs the compilation of that specific type.
      */
-    private Class<Compile> compileClass
+    private Class<CompileTask> compileClass
+
     /**
-     * The class which calls the command line interface.
+     *
+     * @param configName name of the Flex configuration. E.g. when you specify 'air' it will use the 'air-config.xml'.
+     * @param compileClass the task that will compile the project.
      */
-    private Class<CommandLineInstruction> cliClass
-    
-    
-    public FlexType(String configName, Class<Compile> compileClass, Class<CommandLineInstruction> cliClass) {
+    public FlexType(String configName, Class<CompileTask> compileClass) {
         this.configName = configName
         this.compileClass = compileClass
-        this.cliClass = cliClass
     }
     
     public String getConfigName() {
         return configName
     }
     
-    public Class<Compile> getCompileClass() {
+    public Class<CompileTask> getCompileClass() {
         return compileClass
-    }
-    
-    public Class<CommandLineInstruction> getCLIClass() {
-        return cliClass
     }
     
     public boolean isApp() {

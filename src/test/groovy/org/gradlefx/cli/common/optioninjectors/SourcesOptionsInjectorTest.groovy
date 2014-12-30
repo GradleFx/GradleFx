@@ -14,26 +14,28 @@
  * limitations under the License.
  */
 
-package org.gradlefx.cli
+package org.gradlefx.cli.common.optioninjectors
 
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
+import org.gradlefx.cli.compiler.CompilerOption
+import org.gradlefx.cli.compiler.CompilerOptions
 import org.gradlefx.conventions.GradleFxConvention
 import org.gradlefx.plugins.GradleFxPlugin
 import spock.lang.Specification
 
-class LibraryCommandLineInstructionTest extends Specification {
+class SourcesOptionsInjectorTest extends Specification {
 
     Project project
-    GradleFxConvention flexConvention
-    LibraryCommandLineInstruction commandLineInstruction
+    GradleFxConvention gradleFxConvention
+    SourcesOptionsInjector sourcesOptionsInjector
 
     def setup() {
         File projectDir = new File(getClass().getResource("/stub-project-dir").toURI())
         project = ProjectBuilder.builder().withProjectDir(projectDir).build()
         new GradleFxPlugin().apply(project)
-        flexConvention = project.convention.plugins.flex
-        commandLineInstruction = new LibraryCommandLineInstruction(project)
+        gradleFxConvention = (GradleFxConvention) project.convention.plugins.flex
+        sourcesOptionsInjector = new StubSourcesOptionsInjector(project)
     }
 
     def "call addResources, should add all resource file locations to compiler arguments with -include-file"() {
@@ -43,15 +45,22 @@ class LibraryCommandLineInstructionTest extends Specification {
         List expectedLevel2Arguments = [CompilerOption.INCLUDE_FILE.optionName, "level2/level2file.txt", level2File.path]
 
         when:
-            flexConvention.resourceDirs = ['stub-resource-dir']
-            commandLineInstruction.addResources()
+            gradleFxConvention.resourceDirs = ['stub-resource-dir']
+            sourcesOptionsInjector.addResources()
         then:
-            Collections.indexOfSubList(commandLineInstruction.arguments, expectedLevel1Arguments) != -1
-            Collections.indexOfSubList(commandLineInstruction.arguments, expectedLevel2Arguments) != -1
-
+            Collections.indexOfSubList(sourcesOptionsInjector.compilerOptions.asList(), expectedLevel1Arguments) != -1
+            Collections.indexOfSubList(sourcesOptionsInjector.compilerOptions.asList(), expectedLevel2Arguments) != -1
     }
+}
 
-    def containsInOrder(List listToVerify, List expectedList) {
-        listToVerify.indexOf
+class StubSourcesOptionsInjector implements SourcesOptionsInjector {
+
+    CompilerOptions compilerOptions = new CompilerOptions()
+    Project project
+    GradleFxConvention flexConvention
+
+    public StubSourcesOptionsInjector(Project project) {
+        this.project = project
+        flexConvention = project.convention.plugins.flex as GradleFxConvention
     }
 }
