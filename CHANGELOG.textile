@@ -17,10 +17,8 @@ h5. Improvements
 * Support adding files to an IDEA project from flexConvention.air.fileOptions. "#157":https://github.com/GradleFx/GradleFx/pull/157
 * IDEA project generation: Set output directory to the project's build directory. "#159":https://github.com/GradleFx/GradleFx/pull/159
 
-H5. Breaking changes
-* Allow specifying the location of the main swf file inside the packaged mobile application with the new "air { mainSwfDir = 'someDir' }" property. This change also changed the default location of
-  the swf file inside the package, which is from now on the root of the package instead of the 'build' directory. Because of this change you'll probably need to update your project's air descriptor
-  file to reflect this new path. "#155":https://github.com/GradleFx/GradleFx/pull/155
+h5. Breaking changes
+* Allow specifying the location of the main swf file inside the packaged mobile application with the new "air { mainSwfDir = 'someDir' }" property. This change also changed the default location of the swf file inside the package, which is from now on the root of the package instead of the 'build' directory. Because of this change you'll probably need to update your project's air descriptor file to reflect this new path. "#155":https://github.com/GradleFx/GradleFx/pull/155
 
 h3. v1.0
 
