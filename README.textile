@@ -14,7 +14,7 @@ Features:
 * SWC, SWF and AIR project support
 * FlexUnit support
 * AsDoc support
-* Adobe Flash Builder project generation
+* Adobe Flash Builder & Intellij project generation
 * project scaffolding
 * Automatic Flex/AIR SDK installation
 * Mobile (Android & iOS) support
@@ -27,6 +27,3 @@ h2. Useful links
 * Help & Support: "http://support.gradlefx.org/":http://support.gradlefx.org/
 * Bug Tracking: "https://github.com/GradleFx/GradleFx/issues":https://github.com/GradleFx/GradleFx/issues
 * Changelog: "https://github.com/GradleFx/GradleFx/blob/master/CHANGELOG.textile":https://github.com/GradleFx/GradleFx/blob/master/CHANGELOG.textile
-
-h2. Upcoming features
-* IDEA project generation support
