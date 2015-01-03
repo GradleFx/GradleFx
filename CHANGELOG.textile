@@ -3,6 +3,7 @@ h2. GradleFx changelog
 h3. v1.1
 
 h5. New Features
+* Upgrade of GradleFx to Gradle 2.0. This is now also the new minimum required version when using GradleFx in your project.
 * It's now possible to reference ANE libraries as dependencies. "#140":https://github.com/GradleFx/GradleFx/issues/140 & "#153":https://github.com/GradleFx/GradleFx/pull/153
 * Support for the "new packaging compiler":http://www.adobe.com/devnet/air/articles/ios-packaging-compiled-mode.html provided in new versions of the AIR SDK.
   This can be enabled with the new "airMobile { nonLegacyCompiler = 'true' }" convention property. "#149":https://github.com/GradleFx/GradleFx/pull/149
