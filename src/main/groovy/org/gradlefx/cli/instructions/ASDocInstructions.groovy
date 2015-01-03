@@ -14,27 +14,33 @@
 * limitations under the License.
 */
 
-package org.gradlefx.cli
+package org.gradlefx.cli.instructions
 
 import org.gradle.api.Project
+import org.gradlefx.cli.compiler.CompilerOption
+import org.gradlefx.cli.common.optioninjectors.LibraryOptionsInjector
+import org.gradlefx.cli.common.optioninjectors.SourcesOptionsInjector
 
+/**
+ * Compiler instructions for generating ASDoc.
+ */
+class ASDocInstructions extends CompilerInstructionsBuilder implements LibraryOptionsInjector, SourcesOptionsInjector {
 
-class ASDocCommandLineInstruction extends CommandLineInstruction {
-
-    public ASDocCommandLineInstruction(Project project) {
+    ASDocInstructions(Project project) {
         super(project)
     }
     
     @Override
-    public void setConventionArguments() {
+    void configure() {
         //add every source directory
-        addSourcePaths()
+        addSourceDirectories()
+        addLocaleSources()
         addDocSources()
         addLocales()
 
         //add dependencies
         addInternalLibraries()
-        addExternalLibraries()
+        addExternalLibrariesForLib()
         addMergedLibraries()
         addTheme()
         addRSLs()
@@ -43,7 +49,7 @@ class ASDocCommandLineInstruction extends CommandLineInstruction {
         addAdditionalAsdocOptions()
 
         // only generate the tempdita folder when having to create a fat swc
-        if (flexConvention.fatSwc == true) keepXML()
+        if (flexConvention.fatSwc) keepXML()
 
         addOutput()
     }
@@ -54,17 +60,17 @@ class ASDocCommandLineInstruction extends CommandLineInstruction {
             File sourcePathDir = project.file sourcePath
  
             if (sourcePathDir.exists()) {
-                add CompilerOption.DOC_SOURCES, sourcePathDir.path
+                compilerOptions.add CompilerOption.DOC_SOURCES, sourcePathDir.path
             }
         }
     }
     
     public void addAdditionalAsdocOptions() {
-        addAll flexConvention.asdoc.additionalASDocOptions
+        compilerOptions.addAll flexConvention.asdoc.additionalASDocOptions
     }
     
     public void keepXML() {
-        set CompilerOption.KEEP_XML, "true"
+        compilerOptions.set CompilerOption.KEEP_XML, "true"
     }
     
     public void addOutput() {

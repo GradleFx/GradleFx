@@ -21,7 +21,7 @@ import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.api.logging.LogLevel
 import org.gradle.api.tasks.TaskAction
-import org.gradlefx.cli.CommandLineInstruction
+import org.gradlefx.cli.instructions.CompilerInstructionsBuilder
 import org.gradlefx.configuration.Configurations
 import org.gradlefx.conventions.FlexType
 import org.gradlefx.conventions.GradleFxConvention
@@ -53,8 +53,8 @@ class Compile extends DefaultTask implements CompileTask {
 
     @Override
     @TaskAction
-    public void compileFlex() {
-        delegate.compileFlex()
+    public void compile() {
+        delegate.compile()
     }
 
     protected void initInputDirectory() {
@@ -78,8 +78,7 @@ class Compile extends DefaultTask implements CompileTask {
 
     protected CompileTask createDelegate() {
         FlexType type = flexConvention.type
-        CommandLineInstruction cli = type.cliClass.newInstance project
-        return type.compileClass.newInstance(this, cli)
+        return type.compileClass.newInstance(this)
     }
 
     protected void addCompilationDependencies() {

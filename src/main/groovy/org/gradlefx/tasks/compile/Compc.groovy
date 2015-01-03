@@ -16,12 +16,13 @@
 
 package org.gradlefx.tasks.compile
 
-import org.gradle.api.Task;
-import org.gradle.api.tasks.TaskAction;
-import org.gradlefx.cli.CommandLineInstruction
-import org.gradlefx.cli.CompilerOption
-import org.gradlefx.configuration.Configurations
-import org.gradlefx.configuration.sdk.SdkType
+import org.gradle.api.Task
+import org.gradle.api.tasks.TaskAction
+import org.gradlefx.cli.compiler.*
+import org.gradlefx.cli.instructions.CompilerInstructionsBuilder
+import org.gradlefx.cli.instructions.airsdk.standalone.actionscriptonly.LibraryInstructions as NoFlexSDKLibraryInstructions
+import org.gradlefx.cli.instructions.flexsdk.LibraryInstructions as FlexSDKLibraryInstructions
+import org.gradlefx.cli.instructions.flexsdk.actionscriptonly.LibraryInstructions as FlexSDKPureASLibraryInstructions
 import org.gradlefx.tasks.Tasks
 import org.gradlefx.validators.actions.ValidateCompcTaskPropertiesAction
 
@@ -30,8 +31,8 @@ import org.gradlefx.validators.actions.ValidateCompcTaskPropertiesAction
  */
 class Compc extends CompileTaskDelegate {
 
-    public Compc(Task task, CommandLineInstruction cli) {
-        super(task, cli)
+    public Compc(Task task) {
+        super(task)
         task.description = 'Compiles Flex component (*.swc) using the compc compiler'
 
         if (flexConvention.fatSwc) {
@@ -41,28 +42,50 @@ class Compc extends CompileTaskDelegate {
 
     @Override
     @TaskAction
-    public void compileFlex() {
-        new ValidateCompcTaskPropertiesAction().execute(this)
-
-        cli.setConventionArguments()
-
-        def taskName = ""
-
-        //if Flex and AIR are defined, Flex's mxmlc will be used
-        if (flexConvention.sdkTypes.contains(SdkType.Flex)) {
-            taskName = "compc";
-        } else if (flexConvention.sdkTypes.contains(SdkType.AIR)) {
-            taskName = "compc-cli";
-        }
-
-        cli.execute task.ant, taskName
+    public void compile() {
+        validate()
+        def settings = prepareCompilerSettings()
+        runCompileProcess(settings)
 
         if (flexConvention.fatSwc) {
             addAsdocToSwc()
         }
     }
 
-    protected void addAsdocToSwc() {
+    private void validate() {
+        new ValidateCompcTaskPropertiesAction().execute(this)
+    }
+
+    private CompilerSettings prepareCompilerSettings() {
+        def compilerInstructions = createCompilerInstructionsBuilder().buildInstructions()
+        def compilerJar = flexConvention.hasFlexSDK()? CompilerJar.compc : CompilerJar.compc_cli
+
+        new CompilerSettings(compilerInstructions, compilerJar)
+    }
+
+    private runCompileProcess(CompilerSettings requirements) {
+        CompilerProcess compilerProcess = new AntBasedCompilerProcess(task.ant, requirements.compilerJar, new File(flexConvention.flexHome))
+        compilerProcess.with {
+            jvmArguments = flexConvention.jvmArguments
+            compilerOptions = requirements.compilerOptions
+            compilerResultHandler = new DefaultCompilerResultHandler()
+        }
+        compilerProcess.compile()
+    }
+
+    private CompilerInstructionsBuilder createCompilerInstructionsBuilder() {
+        if(flexConvention.hasFlexSDK()) {
+            if(flexConvention.usesFlex()) {
+                new FlexSDKLibraryInstructions(task.project)
+            } else {
+                new FlexSDKPureASLibraryInstructions(task.project)
+            }
+        } else {
+            new NoFlexSDKLibraryInstructions(task.project)
+        }
+    }
+
+    private void addAsdocToSwc() {
         task.ant.zip(destfile: new File(task.project.buildDir.absolutePath, "${flexConvention.output}.${flexConvention.type}"),
                 update: true) {
             zipfileset(dir: task.project.file(flexConvention.asdoc.outputDir + "/tempdita"), prefix: 'docs') {

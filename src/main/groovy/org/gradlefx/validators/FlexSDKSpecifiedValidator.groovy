@@ -20,26 +20,25 @@ import groovy.io.FileType
 import org.apache.commons.lang.StringUtils
 
 class FlexSDKSpecifiedValidator extends AbstractProjectPropertyValidator {
-    
-    private String flexConfigPath = "/frameworks/flex-config.xml"
+
     private String flexLibPath = "/frameworks/libs"
     
     void execute() {
         if(isFlexSDKHomeEmpty()) {
-            addError("The Flex home location isn't specified. You can solve this by defining the FLEX_HOME" +
+            addError("The Flex/AIR home location isn't specified. You can solve this by defining the FLEX_HOME" +
                 " environment variable, by specifying the flexHome property in your build script or by using the" +
                 " SDK autoinstall feature of GradleFx")
         } else if(isFlexSDKHomeInvalid()) {
-            addError("The path to the Flex home directory isn't valid (${flexConvention.flexHome}): " +
+            addError("The path to the Flex/AIR home directory isn't valid (${flexConvention.flexHome}): " +
                 "the directory doesn't exist")
         } else {
             if (hasNoFlexSDKlibs()) {
-                addError("The path to the Flex home directory isn't valid (${flexConvention.flexHome}): " +
-                    "can't find the Flex libraries in '${flexLibPath}'")
+                addError("The path to the Flex/AIR home directory isn't valid (${flexConvention.flexHome}): " +
+                    "can't libraries in '${flexLibPath}'")
             }
             if (hasNoFlexConfigFile()) {
-                addError("The path to the Flex home directory isn't valid (${flexConvention.flexHome}): " +
-                    "can't find 'flex-config.xml' at '${flexConfigPath}'")
+                addError("The path to the Flex/AIR home directory isn't valid (${flexConvention.flexHome}): " +
+                    "can't find '${flexConvention.getConfigPath()}'")
             }
         }
     }
@@ -64,7 +63,7 @@ class FlexSDKSpecifiedValidator extends AbstractProjectPropertyValidator {
     }
     
     private boolean hasNoFlexConfigFile() {
-        File flexConfigFile = new File(flexConvention.flexHome + flexConfigPath)
+        File flexConfigFile = new File(flexConvention.getConfigPath())
         return !flexConfigFile.exists()
     }
 

@@ -68,6 +68,11 @@ class AIRConvention {
      * The directory in which the adt packager will be executed. By default uses the project directory.
      */
     private String packageWorkDir;
+    /**
+     * The directory in the package where the output swf file will be placed, for example 'foo/bar'
+     * By default the output swf is placed at the root of the package.
+     */
+    private String mainSwfDir;
 
     public AIRConvention(Project project) {
         keystore = "${project.name}.p12"
@@ -126,4 +131,13 @@ class AIRConvention {
     void packageWorkDir(String packageWorkDir) {
         this.packageWorkDir = packageWorkDir
     }
+
+    String getMainSwfDir() {
+        return mainSwfDir
+    }
+
+    void mainSwfDir(String mainSwfDir) {
+        this.mainSwfDir = mainSwfDir
+    }
+
 }

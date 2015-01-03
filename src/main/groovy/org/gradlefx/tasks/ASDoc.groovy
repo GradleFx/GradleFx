@@ -19,10 +19,13 @@ package org.gradlefx.tasks
 import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.tasks.TaskAction
-import org.gradlefx.cli.ASDocCommandLineInstruction
-import org.gradlefx.cli.CommandLineInstruction
+import org.gradlefx.cli.compiler.AntBasedCompilerProcess
+import org.gradlefx.cli.compiler.CompilerJar
+import org.gradlefx.cli.compiler.CompilerProcess
+import org.gradlefx.cli.compiler.DefaultCompilerResultHandler
+import org.gradlefx.cli.instructions.ASDocInstructions
+import org.gradlefx.cli.instructions.CompilerInstructionsBuilder
 import org.gradlefx.configuration.Configurations
-import org.gradlefx.configuration.sdk.SdkType
 import org.gradlefx.conventions.GradleFxConvention
 
 class ASDoc extends DefaultTask {
@@ -75,19 +78,16 @@ class ASDoc extends DefaultTask {
     @TaskAction
     public void generateAsDoc() {
         if (hasDocSources()) {
-            CommandLineInstruction cli = new ASDocCommandLineInstruction(project)
-            cli.setConventionArguments()
+            def compilerInstructions = new ASDocInstructions(project).buildInstructions()
+            def compilerJar = flexConvention.hasFlexSDK()? CompilerJar.asdoc : CompilerJar.asdoc_legacy
 
-            def taskName = ""
-
-            //if Flex and AIR are defined, Flex's mxmlc will be used
-            if (flexConvention.sdkTypes.contains(SdkType.Flex)) {
-                taskName = "asdoc";
-            } else if (flexConvention.sdkTypes.contains(SdkType.AIR)) {
-                taskName = "legacy/asdoc";
+            CompilerProcess compilerProcess = new AntBasedCompilerProcess(ant, compilerJar, new File(flexConvention.flexHome))
+            compilerProcess.with {
+                jvmArguments = flexConvention.jvmArguments
+                compilerOptions = compilerInstructions
+                compilerResultHandler = new DefaultCompilerResultHandler()
             }
-
-            cli.execute ant, taskName
+            compilerProcess.compile()
         }
     }
 

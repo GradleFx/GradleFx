@@ -20,14 +20,14 @@ import org.apache.commons.io.FilenameUtils
 import org.gradle.api.artifacts.Dependency
 import org.gradle.api.file.ConfigurableFileTree
 import org.gradle.api.file.FileTreeElement
+import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDependency
 import org.gradle.api.internal.artifacts.dependencies.DefaultProjectDependency
 import org.gradle.api.internal.artifacts.dependencies.DefaultSelfResolvingDependency
+import org.gradlefx.cli.compiler.CompilerOption
 import org.gradlefx.configuration.Configurations
 import org.gradlefx.conventions.FlexType
 import org.gradlefx.conventions.FrameworkLinkage
 import org.gradlefx.ide.tasks.AbstractIDEProject
-
-import static java.util.UUID.randomUUID
 
 class IdeaProject extends AbstractIDEProject {
 
@@ -93,14 +93,16 @@ class IdeaProject extends AbstractIDEProject {
             def rootMgr = xml.component.find { it.'@name' == 'FlexBuildConfigurationManager' }
             def dependencies = rootMgr.configurations.configuration.dependencies.first()
 
-            switch (flexConvention.frameworkLinkage) {
-                case FrameworkLinkage.none:
-                    dependencies.attributes().remove('framework-linkage')
-                    break;
-                case FrameworkLinkage.external:
-                case FrameworkLinkage.rsl:
-                    dependencies.@'framework-linkage' = 'Runtime'
-                    break;
+            if (!flexConvention.usesFlex()) {
+                dependencies.attributes().remove('framework-linkage')
+            }
+            else {
+                switch (flexConvention.frameworkLinkage) {
+                    case FrameworkLinkage.external:
+                    case FrameworkLinkage.rsl:
+                        dependencies.@'framework-linkage' = 'Runtime'
+                        break;
+                }
             }
 
             if (flexConvention.flexSdkName != null) {
@@ -135,23 +137,32 @@ class IdeaProject extends AbstractIDEProject {
                     } else if (dependency instanceof DefaultSelfResolvingDependency) {
                         def selfDependency = dependency as DefaultSelfResolvingDependency;
                         selfDependency.source.files.each { file ->
-                            def String uuid = file.name
-                            def entry = new Node(entries, 'entry', ['library-id': uuid])
-                            new Node(entry, 'dependency', ['linkage':configTypeToLinkageType(configType)])
-
-                            def orderEntry = new Node(rootMgr, 'orderEntry', [type:"module-library"]);
-                            def libNode = new Node(orderEntry, 'library', [name:file.name, type:"flex"])
-                            new Node(libNode, 'properties', [id:uuid])
-                            def classes = new Node(libNode, 'CLASSES')
-                            new Node(classes, 'root', [url:"jar://\$MODULE_DIR\$/${FilenameUtils.separatorsToUnix(project.relativePath(file))}!/"]);
-                            new Node(libNode, 'JAVADOC');
-                            new Node(libNode, 'SOURCES');
+                            generateDependencyNode(file, entries, rootMgr, configType);
+                        }
+                    } else if (dependency instanceof DefaultExternalModuleDependency) {
+                        DefaultExternalModuleDependency externalDependency = dependency as DefaultExternalModuleDependency;
+                        def files = project.configurations[configType].files(externalDependency);
+                        files.each { file ->
+                            generateDependencyNode(file, entries, rootMgr, configType);
                         }
                     }
                 }
-
             }
         }
+    }
+
+    def generateDependencyNode(File file, Node entries, Node rootMgr, String configType) {
+        def String uuid = file.name
+        def entry = new Node(entries, 'entry', ['library-id': uuid])
+        new Node(entry, 'dependency', ['linkage':configTypeToLinkageType(configType)])
+
+        def orderEntry = new Node(rootMgr, 'orderEntry', [type:"module-library"]);
+        def libNode = new Node(orderEntry, 'library', [name:file.name, type:"flex"])
+        new Node(libNode, 'properties', [id:uuid])
+        def classes = new Node(libNode, 'CLASSES')
+        new Node(classes, 'root', [url:"jar://\$MODULE_DIR\$/${FilenameUtils.separatorsToUnix(project.relativePath(file))}!/"]);
+        new Node(libNode, 'JAVADOC');
+        new Node(libNode, 'SOURCES');
     }
 
     def configTypeToLinkageType(String configType) {
@@ -181,7 +192,8 @@ class IdeaProject extends AbstractIDEProject {
     private void updateConfiguration() {
         editXmlFile imlFilename, { xml ->
             def configuration = xml.component.find { it.'@name' == 'FlexBuildConfigurationManager' }.configurations.configuration.first()
-            configuration.@'pure-as' = flexConvention.frameworkLinkage == FrameworkLinkage.none;
+            //configuration.@'pure-as' = flexConvention.frameworkLinkage == FrameworkLinkage.none;
+            configuration.@'pure-as' = !flexConvention.usesFlex();
 
             //setup main class
             switch (flexConvention.type) {
@@ -244,9 +256,13 @@ class IdeaProject extends AbstractIDEProject {
                         configuration.'packaging-ios'.@'enabled' = true
 
                         def attrs = ['keystore-path':"\$MODULE_DIR\$/${FilenameUtils.separatorsToUnix(project.relativePath(flexConvention.air.keystore))}",
-                                     'use-temp-certificate':false,
-                                     sdk:flexConvention.airMobile.platformSdk
+                                     'use-temp-certificate':false
                                     ];
+                        if (flexConvention.airMobile.platformSdk != null)
+                        {
+                            attrs['sdk'] = flexConvention.airMobile.platformSdk
+                        }
+
                         if (flexConvention.airMobile.provisioningProfile != null) {
                             attrs['provisioning-profile-path']  = "\$MODULE_DIR\$/${FilenameUtils.separatorsToUnix(project.relativePath(flexConvention.airMobile.provisioningProfile))}"
                         }
@@ -264,10 +280,24 @@ class IdeaProject extends AbstractIDEProject {
 
     private void addFilesInPackage(parent) {
         def filesParent = new Node(parent, 'files-to-package', [])
+
         flexConvention.air.includeFileTrees.each { ConfigurableFileTree fileTree ->
             fileTree.visit { FileTreeElement file ->
                 if (!file.isDirectory()) {
                     new Node(filesParent, 'FilePathAndPathInPackage', ['file-path':file.file.absoluteFile, 'path-in-package':file.relativePath.toString()])
+                }
+            }
+        }
+
+        List<String> opts = flexConvention.air.fileOptions
+        if (opts) {
+            String currDir = ''
+            for (int i; i<opts.size(); i++) {
+                if (opts[i] == CompilerOption.CHANGE_DIRECTORY.optionName) {
+                    i++
+                    currDir = opts[i]
+                } else {
+                    new Node(filesParent, 'FilePathAndPathInPackage', ['file-path':'$MODULE_DIR$/'+currDir+'/'+opts[i], 'path-in-package':opts[i]])
                 }
             }
         }

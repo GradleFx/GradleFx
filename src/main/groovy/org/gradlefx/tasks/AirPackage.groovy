@@ -16,12 +16,13 @@
 
 package org.gradlefx.tasks
 
+import org.apache.commons.io.FileUtils
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileTree
 import org.gradle.api.file.FileTreeElement
 import org.gradle.api.tasks.TaskAction
 import org.gradlefx.validators.actions.ValidateAirPackageTaskPropertiesAction
-import org.gradlefx.cli.CompilerOption;
+import org.gradlefx.cli.compiler.CompilerOption;
 import org.gradlefx.conventions.FlexType;
 import org.gradlefx.conventions.GradleFxConvention
 
@@ -70,13 +71,26 @@ class AirPackage extends DefaultTask {
 
         airOptions.addAll([
             project.file(project.buildDir.name + '/' + flexConvention.output).absolutePath,
-            project.file(flexConvention.air.applicationDescriptor),
-            project.file("${project.buildDir}/${flexConvention.output}.${FlexType.swf}")
+            project.file(flexConvention.air.applicationDescriptor)
         ])
 
         addFiles(airOptions)
 
+        addMainSwf(airOptions)
+
         return airOptions
+    }
+
+    private void addMainSwf(List compilerOptions) {
+        compilerOptions.add CompilerOption.CHANGE_DIRECTORY.optionName
+        compilerOptions.add project.buildDir.path
+        if (flexConvention.air.mainSwfDir) {
+            File swfDir = new File(project.buildDir, flexConvention.air.mainSwfDir);
+            FileUtils.copyFileToDirectory(new File("${project.buildDir.path}/${flexConvention.output}.${FlexType.swf}"),swfDir)
+            compilerOptions.add "${flexConvention.air.mainSwfDir}/${flexConvention.output}.${FlexType.swf}"
+        } else {
+            compilerOptions.add "${flexConvention.output}.${FlexType.swf}"
+        }
     }
 
     private void addFiles(List compilerOptions) {

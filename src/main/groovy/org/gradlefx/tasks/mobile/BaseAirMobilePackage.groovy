@@ -15,11 +15,12 @@
  */
 package org.gradlefx.tasks.mobile
 
+import org.apache.commons.io.FileUtils
 import org.apache.commons.lang.StringUtils
 import org.gradle.api.file.ConfigurableFileTree
 import org.gradle.api.file.FileTreeElement
 import org.gradle.api.tasks.TaskAction
-import org.gradlefx.cli.CompilerOption
+import org.gradlefx.cli.compiler.CompilerOption
 import org.gradlefx.conventions.AIRMobileConvention
 import org.gradlefx.conventions.FlexType
 import org.gradlefx.tasks.Tasks
@@ -46,6 +47,10 @@ class BaseAirMobilePackage extends AdtTask {
             addArg CompilerOption.IOS_SAMPLER.optionName
         }
 
+        if(flexConvention.airMobile.nonLegacyCompiler) {
+            addArgs CompilerOption.USE_LEGACY_COMPILER.optionName, "no"
+        }
+
         if (StringUtils.isNotEmpty(flexConvention.airMobile.provisioningProfile)) {
             addArgs CompilerOption.PROVISIONING_PROFILE.optionName, flexConvention.airMobile.provisioningProfile
         }
@@ -60,7 +65,15 @@ class BaseAirMobilePackage extends AdtTask {
         addArgs outputPath
         addArgs project.file(flexConvention.air.applicationDescriptor)
 
-        addArgs "${project.buildDir.name}/${flexConvention.output}.${FlexType.swf}"
+        addArg CompilerOption.CHANGE_DIRECTORY.optionName
+        addArg project.buildDir.path
+        if (flexConvention.air.mainSwfDir) {
+            File swfDir = new File(project.buildDir, flexConvention.air.mainSwfDir);
+            FileUtils.copyFileToDirectory(new File("${project.buildDir.path}/${flexConvention.output}.${FlexType.swf}"),swfDir)
+            addArg "${flexConvention.air.mainSwfDir}/${flexConvention.output}.${FlexType.swf}"
+        } else {
+            addArg "${flexConvention.output}.${FlexType.swf}"
+        }
 
         flexConvention.air.includeFileTrees.each { ConfigurableFileTree fileTree ->
             addArgs CompilerOption.CHANGE_DIRECTORY.optionName
@@ -80,6 +93,22 @@ class BaseAirMobilePackage extends AdtTask {
         if (StringUtils.isNotEmpty(flexConvention.airMobile.extensionDir)) {
             addArg(CompilerOption.EXTDIR.optionName)
             addArg(flexConvention.airMobile.extensionDir)
+        }
+
+        HashSet<String> aneFolders = new HashSet<String>()
+        project.configurations.getAsMap().each {
+            Set<File> files = it.value.files
+            files.each {
+                if (it.name.endsWith(".ane"))
+                {
+                    String folder = it.getParent()
+                    if ( !aneFolders.contains(folder) ) {
+                        aneFolders.add(it.getParent())
+                        addArg CompilerOption.EXTDIR.optionName
+                        addArg folder
+                    }
+                }
+            }
         }
 
         addPlatformSdkParams()
