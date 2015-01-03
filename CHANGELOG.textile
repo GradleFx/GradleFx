@@ -1,5 +1,27 @@
 h2. GradleFx changelog
 
+h3. v1.1
+
+h5. New Features
+* It's now possible to reference ANE libraries as dependencies. "#140":https://github.com/GradleFx/GradleFx/issues/140 & "#153":https://github.com/GradleFx/GradleFx/pull/153
+* Support for the "new packaging compiler":http://www.adobe.com/devnet/air/articles/ios-packaging-compiled-mode.html provided in new versions of the AIR SDK.
+  This can be enabled with the new "airMobile { nonLegacyCompiler = 'true' }" convention property. "#149":https://github.com/GradleFx/GradleFx/pull/149
+* New project type called 'swcAir' that allows you to easily build library projects that use AIR SDK libraries. This automatically uses the air-config.xml provided in the SDK. "#160":https://github.com/GradleFx/GradleFx/pull/160
+* Full support for the newest AIR SDKs that use the ASC 2.0 compiler without having to use the Flex SDK anymore (only for pure Actionscript projects that don't use Flex). "#160":https://github.com/GradleFx/GradleFx/pull/160
+
+h5. Improvements
+* Major refactoring of the GradleFx core to make it ready for a new year of contributions. "#162":https://github.com/GradleFx/GradleFx/pull/162
+* The -extdir compiler option is now added automatically if there are native extension dependencies. This deprecates the 'extDir' convention property. "#154":https://github.com/GradleFx/GradleFx/pull/154
+* IDEA project generation: Only set air iOS SDK if it has a value "#152":https://github.com/GradleFx/GradleFx/pull/152
+* External dependencies are added to the generated IDEA project files. "#153":https://github.com/GradleFx/GradleFx/pull/153
+* Support adding files to an IDEA project from flexConvention.air.fileOptions. "#157":https://github.com/GradleFx/GradleFx/pull/157
+* IDEA project generation: Set output directory to the project's build directory. "#159":https://github.com/GradleFx/GradleFx/pull/159
+
+H5. Breaking changes
+* Allow specifying the location of the main swf file inside the packaged mobile application with the new "air { mainSwfDir = 'someDir' }" property. This change also changed the default location of
+  the swf file inside the package, which is from now on the root of the package instead of the 'build' directory. Because of this change you'll probably need to update your project's air descriptor
+  file to reflect this new path. "#155":https://github.com/GradleFx/GradleFx/pull/155
+
 h3. v1.0
 
 h5. New Features
