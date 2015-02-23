@@ -56,7 +56,7 @@ class LibraryInstructions extends CompilerInstructionsBuilder implements Library
     }
     
     public void addOutput() {
-        addOutput "${project.buildDir.name}/${flexConvention.output}.swc"
+        addOutput "${project.buildDir.path}/${flexConvention.output}.swc"
     }
     
 }
