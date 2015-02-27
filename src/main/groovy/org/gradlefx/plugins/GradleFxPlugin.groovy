@@ -94,7 +94,8 @@ class GradleFxPlugin extends AbstractGradleFxPlugin {
      */
     private void addArtifactsToDefaultConfiguration(Project project) {
         String type = flexConvention.type.toString()
-        File artifactFile = project.file project.buildDir.path + "/" + flexConvention.output + "." + type
+        String fileExt = (flexConvention.type.isLib() ? 'swc' : type)
+        File artifactFile = project.file project.buildDir.path + "/" + flexConvention.output + "." + fileExt
         PublishArtifact artifact = new DefaultPublishArtifact(project.name, type, type, null, new Date(), artifactFile)
 
         project.artifacts { ArtifactHandler artifactHandler ->
