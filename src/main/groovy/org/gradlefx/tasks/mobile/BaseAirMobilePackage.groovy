@@ -43,6 +43,11 @@ class BaseAirMobilePackage extends AdtTask {
         addArg CompilerOption.TARGET.optionName
         addArg target
 
+        if(flexConvention.airMobile.arch) {
+            addArg CompilerOption.ARCH.optionName
+            addArg flexConvention.airMobile.arch
+        }
+
         if(flexConvention.airMobile.sampler) {
             addArg CompilerOption.IOS_SAMPLER.optionName
         }
