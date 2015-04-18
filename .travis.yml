@@ -4,5 +4,5 @@ jdk:
 
 after_success:
   - if [ "$TRAVIS_BRANCH" == "develop" ]; then
-      gradlew uploadArchives -Pci
+      gradlew uploadArchives -Pci;
     fi
