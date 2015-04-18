@@ -3,8 +3,6 @@ jdk:
   - oraclejdk7
 
 after_success:
-  - if [ "$TRAVIS_BRANCH" == "develop"]; then
-      if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
-        ./gradlew uploadArchives -Pci;
-      fi
+  - if [ "$TRAVIS_BRANCH" -eq "develop" ] && [ "$TRAVIS_PULL_REQUEST" -eq "false" ]; then
+      ./gradlew uploadArchives -Pci;
     fi
