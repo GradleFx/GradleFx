@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/GradleFx/GradleFx.svg?branch=develop)](https://travis-ci.org/GradleFx/GradleFx)
+!https://travis-ci.org/GradleFx/GradleFx.svg?branch=develop!:https://travis-ci.org/GradleFx/GradleFx
 
 h2. GradleFx: A Gradle plugin for building Flex projects
 
