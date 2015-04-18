@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/GradleFx/GradleFx.svg?branch=develop)](https://travis-ci.org/GradleFx/GradleFx)
+
 h2. GradleFx: A Gradle plugin for building Flex projects
 
 GradleFx is a Gradle plugin which adds some common targets used in almost every Flex/Actionscript project.
