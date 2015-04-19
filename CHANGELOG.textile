@@ -1,6 +1,18 @@
 h2. GradleFx changelog
 
-h3. v1.1
+h3. v1.2.0
+
+h5. New Features
+* Mobile Android projects can now specify the "arch" option for ADT, which defines the architecture on which they'll run. "#170":https://github.com/GradleFx/GradleFx/pull/170
+
+h5. Improvements
+* ADT arguments are now also logged to the console on INFO level. "#172":https://github.com/GradleFx/GradleFx/pull/172
+
+h5. Bugfixes
+* swcAir project types now correctly define their artifacts with the 'swc' extension instead of 'swcAir'. "#166":https://github.com/GradleFx/GradleFx/issues/166
+* build directory is now correctly applied when specifying a custom one for library projects. "#164":https://github.com/GradleFx/GradleFx/issues/164
+
+h3. v1.1.0
 
 h5. New Features
 * Upgrade of GradleFx to Gradle 2.0. This is now also the new minimum required version when using GradleFx in your project.
