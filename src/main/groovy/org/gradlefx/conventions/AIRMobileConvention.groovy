@@ -112,6 +112,14 @@ class AIRMobileConvention  {
      */
     private Boolean nonLegacyCompiler
 
+    /**
+     * (Android only, AIR 14 and higher) Application developers can use this argument to create APK for x86 platforms,
+     * it takes following values:
+     * armv7 - ADT packages APK for the Android armv7 platform. This is the default value when no value is specified.
+     * x86 - ADT packages APK for the Android x86 platform.
+     */
+    private String arch
+
     public AIRMobileConvention(Project project) {
         target = 'apk'
         simulatorTarget = 'apk'
@@ -222,5 +230,13 @@ class AIRMobileConvention  {
 
     void setNonLegacyCompiler(Boolean nonLegacyCompiler) {
         this.nonLegacyCompiler = nonLegacyCompiler
+    }
+
+    String getArch() {
+        return arch
+    }
+
+    void setArch(String arch) {
+        this.arch = arch
     }
 }
