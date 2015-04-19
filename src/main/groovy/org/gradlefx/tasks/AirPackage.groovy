@@ -55,6 +55,7 @@ class AirPackage extends DefaultTask {
                 outputproperty: ANT_OUTPUT_PROPERTY) {
 
             compilerArguments.each { compilerArgument ->
+                logger.info("adt args: {}", compilerArgument)
                 arg(value: compilerArgument)
             }
         }
