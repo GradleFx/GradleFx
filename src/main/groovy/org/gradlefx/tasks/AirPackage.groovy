@@ -40,6 +40,10 @@ class AirPackage extends DefaultTask {
         flexConvention = (GradleFxConvention) project.convention.plugins.flex
 
         dependsOn Tasks.COMPILE_TASK_NAME
+
+        project.afterEvaluate {
+            initInputOutputFiles()
+        }
     }
 
     @TaskAction
@@ -63,6 +67,18 @@ class AirPackage extends DefaultTask {
         handlePackageIfFailed ANT_RESULT_PROPERTY, ANT_OUTPUT_PROPERTY
 
         showAntOutput ant.properties[ANT_OUTPUT_PROPERTY]
+    }
+
+    def initInputOutputFiles() {
+        def swfFileName
+        if (flexConvention.air.mainSwfDir) {
+            swfFileName = new File(project.buildDir.path, "${flexConvention.air.mainSwfDir}/${flexConvention.output}.${FlexType.swf}").toString()
+        } else {
+            swfFileName = "${project.buildDir.path}/${flexConvention.output}.${FlexType.swf}"
+        }
+
+        inputs.files swfFileName
+        outputs.files project.file(project.buildDir.name + '/' + flexConvention.output).absolutePath
     }
 
     private List createCompilerArguments() {

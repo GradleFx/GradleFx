@@ -35,6 +35,10 @@ class BaseAirMobilePackage extends AdtTask {
         description = "Packages the generated swf file into an mobile package";
         adtWorkDir = flexConvention.air.packageWorkDir
         dependsOn Tasks.COMPILE_TASK_NAME
+
+        project.afterEvaluate {
+            initInputOutputFiles()
+        }
     }
 
     @TaskAction
@@ -119,6 +123,18 @@ class BaseAirMobilePackage extends AdtTask {
         addPlatformSdkParams()
 
         super.launch()
+    }
+
+    def initInputOutputFiles() {
+        def swfFileName
+        if (flexConvention.air.mainSwfDir) {
+            swfFileName = new File(project.buildDir.path, "${flexConvention.air.mainSwfDir}/${flexConvention.output}.${FlexType.swf}").toString()
+        } else {
+            swfFileName = "${project.buildDir.path}/${flexConvention.output}.${FlexType.swf}"
+        }
+
+        inputs.files swfFileName
+        outputs.files project.file(project.buildDir.name + '/' + flexConvention.output).absolutePath
     }
 
     AIRMobileConvention getAirMobile() {
