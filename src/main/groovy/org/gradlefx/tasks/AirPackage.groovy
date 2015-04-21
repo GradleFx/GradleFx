@@ -70,15 +70,28 @@ class AirPackage extends DefaultTask {
     }
 
     def initInputOutputFiles() {
-        def swfFileName
-        if (flexConvention.air.mainSwfDir) {
-            swfFileName = new File(project.buildDir.path, "${flexConvention.air.mainSwfDir}/${flexConvention.output}.${FlexType.swf}").toString()
-        } else {
-            swfFileName = "${project.buildDir.path}/${flexConvention.output}.${FlexType.swf}"
-        }
+        if (project.type == FlexType.air) {
+            if (flexConvention.air.keystore) {
+                def keystore = project.file(flexConvention.air.keystore)
+                if (keystore.exists()) {
+                    inputs.files keystore.absolutePath
+                }
+            }
 
-        inputs.files swfFileName
-        outputs.files project.file(project.buildDir.name + '/' + flexConvention.output).absolutePath
+            if (flexConvention.air.applicationDescriptor) {
+                def appDescriptor = project.file(flexConvention.air.applicationDescriptor)
+                if (appDescriptor.exists()) {
+                    inputs.files appDescriptor.absolutePath
+                }
+            }
+
+            if (flexConvention.air.mainSwfDir) {
+                inputs.files project.file("${project.buildDir}/${flexConvention.air.mainSwfDir}/${flexConvention.output}.${FlexType.swf}").absolutePath
+            }
+
+            inputs.files  project.file("${project.buildDir}/${flexConvention.output}.${FlexType.swf}").absolutePath
+            outputs.files project.file("${project.buildDir}/${flexConvention.output}.${FlexType.air}").absolutePath
+        }
     }
 
     private List createCompilerArguments() {
