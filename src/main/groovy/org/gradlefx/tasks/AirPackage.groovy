@@ -85,11 +85,12 @@ class AirPackage extends DefaultTask {
                 }
             }
 
+            inputs.files  project.file("${project.buildDir}/${flexConvention.output}.${FlexType.swf}").absolutePath
+
             if (flexConvention.air.mainSwfDir) {
-                inputs.files project.file("${project.buildDir}/${flexConvention.air.mainSwfDir}/${flexConvention.output}.${FlexType.swf}").absolutePath
+                outputs.files project.file("${project.buildDir}/${flexConvention.air.mainSwfDir}/${flexConvention.output}.${FlexType.swf}").absolutePath
             }
 
-            inputs.files  project.file("${project.buildDir}/${flexConvention.output}.${FlexType.swf}").absolutePath
             outputs.files project.file("${project.buildDir}/${flexConvention.output}.${FlexType.air}").absolutePath
         }
     }
