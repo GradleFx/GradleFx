@@ -40,6 +40,10 @@ class AirPackage extends DefaultTask {
         flexConvention = (GradleFxConvention) project.convention.plugins.flex
 
         dependsOn Tasks.COMPILE_TASK_NAME
+
+        project.afterEvaluate {
+            initInputOutputFiles()
+        }
     }
 
     @TaskAction
@@ -63,6 +67,32 @@ class AirPackage extends DefaultTask {
         handlePackageIfFailed ANT_RESULT_PROPERTY, ANT_OUTPUT_PROPERTY
 
         showAntOutput ant.properties[ANT_OUTPUT_PROPERTY]
+    }
+
+    def initInputOutputFiles() {
+        if (project.type == FlexType.air) {
+            if (flexConvention.air.keystore) {
+                def keystore = project.file(flexConvention.air.keystore)
+                if (keystore.exists()) {
+                    inputs.files keystore.absolutePath
+                }
+            }
+
+            if (flexConvention.air.applicationDescriptor) {
+                def appDescriptor = project.file(flexConvention.air.applicationDescriptor)
+                if (appDescriptor.exists()) {
+                    inputs.files appDescriptor.absolutePath
+                }
+            }
+
+            inputs.files  project.file("${project.buildDir}/${flexConvention.output}.${FlexType.swf}").absolutePath
+
+            if (flexConvention.air.mainSwfDir) {
+                outputs.files project.file("${project.buildDir}/${flexConvention.air.mainSwfDir}/${flexConvention.output}.${FlexType.swf}").absolutePath
+            }
+
+            outputs.files project.file("${project.buildDir}/${flexConvention.output}.${FlexType.air}").absolutePath
+        }
     }
 
     private List createCompilerArguments() {
