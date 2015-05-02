@@ -38,6 +38,7 @@ class Publish extends DefaultTask {
             from project.buildDir
             into flexConvention.publishDir
             include '**/*'
+            exclude 'tmp'
         }
         // copy non-project RSL dependencies to the publish directory
         project.files(project.configurations.rsl) { libraries ->
