@@ -1,4 +1,5 @@
 !https://travis-ci.org/GradleFx/GradleFx.svg?branch=develop!:https://travis-ci.org/GradleFx/GradleFx
+!https://api.bintray.com/packages/bintray/jcenter/org.gradlefx%3Agradlefx/images/download.svg!:https://bintray.com/bintray/jcenter/org.gradlefx%3Agradlefx/_latestVersion
 
 h2. GradleFx: A Gradle plugin for building Flex projects
 
