@@ -297,6 +297,21 @@ class IdeaProjectModuleTest extends Specification {
             configuration["packaging-ios"].AirSigningOptions.'@provisioning-profile-path'.text() == '$MODULE_DIR$/provisioning-profile.mobileprovision'
     }
 
+    def "setup swcAir project"() {
+        given:
+        setupProjectWithName "test"
+        ideaProjectTask.flexConvention.type = FlexType.swcAir
+        ideaProjectTask.flexConvention.sdkTypes.add(SdkType.Flex)
+        when:
+        ideaProjectTask.createProjectConfig()
+        then:
+        def configuration = getModuleConfNode()
+        configuration.'@name'.text() == 'test'
+        configuration.'@output-type'.text() == "Library"
+        configuration.'@pure-as'.text() == "false"
+        configuration.'@output-file'.text() == "test.swc"
+    }
+
     def "setup air lib project"() {
         given:
             setupProjectWithName "test"
