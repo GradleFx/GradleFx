@@ -36,6 +36,8 @@ import org.gradlefx.tasks.mobile.ReleaseAirMobilePackage
 import org.gradlefx.tasks.mobile.SimulatorAirMobilePackage
 import org.gradlefx.tasks.mobile.UninstallApp
 import org.gradlefx.tasks.mobile.UninstallSimulatorApp
+import org.gradlefx.validators.FlexSDKSpecifiedValidator
+import org.gradlefx.validators.runner.FailOnErrorValidatorRunner
 
 class GradleFxPlugin extends AbstractGradleFxPlugin {
 
@@ -67,6 +69,10 @@ class GradleFxPlugin extends AbstractGradleFxPlugin {
 
     @Override
     protected void configure(Project project) {
+        new FailOnErrorValidatorRunner(project)
+                .add(new FlexSDKSpecifiedValidator())
+                .run()
+
         initializeSDKs()
 
         project.gradle.taskGraph.whenReady {
