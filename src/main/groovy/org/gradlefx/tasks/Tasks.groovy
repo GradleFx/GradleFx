@@ -22,7 +22,7 @@ class Tasks {
     public static final String BUILD_TASK_NAME = 'build'
     public static final String PACKAGE_TASK_NAME = 'package'
     public static final String TEST_TASK_NAME = 'test'
-    public static final String PUBLISH_TASK_NAME = 'publish'
+    public static final String PUBLISH_TASK_NAME = 'publishFx'
     public static final String COPY_RESOURCES_TASK_NAME = 'copyresources'
     public static final String COPY_TEST_RESOURCES_TASK_NAME = 'copytestresources'
     public static final String CREATE_HTML_WRAPPER = 'createHtmlWrapper'
