@@ -29,7 +29,7 @@
         private function onCreationComplete():void {
             var core:FlexUnitCore = new FlexUnitCore();
             core.addListener(new UIListener(uiListener));
-            core.addListener(new CIListener());
+            core.addListener(new CIListener(<%= flexUnitPort %>));
             core.run(currentRunTestSuite());
         }
 
