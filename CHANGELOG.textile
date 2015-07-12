@@ -1,5 +1,21 @@
 h2. GradleFx changelog
 
+h3. v1.3.0
+
+h5. New Features
+
+h5. Improvements
+* Providing a helpful error message when flexHome hasn't been specified (either directly or via the auto-install). "#187":https://github.com/GradleFx/GradleFx/issues/187
+
+h5. Bugfixes
+* Package tasks now have outputs declared, which means they will now use the Gradle up-to-date check. This avoids unnecessary package runs. "#179":https://github.com/GradleFx/GradleFx/issues/179
+* 'tmp' directory is now excluded from the publishFx task. "#181":https://github.com/GradleFx/GradleFx/pull/181
+* Flex-based swcAir projects now use air-config.xml instead of flex-config.xml. "#183":https://github.com/GradleFx/GradleFx/issues/183
+* Intellij support: swcAir projects now have a correct extension in the 'output-file' argument of a project file. "#188":https://github.com/GradleFx/GradleFx/issues/188
+
+h5. Breaking changes
+* GradleFx's publish task has been renamed to publishFx to avoid conflict with the maven-publish plugin. "#91":https://github.com/GradleFx/GradleFx/issues/91
+
 h3. v1.2.0
 
 h5. New Features

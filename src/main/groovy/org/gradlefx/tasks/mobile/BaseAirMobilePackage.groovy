@@ -35,6 +35,10 @@ class BaseAirMobilePackage extends AdtTask {
         description = "Packages the generated swf file into an mobile package";
         adtWorkDir = flexConvention.air.packageWorkDir
         dependsOn Tasks.COMPILE_TASK_NAME
+
+        project.afterEvaluate {
+            initInputOutputFiles()
+        }
     }
 
     @TaskAction
@@ -119,6 +123,39 @@ class BaseAirMobilePackage extends AdtTask {
         addPlatformSdkParams()
 
         super.launch()
+    }
+
+    def initInputOutputFiles() {
+        if (project.type == FlexType.mobile) {
+            if (flexConvention.air.keystore) {
+                def keystore = project.file(flexConvention.air.keystore)
+                if (keystore.exists()) {
+                    inputs.files keystore.absolutePath
+                }
+            }
+
+            if (flexConvention.air.applicationDescriptor) {
+                def appDescriptor = project.file(flexConvention.air.applicationDescriptor)
+                if (appDescriptor.exists()) {
+                    inputs.files appDescriptor.absolutePath
+                }
+            }
+
+            if (flexConvention.airMobile.provisioningProfile) {
+                def provisioningProfile = project.file(flexConvention.airMobile.provisioningProfile)
+                if (provisioningProfile.exists()) {
+                    inputs.files provisioningProfile.absolutePath
+                }
+            }
+
+            inputs.files  project.file("${project.buildDir}/${flexConvention.output}.${FlexType.swf}").absolutePath
+
+            if (flexConvention.air.mainSwfDir) {
+                output.files project.file("${project.buildDir}/${flexConvention.air.mainSwfDir}/${flexConvention.output}.${FlexType.swf}").absolutePath
+            }
+
+            outputs.files project.file("${project.buildDir}/${flexConvention.output}.${flexConvention.airMobile.outputExtension}").absolutePath
+        }
     }
 
     AIRMobileConvention getAirMobile() {

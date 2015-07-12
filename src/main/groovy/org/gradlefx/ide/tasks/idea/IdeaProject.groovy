@@ -219,6 +219,9 @@ class IdeaProject extends AbstractIDEProject {
                         configuration.@'target-platform' = 'Desktop'
                     }
                     break;
+                case FlexType.swcAir:
+                    configuration.@'output-file' = "${flexConvention.output}.swc"
+                    break;
                 case FlexType.swf:
                     configuration.attributes().remove('output-type')
                     configuration.attributes().remove('target-platform')
