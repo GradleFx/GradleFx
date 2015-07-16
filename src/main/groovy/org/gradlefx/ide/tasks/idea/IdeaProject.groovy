@@ -160,7 +160,7 @@ class IdeaProject extends AbstractIDEProject {
         def libNode = new Node(orderEntry, 'library', [name:file.name, type:"flex"])
         new Node(libNode, 'properties', [id:uuid])
         def classes = new Node(libNode, 'CLASSES')
-        new Node(classes, 'root', [url:"jar://\$MODULE_DIR\$/${FilenameUtils.separatorsToUnix(project.relativePath(file))}!/"]);
+        new Node(classes, 'root', [url:"jar://${FilenameUtils.separatorsToUnix(project.relativePath(file))}!/"]);
         new Node(libNode, 'JAVADOC');
         new Node(libNode, 'SOURCES');
     }
