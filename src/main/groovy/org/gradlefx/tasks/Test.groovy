@@ -115,12 +115,14 @@ class Test extends DefaultTask {
     private void createFlexUnitRunnerFromTemplate() {
         String templateText = retreiveTemplateText()
         String templateFileName = getTemplateFileName()
+        FlexUnitConvention flexUnit = flexConvention.flexUnit
 
         Set<String> fullyQualifiedNames = gatherFullyQualifiedTestClassNames()
         Set<String> classNames = gatherTestClassNames()
         def binding = [
             "fullyQualifiedNames": fullyQualifiedNames,
-            "testClasses": classNames
+            "testClasses": classNames,
+            "flexUnitPort": flexUnit.port
         ]
         def engine = new SimpleTemplateEngine()
         def template = engine.createTemplate(templateText).make(binding)
