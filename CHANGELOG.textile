@@ -1,8 +1,14 @@
 h2. GradleFx changelog
 
-h3. v1.3.0
+h3. v1.3.1
 
-h5. New Features
+h5. Bugfixes
+* Fixed auto-install of the Flex SDK. https://github.com/GradleFx/GradleFx/issues/193
+
+h5. Improvements
+* Added ability to pass the FlexUnit port to the FlexUnitRunner template via the new flexunit.port property. https://github.com/GradleFx/GradleFx/pull/186
+
+h3. v1.3.0
 
 h5. Improvements
 * Providing a helpful error message when flexHome hasn't been specified (either directly or via the auto-install). "#187":https://github.com/GradleFx/GradleFx/issues/187
