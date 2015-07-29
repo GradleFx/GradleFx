@@ -69,10 +69,6 @@ class GradleFxPlugin extends AbstractGradleFxPlugin {
 
     @Override
     protected void configure(Project project) {
-        new FailOnErrorValidatorRunner(project)
-                .add(new FlexSDKSpecifiedValidator())
-                .run()
-
         initializeSDKs()
 
         project.gradle.taskGraph.whenReady {
