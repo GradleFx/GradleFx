@@ -20,6 +20,8 @@ import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradlefx.configuration.Configurations
 import org.gradlefx.conventions.GradleFxConvention
+import org.gradlefx.validators.FlexSDKSpecifiedValidator
+import org.gradlefx.validators.runner.FailOnErrorValidatorRunner
 
 import java.security.MessageDigest
 
@@ -59,6 +61,10 @@ class SdkInstallLocationFactory {
             sdkInstallDirectory = new File(sdksInstallBaseDirectory, hashedSdkDirectoryName)
         } else {
             //custom path
+            new FailOnErrorValidatorRunner(project)
+                    .add(new FlexSDKSpecifiedValidator())
+                    .run()
+
             sdkInstallDirectory = new File(gradleFxConvention.flexHome)
         }
 
