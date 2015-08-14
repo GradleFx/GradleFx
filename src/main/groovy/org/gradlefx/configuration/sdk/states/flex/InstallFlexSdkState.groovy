@@ -47,6 +47,10 @@ class InstallFlexSdkState extends AbstractInstallSdkState {
             downloadPlayerGlobalSwc()
             updateFrameworkConfigFiles()
         }
+        else {
+            throw new RuntimeException("Unable to install Flex SDK. No install script found. The script needs either" +
+                    "${getInstallerScriptFile().path} or ${getAdditionalDownloadsAntScriptFile().path} in the SDK.")
+        }
     }
 
     /**
@@ -97,6 +101,9 @@ class InstallFlexSdkState extends AbstractInstallSdkState {
             if(!showPrompts) {
                 property(name: 'installer', value: true)
             }
+            property(name: 'do.air.install', value: true)
+            property(name: 'do.swfobject.install', value: true)
+            property(name: 'do.fontswf.install', value: true)
         }
     }
 
