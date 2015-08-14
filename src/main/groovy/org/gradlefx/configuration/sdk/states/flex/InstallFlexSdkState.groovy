@@ -102,6 +102,7 @@ class InstallFlexSdkState extends AbstractInstallSdkState {
                 property(name: 'installer', value: true)
             }
             property(name: 'do.air.install', value: true)
+            property(name: 'do.flash.install', value: true)
             property(name: 'do.swfobject.install', value: true)
             property(name: 'do.fontswf.install', value: true)
         }
