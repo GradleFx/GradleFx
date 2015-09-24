@@ -47,6 +47,11 @@ class BaseAirMobilePackage extends AdtTask {
         addArg CompilerOption.TARGET.optionName
         addArg target
 
+        if(flexConvention.airMobile.connectHost) {
+            addArg CompilerOption.CONNECT.optionName
+            addArg flexConvention.airMobile.connectHost
+        }
+
         if(flexConvention.airMobile.arch) {
             addArg CompilerOption.ARCH.optionName
             addArg flexConvention.airMobile.arch
