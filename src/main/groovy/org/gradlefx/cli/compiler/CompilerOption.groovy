@@ -1127,6 +1127,11 @@ public enum CompilerOption {
     STOREPASS("-storepass"),
 
     /**
+     * the URL of an RFC3161-compliant timestamp server to time-stamp the digital signature.
+     */
+    TSA("-tsa"),
+
+    /**
      * Deprecated. This option is added automatically to AIR mobile builds if they have native extension dependencies.
      * -extdir dir The value of dir is the name of a directory to search for native extensions (ANE files).
      * Specify either an absolute path, or a path relative to the current directory. You can specify the -extdir option multiple times.
