@@ -52,7 +52,7 @@ dependencies {
     compile gradleApi()
     compile group: 'commons-lang', name: 'commons-lang', version: '2.6'
     compile group: 'commons-io', name: 'commons-io', version: '2.4'
-    compile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.3.3'
+    compile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.3.10'
     testCompile group: 'org.spockframework', name: 'spock-core', version: '0.7-groovy-2.0'
 }
 
