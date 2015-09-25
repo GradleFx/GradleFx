@@ -76,6 +76,11 @@ class BaseAirMobilePackage extends AdtTask {
                 CompilerOption.STOREPASS.optionName,
                 flexConvention.air.storepass
 
+        if(flexConvention.air.tsa) {
+            addArgs CompilerOption.TSA,
+                    flexConvention.air.tsa
+        }
+
         addArgs outputPath
         addArgs project.file(flexConvention.air.applicationDescriptor)
 
