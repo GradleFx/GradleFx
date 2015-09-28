@@ -44,7 +44,7 @@ abstract class AbstractCreateSdkInstallLocationState implements SdkInitState {
     }
 
     void process(SdkInitialisationContext context) {
-        LOG.info("Determining SDK install location")
+        LOG.debug("Determining SDK install location")
 
         SdkInstallLocationFactory locationFactory = new SdkInstallLocationFactory(context.project)
         installLocation = locationFactory.createSdkLocation(sdkType)
