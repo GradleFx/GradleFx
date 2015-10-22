@@ -60,7 +60,8 @@ public class AdtTask extends DefaultTask {
                 dir: adtWorkDir,
                 resultproperty: ANT_RESULT_PROPERTY,
                 outputproperty: ANT_OUTPUT_PROPERTY,
-                errorproperty: ANT_ERROR_PROPERTY) {
+                errorproperty: ANT_ERROR_PROPERTY,
+                failOnError: false) {
             adtArguments.each { argument ->
                 logger.info("adt args: {}", argument)
                 arg(value: argument.toString())
@@ -82,9 +83,8 @@ public class AdtTask extends DefaultTask {
 
     def handleIfFailed(String antResultProperty, String antOutputProperty, String antErrorProperty) {
         if (ant.properties[antResultProperty] != '0') {
-            LOG.error "${ant.properties[antOutputProperty]} ${ant.properties[antErrorProperty]}"
             throw new Exception("${description} failed: ${ant.properties[antOutputProperty]}" +
-                                " ${ant.properties[antErrorProperty]}")
+                                " ${ant.properties[antErrorProperty]} Error code ${ant.properties[antResultProperty]}")
         }
     }
 
