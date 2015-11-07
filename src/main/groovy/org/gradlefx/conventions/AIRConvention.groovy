@@ -35,6 +35,10 @@ class AIRConvention {
      */
     private String storepass = null
     /**
+     * the URL of an RFC3161-compliant timestamp server to time-stamp the digital signature.
+     */
+    private String tsa
+    /**
      * The location of the air descriptor file. Uses the project name by convention for this file.
      */
     private String applicationDescriptor
@@ -98,6 +102,14 @@ class AIRConvention {
 
     void storepass(String storepass) {
         this.storepass = storepass
+    }
+
+    String getTsa() {
+        return tsa
+    }
+
+    void tsa(String tsa) {
+        this.tsa = tsa
     }
 
     String getApplicationDescriptor() {

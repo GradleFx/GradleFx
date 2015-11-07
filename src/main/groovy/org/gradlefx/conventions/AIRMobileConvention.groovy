@@ -120,6 +120,12 @@ class AIRMobileConvention  {
      */
     private String arch
 
+    /**
+     * The -connect flag tells the AIR runtime on the device where to connect to a remote debugger over the network.
+     * Applicaple for debug target type packages.
+     */
+    private String connectHost
+
     public AIRMobileConvention(Project project) {
         target = 'apk'
         simulatorTarget = 'apk'
@@ -148,7 +154,6 @@ class AIRMobileConvention  {
         this.platformSdk = platformSdk
     }
 
-
     String getTarget() {
         return target
     }
@@ -165,8 +170,6 @@ class AIRMobileConvention  {
         this.simulatorTarget = simulatorTarget
     }
 
-
-
     String getSimulatorTargetDevice() {
         return simulatorTargetDevice
     }
@@ -174,7 +177,6 @@ class AIRMobileConvention  {
     void simulatorTargetDevice(String simulatorTargetDevice) {
         this.simulatorTargetDevice = simulatorTargetDevice
     }
-
 
     String getExtensionDir() {
         return extensionDir
@@ -238,5 +240,13 @@ class AIRMobileConvention  {
 
     void setArch(String arch) {
         this.arch = arch
+    }
+
+    String getConnectHost() {
+        return connectHost
+    }
+
+    void setConnectHost(String connectHost) {
+        this.connectHost = connectHost
     }
 }

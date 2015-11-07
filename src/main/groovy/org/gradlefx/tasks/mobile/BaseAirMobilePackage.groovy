@@ -47,6 +47,11 @@ class BaseAirMobilePackage extends AdtTask {
         addArg CompilerOption.TARGET.optionName
         addArg target
 
+        if(flexConvention.airMobile.connectHost) {
+            addArg CompilerOption.CONNECT.optionName
+            addArg flexConvention.airMobile.connectHost
+        }
+
         if(flexConvention.airMobile.arch) {
             addArg CompilerOption.ARCH.optionName
             addArg flexConvention.airMobile.arch
@@ -70,6 +75,11 @@ class BaseAirMobilePackage extends AdtTask {
                 flexConvention.air.keystore,
                 CompilerOption.STOREPASS.optionName,
                 flexConvention.air.storepass
+
+        if(flexConvention.air.tsa) {
+            addArgs CompilerOption.TSA,
+                    flexConvention.air.tsa
+        }
 
         addArgs outputPath
         addArgs project.file(flexConvention.air.applicationDescriptor)

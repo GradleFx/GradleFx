@@ -25,7 +25,7 @@ import org.gradlefx.tasks.TaskGroups
 class UninstallApp extends AdtTask {
 
     public UninstallApp() {
-        description "uninstall app to target device"
+        description "uninstall app from the target device"
         group = TaskGroups.UPLOAD
     }
 
@@ -47,6 +47,14 @@ class UninstallApp extends AdtTask {
         addArgs CompilerOption.APP_ID.optionName, appId
 
         return super.launch()
+    }
+
+    @Override
+    def handleIfFailed(String antResultProperty, String antOutputProperty, String antErrorProperty) {
+        if (ant.properties[antResultProperty] != '0') {
+            LOG.error("${description} failed: ${ant.properties[antOutputProperty]}" +
+                    " ${ant.properties[antErrorProperty]} Error code ${ant.properties[antResultProperty]}")
+        }
     }
 
     def getPlatformSdk() {
