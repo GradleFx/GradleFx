@@ -30,11 +30,11 @@ class CreateFlexSdkInstallLocationState extends AbstractCreateSdkInstallLocation
     @Override
     SdkInitState nextState() {
         //if lib/mxmlc.jar is found in the SDK installation, it will mark this project as Flex-enabled.
-        if (isInstalled || isInstallationRequired) {
+        if (isInstalled || hasSDKDeclaredAsDependency) {
             flexConvention.sdkTypes.add(SdkType.Flex);
         }
 
-        if (!isInstalled && isInstallationRequired) {
+        if (!isInstalled && hasSDKDeclaredAsDependency) {
             Configuration flexSdkConfiguration = project.configurations.getByName(configName)
             return new InstallFlexSdkState(installLocation, flexSdkConfiguration.singleFile)
         } else {

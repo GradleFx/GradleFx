@@ -30,11 +30,11 @@ class CreateAirSdkInstallLocationState extends AbstractCreateSdkInstallLocationS
     @Override
     SdkInitState nextState() {
         //if lib/adt.jar is found in the SDK installation, it will mark this project as AIR-enabled.
-        if (isInstalled || isInstallationRequired) {
+        if (isInstalled || hasSDKDeclaredAsDependency) {
             flexConvention.sdkTypes.add(SdkType.AIR);
         }
 
-        if (!isInstalled && isInstallationRequired) {
+        if (!isInstalled && hasSDKDeclaredAsDependency) {
             Configuration flexSdkConfiguration = project.configurations.getByName(configName)
             return new InstallAirSdkState(installLocation, flexSdkConfiguration.singleFile)
         } else {

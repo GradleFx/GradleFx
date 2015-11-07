@@ -32,14 +32,14 @@ abstract class AbstractCreateSdkInstallLocationState implements SdkInitState {
     SdkInstallLocation installLocation
     String sdkFile
     protected String configName
-    Boolean isInstallationRequired
+    Boolean hasSDKDeclaredAsDependency
     Boolean isInstalled
 
-    AbstractCreateSdkInstallLocationState(SdkType sdkType, String sdkFile, String configName, Boolean isInstallationRequired) {
+    AbstractCreateSdkInstallLocationState(SdkType sdkType, String sdkFile, String configName, Boolean hasSDKDeclaredAsDependency) {
         this.sdkType = sdkType
         this.sdkFile = sdkFile
         this.configName = configName
-        this.isInstallationRequired = isInstallationRequired
+        this.hasSDKDeclaredAsDependency = hasSDKDeclaredAsDependency
         this.isInstalled = false
     }
 
