@@ -15,7 +15,6 @@
 */
 
 package org.gradlefx.ide.tasks.idea
-
 import org.apache.commons.io.FilenameUtils
 import org.gradle.api.artifacts.Dependency
 import org.gradle.api.file.ConfigurableFileTree
@@ -309,15 +308,24 @@ class IdeaProject extends AbstractIDEProject {
     private void addSourceDirs() {
         editXmlFile imlFilename, { xml ->
             def component = xml.component.find { it.'@name' == 'NewModuleRootManager' }
-
             def parent = new Node(component, 'content', [url: "file://\$MODULE_DIR\$"])
 
             def addSrcFolder = { isTest ->
                 return {
-                    new Node(parent, 'sourceFolder', [
-                        url: "file://\$MODULE_DIR\$/" + it,
-                        isTestSource: "$isTest"
-                ]) }
+                    File moduleDir = new File("\$MODULE_DIR\$/")
+                    File sourceDir = new File(it)
+
+                    String url
+                    if (sourceDir.getAbsolutePath().startsWith(moduleDir.getAbsolutePath())) {
+                        // source directory is relative to module directory
+                        url = "file://\$MODULE_DIR\$/" + it
+                    } else {
+                        // source directory refers to custom location unrelated to module directory
+                        url = "file://" + sourceDir.getAbsolutePath()
+                    }
+
+                    new Node(parent, 'sourceFolder', [ url: url, isTestSource: "$isTest" ])
+                }
             };
 
             flexConvention.srcDirs.each addSrcFolder(false)
