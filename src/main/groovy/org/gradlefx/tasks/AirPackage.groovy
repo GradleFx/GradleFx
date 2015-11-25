@@ -100,6 +100,11 @@ class AirPackage extends DefaultTask {
 
         addAirSigningOptions airOptions
 
+        if(flexConvention.air.tsa) {
+            airOptions.add CompilerOption.TSA
+            airOptions.add flexConvention.air.tsa
+        }
+
         airOptions.addAll([
             project.file(project.buildDir.name + '/' + flexConvention.output).absolutePath,
             project.file(flexConvention.air.applicationDescriptor)

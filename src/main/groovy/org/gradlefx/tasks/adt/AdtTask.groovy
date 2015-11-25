@@ -32,6 +32,7 @@ public class AdtTask extends DefaultTask {
 
     private static final String ANT_RESULT_PROPERTY = 'adtResult'
     private static final String ANT_OUTPUT_PROPERTY = 'adtOutput'
+    private static final String ANT_ERROR_PROPERTY = 'adtError'
 
     GradleFxConvention flexConvention;
 
@@ -58,16 +59,18 @@ public class AdtTask extends DefaultTask {
                 fork: true,
                 dir: adtWorkDir,
                 resultproperty: ANT_RESULT_PROPERTY,
-                outputproperty: ANT_OUTPUT_PROPERTY) {
+                outputproperty: ANT_OUTPUT_PROPERTY,
+                errorproperty: ANT_ERROR_PROPERTY,
+                failOnError: false) {
             adtArguments.each { argument ->
                 logger.info("adt args: {}", argument)
                 arg(value: argument.toString())
             }
         }
 
-        handleIfFailed ANT_RESULT_PROPERTY, ANT_OUTPUT_PROPERTY
+        handleIfFailed ANT_RESULT_PROPERTY, ANT_OUTPUT_PROPERTY, ANT_ERROR_PROPERTY
 
-        showAntOutput ant.properties[ANT_OUTPUT_PROPERTY]
+        showAntOutput ant.properties[ANT_OUTPUT_PROPERTY], ant.properties[ANT_ERROR_PROPERTY]
     }
 
     def addArg(String arg) {
@@ -78,15 +81,15 @@ public class AdtTask extends DefaultTask {
         adtArguments.addAll(args)
     }
 
-    def handleIfFailed(String antResultProperty, String antOutputProperty) {
+    def handleIfFailed(String antResultProperty, String antOutputProperty, String antErrorProperty) {
         if (ant.properties[antResultProperty] != '0') {
-            LOG.error ant.properties[antOutputProperty]
-            throw new Exception("${description} failed: ${ant.properties[antOutputProperty]}\n")
+            throw new Exception("${description} failed: ${ant.properties[antOutputProperty]}" +
+                                " ${ant.properties[antErrorProperty]} Error code ${ant.properties[antResultProperty]}")
         }
     }
 
-    def showAntOutput(antOutput) {
-        LOG.info antOutput
+    def showAntOutput(antOutput, antError) {
+        LOG.info "$antOutput $antError"
     }
 
 }

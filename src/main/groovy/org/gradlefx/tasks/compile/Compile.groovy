@@ -18,6 +18,7 @@ package org.gradlefx.tasks.compile
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.Configuration
+import org.gradle.api.artifacts.FileCollectionDependency
 import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.api.logging.LogLevel
 import org.gradle.api.tasks.TaskAction
@@ -68,6 +69,11 @@ class Compile extends DefaultTask implements CompileTask {
                 Configurations.ARTIFACT_CONFIGURATIONS.each { Configurations configValue ->
                     inputs.files dependency.dependencyProject.configurations.getByName(configValue.configName()).allArtifacts.files
                 }
+            }
+
+            //add file collection dependencies as inputs to the compile task as well
+            configuration.getDependencies().withType(FileCollectionDependency).each { FileCollectionDependency dependency ->
+                inputs.files dependency.resolve()
             }
         }
     }

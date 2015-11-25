@@ -1,5 +1,21 @@
 h2. GradleFx changelog
 
+h3. v1.3.2
+
+h5. New Features
+* ADT: add support for -connect flag https://github.com/GradleFx/GradleFx/pull/201
+* ADT: add support for -tsa flag https://github.com/GradleFx/GradleFx/issues/197
+
+h5. Bugfixes
+* File collection dependencies are now being added as inputs to the compileFlex task https://github.com/GradleFx/GradleFx/issues/210
+* UninstallMobile doesn't fail anymore when no app is installed on the device https://github.com/GradleFx/GradleFx/issues/205
+
+
+h5. Improvements
+* Reduced the log level of the "Determine SDK install location" log message from info to debug https://github.com/GradleFx/GradleFx/pull/204
+* Upgraded GradleFx's Groovy version from 2.3.3 to 2.3.10 https://github.com/GradleFx/GradleFx/pull/202
+* Improved logging for ADT errors https://github.com/GradleFx/GradleFx/pull/194
+
 h3. v1.3.1
 
 h5. Bugfixes
