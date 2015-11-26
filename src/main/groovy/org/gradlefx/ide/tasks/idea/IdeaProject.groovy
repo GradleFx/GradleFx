@@ -15,7 +15,6 @@
 */
 
 package org.gradlefx.ide.tasks.idea
-
 import org.apache.commons.io.FilenameUtils
 import org.gradle.api.artifacts.Dependency
 import org.gradle.api.file.ConfigurableFileTree
@@ -260,7 +259,7 @@ class IdeaProject extends AbstractIDEProject {
 
                         def attrs = ['keystore-path':"\$MODULE_DIR\$/${FilenameUtils.separatorsToUnix(project.relativePath(flexConvention.air.keystore))}",
                                      'use-temp-certificate':false
-                                    ];
+                        ];
                         if (flexConvention.airMobile.platformSdk != null)
                         {
                             attrs['sdk'] = flexConvention.airMobile.platformSdk
@@ -309,15 +308,23 @@ class IdeaProject extends AbstractIDEProject {
     private void addSourceDirs() {
         editXmlFile imlFilename, { xml ->
             def component = xml.component.find { it.'@name' == 'NewModuleRootManager' }
-
             def parent = new Node(component, 'content', [url: "file://\$MODULE_DIR\$"])
 
             def addSrcFolder = { isTest ->
                 return {
-                    new Node(parent, 'sourceFolder', [
-                        url: "file://\$MODULE_DIR\$/" + it,
-                        isTestSource: "$isTest"
-                ]) }
+                    File sourceDir = project.file(it)
+                    File root = project.file("/")
+
+                    String url
+                    if (sourceDir.absolutePath.startsWith(root.absolutePath)) {
+                        // source directory is relative to module directory
+                        url = "file://\$MODULE_DIR\$/" + it
+                    } else {
+                        // source directory refers to custom location unrelated to module directory
+                        url = "file://" + sourceDir.absolutePath
+                    }
+                    new Node(parent, 'sourceFolder', [ url: "$url", isTestSource: "$isTest" ])
+                }
             };
 
             flexConvention.srcDirs.each addSrcFolder(false)
