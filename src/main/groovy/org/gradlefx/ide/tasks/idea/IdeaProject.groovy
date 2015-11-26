@@ -312,19 +312,18 @@ class IdeaProject extends AbstractIDEProject {
 
             def addSrcFolder = { isTest ->
                 return {
-                    File moduleDir = new File("\$MODULE_DIR\$/")
-                    File sourceDir = new File(it)
+                    File sourceDir = project.file(it)
+                    File root = project.file("/")
 
                     String url
-                    if (sourceDir.getAbsolutePath().startsWith(moduleDir.getAbsolutePath())) {
+                    if (sourceDir.absolutePath.startsWith(root.absolutePath)) {
                         // source directory is relative to module directory
                         url = "file://\$MODULE_DIR\$/" + it
                     } else {
                         // source directory refers to custom location unrelated to module directory
-                        url = "file://" + sourceDir.getAbsolutePath()
+                        url = "file://" + sourceDir.absolutePath
                     }
-
-                    new Node(parent, 'sourceFolder', [ url: url, isTestSource: "$isTest" ])
+                    new Node(parent, 'sourceFolder', [ url: "$url", isTestSource: "$isTest" ])
                 }
             };
 
