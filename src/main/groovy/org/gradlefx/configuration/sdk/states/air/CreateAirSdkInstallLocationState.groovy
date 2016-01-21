@@ -24,7 +24,7 @@ import org.gradlefx.configuration.Configurations
 
 class CreateAirSdkInstallLocationState extends AbstractCreateSdkInstallLocationState {
     CreateAirSdkInstallLocationState(Boolean isInstallationRequired) {
-        super(SdkType.AIR, "lib/adt.jar", Configurations.AIRSDK_CONFIGURATION_NAME.configName(), isInstallationRequired)
+        super(SdkType.AIR, ".air.sentry", Configurations.AIRSDK_CONFIGURATION_NAME.configName(), isInstallationRequired)
     }
 
     @Override
@@ -36,7 +36,7 @@ class CreateAirSdkInstallLocationState extends AbstractCreateSdkInstallLocationS
 
         if (!isInstalled && isInstallationRequired) {
             Configuration flexSdkConfiguration = project.configurations.getByName(configName)
-            return new InstallAirSdkState(installLocation, flexSdkConfiguration.singleFile)
+            return new InstallAirSdkState(installLocation, flexSdkConfiguration.singleFile, sentryFilename)
         } else {
             return null;
         }
