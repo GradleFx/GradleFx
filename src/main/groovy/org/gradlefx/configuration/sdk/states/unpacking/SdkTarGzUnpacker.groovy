@@ -26,13 +26,9 @@ class SdkTarGzUnpacker extends AbstractSdkUnpacker {
     }
 
     void unpackArchive() {
-        AntBuilder ant = new AntBuilder()
-        String tarFile = packagedSdkFile.absolutePath[0..-4]
+        if (execute([ "tar", "xf", packagedSdkFile.absolutePath ], sdkInstallLocation.directory))
+            return
 
-        ant.gunzip(src: packagedSdkFile.absolutePath, dest: tarFile)
-        ant.untar(src: tarFile, dest: sdkInstallLocation.directory.absolutePath, overwrite: "true")
-
-        //cleanup by removing the temporary tar archive
-        new File(tarFile).delete()
+        project.ant.untar(src: packagedSdkFile.absolutePath, dest: sdkInstallLocation.directory.absolutePath, overwrite: "true", compression: "gzip")
     }
 }
