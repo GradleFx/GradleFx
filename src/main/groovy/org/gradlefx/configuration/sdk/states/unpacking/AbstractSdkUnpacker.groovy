@@ -20,8 +20,12 @@ import org.gradle.api.file.FileTree
 import org.gradle.api.file.FileVisitDetails
 import org.gradlefx.configuration.sdk.SdkInstallLocation
 import org.gradle.api.Project
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 abstract class AbstractSdkUnpacker implements Unpacker {
+
+    protected static final Logger LOG = LoggerFactory.getLogger 'gradlefx'
 
     protected File packagedSdkFile
     protected String someSdkRootDirectoryName
@@ -87,5 +91,16 @@ abstract class AbstractSdkUnpacker implements Unpacker {
         }
 
         return relativeSdkLocation
+    }
+
+    protected static boolean execute(List args, File cwd) {
+        try {
+            def process = (args as String[]).execute((List)null, cwd)
+            LOG.info("Unpacking via '{}'", args.join(' '))
+            process.waitFor()
+            return process.exitValue() == 0
+        } catch (IOException) {
+            return false
+        }
     }
 }
