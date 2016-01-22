@@ -17,7 +17,9 @@
 package org.gradlefx.tasks
 
 import groovy.text.SimpleTemplateEngine
+import org.apache.tools.ant.taskdefs.condition.Os
 import org.gradle.api.DefaultTask
+import org.gradle.api.GradleException
 import org.gradle.api.file.FileTree
 import org.gradle.api.file.FileTreeElement
 import org.gradle.api.logging.LogLevel
@@ -43,6 +45,7 @@ class Test extends DefaultTask {
     private static final Logger LOG = LoggerFactory.getLogger Test
 
     GradleFxConvention flexConvention
+    FlexUnitConvention flexUnit
     PathToClassNameExtractor pathToClassNameExtractor
 
     public Test() {
@@ -52,6 +55,7 @@ class Test extends DefaultTask {
         logging.setLevel LogLevel.INFO
 
         flexConvention = project.convention.plugins.flex
+        flexUnit = flexConvention.flexUnit
 
         dependsOn Tasks.COPY_TEST_RESOURCES_TASK_NAME
 
@@ -113,9 +117,8 @@ class Test extends DefaultTask {
     }
 
     private void createFlexUnitRunnerFromTemplate() {
-        String templateText = retreiveTemplateText()
+        String templateText = retrieveTemplateText()
         String templateFileName = getTemplateFileName()
-        FlexUnitConvention flexUnit = flexConvention.flexUnit
 
         Set<String> fullyQualifiedNames = gatherFullyQualifiedTestClassNames()
         Set<String> classNames = gatherTestClassNames()
@@ -136,7 +139,7 @@ class Test extends DefaultTask {
         destinationFile.write(template.toString())
     }
 
-    private String retreiveTemplateText() {
+    private String retrieveTemplateText() {
         def templateText
         if(flexConvention.flexUnit.template == null) {
             //use the standard template
@@ -186,23 +189,15 @@ class Test extends DefaultTask {
     }
 
     private void runTests() {
-        FlexUnitConvention flexUnit = flexConvention.flexUnit
         File reportDir = project.file flexUnit.toDir
 
         // you can't write to a directory that doesn't exist
         if (!reportDir.exists()) reportDir.mkdirs()
 
-        if (flexUnit.command == null) {
-            throw new Exception(
-                "The Flash player executable is not found. Either set the FLASH_PLAYER_EXE " +
-                "environment variable or set the 'flexUnit.command' property."
-            )
-        }
-
         ant.flexunit (
             swf:             "${flexConvention.flexUnit.toDir}/${flexConvention.flexUnit.swfName}",
             player:          flexUnit.player,
-            command:         flexUnit.command,
+            command:         getCommand(),
             toDir:           flexUnit.toDir,
             workingDir:      flexUnit.workingDir,
             haltonfailure:   flexUnit.haltOnFailure,
@@ -220,6 +215,33 @@ class Test extends DefaultTask {
             if (flexUnit.ignoreFailures) { LOG.warn(msg) }
             else { throw new Exception(msg) }
         }
+    }
+
+    private String getCommand() {
+        if (flexUnit.command == null)
+            return findFlexUnitCommand()
+        return flexUnit.command
+    }
+
+    private String findFlexUnitCommand() {
+        if (flexUnit.player == 'air')
+            return getAdlPath()
+        throwMissingCommandException("The Flash player executable is not found")
+    }
+
+    private String getAdlPath() {
+        def filename = 'bin/adl'
+        if (Os.isFamily(Os.FAMILY_WINDOWS))
+            filename += '.exe'
+        def adlPath = new File(flexConvention.flexHome, filename)
+        if (!adlPath.canExecute())
+            throwMissingCommandException("Unable to locate the ADL executable at $adlPath.absolutePath")
+        return adlPath
+    }
+
+    private static void throwMissingCommandException(String message) {
+        throw new GradleException("${message}. Either set the FLASH_PLAYER_EXE " +
+                "environment variable or set the 'flexUnit.command' property.")
     }
 
     private void configureAntWithFlexUnit() {
