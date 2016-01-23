@@ -24,7 +24,7 @@ import org.gradlefx.configuration.Configurations
 
 class CreateFlexSdkInstallLocationState extends AbstractCreateSdkInstallLocationState {
     CreateFlexSdkInstallLocationState(Boolean isInstallationRequired) {
-        super(SdkType.Flex, "lib/mxmlc.jar", Configurations.FLEXSDK_CONFIGURATION_NAME.configName(), isInstallationRequired)
+        super(SdkType.Flex, ".flex.sentry", Configurations.FLEXSDK_CONFIGURATION_NAME.configName(), isInstallationRequired)
     }
 
     @Override
@@ -36,7 +36,7 @@ class CreateFlexSdkInstallLocationState extends AbstractCreateSdkInstallLocation
 
         if (!isInstalled && isInstallationRequired) {
             Configuration flexSdkConfiguration = project.configurations.getByName(configName)
-            return new InstallFlexSdkState(installLocation, flexSdkConfiguration.singleFile)
+            return new InstallFlexSdkState(installLocation, flexSdkConfiguration.singleFile, sentryFilename)
         } else {
             return null;
         }
