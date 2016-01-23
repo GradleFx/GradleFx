@@ -32,9 +32,11 @@ class SdkInstallLocationFactory {
     GradleFxConvention gradleFxConvention
     File sdksInstallBaseDirectory
     Project project
+    String sentryFilename
 
-    SdkInstallLocationFactory(Project project) {
+    SdkInstallLocationFactory(Project project, String sentryFilename) {
         this.project = project
+        this.sentryFilename = sentryFilename
         gradleFxConvention = (GradleFxConvention) project.convention.plugins.flex
         sdksInstallBaseDirectory = new File(gradleFxConvention.gradleFxUserHomeDir, SDKS_BASE_DIR_NAME)
     }
@@ -64,6 +66,9 @@ class SdkInstallLocationFactory {
             new FailOnErrorValidatorRunner(project)
                     .add(new FlexSDKSpecifiedValidator())
                     .run()
+
+            //create the sentry file if it doesn't exist yet, to indicate it has already been installed manually by the user
+            new File(gradleFxConvention.flexHome, sentryFilename).createNewFile()
 
             sdkInstallDirectory = new File(gradleFxConvention.flexHome)
         }

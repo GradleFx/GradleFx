@@ -46,7 +46,7 @@ abstract class AbstractCreateSdkInstallLocationState implements SdkInitState {
     void process(SdkInitialisationContext context) {
         LOG.debug("Determining SDK install location")
 
-        SdkInstallLocationFactory locationFactory = new SdkInstallLocationFactory(context.project)
+        SdkInstallLocationFactory locationFactory = new SdkInstallLocationFactory(context.project, sentryFilename)
         installLocation = locationFactory.createSdkLocation(sdkType)
 
         flexConvention = (GradleFxConvention) context.project.convention.plugins.flex
