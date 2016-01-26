@@ -26,13 +26,9 @@ class SdkTbz2Unpacker extends AbstractSdkUnpacker {
     }
 
     void unpackArchive() {
-        AntBuilder ant = new AntBuilder()
-        String tarFile = packagedSdkFile.absolutePath[0..-5] + "tar"
+        if (execute([ "tar", "xf", packagedSdkFile.absolutePath ], sdkInstallLocation.directory))
+            return
 
-        ant.bunzip2(src: packagedSdkFile.absolutePath, dest: tarFile)
-        ant.untar(src: tarFile, dest: sdkInstallLocation.directory.absolutePath, overwrite: "true")
-
-        //cleanup by removing the temporary tar archive
-        new File(tarFile).delete()
+        project.ant.untar(src: packagedSdkFile.absolutePath, dest: sdkInstallLocation.directory.absolutePath, overwrite: "true", compression: "bzip2")
     }
 }

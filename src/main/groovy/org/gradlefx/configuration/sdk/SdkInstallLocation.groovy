@@ -20,10 +20,12 @@ class SdkInstallLocation {
 
     public SdkType type
     public File directory
+    public boolean manualInstall
 
-    SdkInstallLocation(SdkType type, File directory) {
+    SdkInstallLocation(SdkType type, File directory, boolean manualInstall) {
         this.type = type
         this.directory = directory
+        this.manualInstall = manualInstall
     }
 
     boolean exists() {

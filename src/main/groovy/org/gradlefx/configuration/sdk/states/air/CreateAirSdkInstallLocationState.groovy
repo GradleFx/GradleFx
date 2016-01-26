@@ -18,13 +18,14 @@ package org.gradlefx.configuration.sdk.states.air
 
 import org.gradle.api.artifacts.Configuration
 import org.gradlefx.configuration.sdk.SdkInitState
+import org.gradlefx.configuration.sdk.SdkInstallLocation
 import org.gradlefx.configuration.sdk.SdkType
 import org.gradlefx.configuration.sdk.states.AbstractCreateSdkInstallLocationState
 import org.gradlefx.configuration.Configurations
 
 class CreateAirSdkInstallLocationState extends AbstractCreateSdkInstallLocationState {
     CreateAirSdkInstallLocationState(Boolean isInstallationRequired) {
-        super(SdkType.AIR, "lib/adt.jar", Configurations.AIRSDK_CONFIGURATION_NAME.configName(), isInstallationRequired)
+        super(SdkType.AIR, ".air.sentry", Configurations.AIRSDK_CONFIGURATION_NAME.configName(), isInstallationRequired)
     }
 
     @Override
@@ -36,9 +37,17 @@ class CreateAirSdkInstallLocationState extends AbstractCreateSdkInstallLocationS
 
         if (!isInstalled && isInstallationRequired) {
             Configuration flexSdkConfiguration = project.configurations.getByName(configName)
-            return new InstallAirSdkState(installLocation, flexSdkConfiguration.singleFile)
+            return new InstallAirSdkState(installLocation, flexSdkConfiguration.singleFile, sentryFilename)
         } else {
             return null;
         }
+    }
+
+    /**
+     * Fallback to SDK specific file detection in case sentry file detection can't be used.
+     */
+    @Override
+    protected boolean isSdkPresentFallback(SdkInstallLocation installLocation) {
+        return new File(installLocation.directory, "lib/adt.jar").exists()
     }
 }

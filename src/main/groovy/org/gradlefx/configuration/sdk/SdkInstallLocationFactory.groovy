@@ -32,9 +32,11 @@ class SdkInstallLocationFactory {
     GradleFxConvention gradleFxConvention
     File sdksInstallBaseDirectory
     Project project
+    String sentryFilename
 
-    SdkInstallLocationFactory(Project project) {
+    SdkInstallLocationFactory(Project project, String sentryFilename) {
         this.project = project
+        this.sentryFilename = sentryFilename
         gradleFxConvention = (GradleFxConvention) project.convention.plugins.flex
         sdksInstallBaseDirectory = new File(gradleFxConvention.gradleFxUserHomeDir, SDKS_BASE_DIR_NAME)
     }
@@ -47,6 +49,7 @@ class SdkInstallLocationFactory {
         File airSdkArchive = getSdkArchiveForConfiguration(Configurations.AIRSDK_CONFIGURATION_NAME)
 
         File sdkInstallDirectory = null
+        boolean manualInstall = false
         if(isFlexSdkDeclaredAsDependency && isAirSdkDeclaredAsDependency) {
             //hash of both flex and air sdk archives define the directory name
             String hashedSdkDirectoryName = filesToHash(flexSdkArchive, airSdkArchive)
@@ -66,9 +69,10 @@ class SdkInstallLocationFactory {
                     .run()
 
             sdkInstallDirectory = new File(gradleFxConvention.flexHome)
+            manualInstall = true
         }
 
-        return new SdkInstallLocation(sdkType, sdkInstallDirectory)
+        return new SdkInstallLocation(sdkType, sdkInstallDirectory, manualInstall)
     }
 
     private Boolean isFlexSdkDeclaredAsDependency() {
