@@ -18,13 +18,14 @@ package org.gradlefx.configuration.sdk.states.flex
 
 import org.gradle.api.artifacts.Configuration
 import org.gradlefx.configuration.sdk.SdkInitState
+import org.gradlefx.configuration.sdk.SdkInstallLocation
 import org.gradlefx.configuration.sdk.SdkType
 import org.gradlefx.configuration.sdk.states.AbstractCreateSdkInstallLocationState
 import org.gradlefx.configuration.Configurations
 
 class CreateFlexSdkInstallLocationState extends AbstractCreateSdkInstallLocationState {
     CreateFlexSdkInstallLocationState(Boolean isInstallationRequired) {
-        super(SdkType.Flex, "lib/mxmlc.jar", Configurations.FLEXSDK_CONFIGURATION_NAME.configName(), isInstallationRequired)
+        super(SdkType.Flex, ".flex.sentry", Configurations.FLEXSDK_CONFIGURATION_NAME.configName(), isInstallationRequired)
     }
 
     @Override
@@ -36,9 +37,17 @@ class CreateFlexSdkInstallLocationState extends AbstractCreateSdkInstallLocation
 
         if (!isInstalled && isInstallationRequired) {
             Configuration flexSdkConfiguration = project.configurations.getByName(configName)
-            return new InstallFlexSdkState(installLocation, flexSdkConfiguration.singleFile)
+            return new InstallFlexSdkState(installLocation, flexSdkConfiguration.singleFile, sentryFilename)
         } else {
             return null;
         }
+    }
+
+    /**
+     * Fallback to SDK specific file detection in case sentry file detection can't be used.
+     */
+    @Override
+    protected boolean isSdkPresentFallback(SdkInstallLocation installLocation) {
+        return new File(installLocation.directory, "lib/mxmlc.jar").exists()
     }
 }

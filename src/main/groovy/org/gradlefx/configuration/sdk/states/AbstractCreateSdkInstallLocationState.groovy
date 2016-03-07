@@ -30,14 +30,14 @@ abstract class AbstractCreateSdkInstallLocationState implements SdkInitState {
     GradleFxConvention flexConvention
     SdkType sdkType
     SdkInstallLocation installLocation
-    String sdkFile
+    String sentryFilename
     protected String configName
     Boolean isInstallationRequired
     Boolean isInstalled
 
-    AbstractCreateSdkInstallLocationState(SdkType sdkType, String sdkFile, String configName, Boolean isInstallationRequired) {
+    AbstractCreateSdkInstallLocationState(SdkType sdkType, String sentryFilename, String configName, Boolean isInstallationRequired) {
         this.sdkType = sdkType
-        this.sdkFile = sdkFile
+        this.sentryFilename = sentryFilename
         this.configName = configName
         this.isInstallationRequired = isInstallationRequired
         this.isInstalled = false
@@ -46,7 +46,7 @@ abstract class AbstractCreateSdkInstallLocationState implements SdkInitState {
     void process(SdkInitialisationContext context) {
         LOG.debug("Determining SDK install location")
 
-        SdkInstallLocationFactory locationFactory = new SdkInstallLocationFactory(context.project)
+        SdkInstallLocationFactory locationFactory = new SdkInstallLocationFactory(context.project, sentryFilename)
         installLocation = locationFactory.createSdkLocation(sdkType)
 
         flexConvention = (GradleFxConvention) context.project.convention.plugins.flex
@@ -54,6 +54,22 @@ abstract class AbstractCreateSdkInstallLocationState implements SdkInitState {
 
         project = context.project
 
-        isInstalled = new File(installLocation.directory, sdkFile).exists()
+        isInstalled = determineIsInstalled(installLocation)
+    }
+
+    /**
+     * When an SDK is manually installed and specified via the flexHome property, it can't be
+     * detected with sentry files. In this case we have to fall back to another detection mechanism.
+     * @param installLocation location where the sdk should have been installed
+     * @return true when the SDK has been found in the install location
+     */
+    abstract protected boolean isSdkPresentFallback(SdkInstallLocation installLocation);
+
+    private boolean determineIsInstalled(SdkInstallLocation installLocation) {
+        if(installLocation.manualInstall) {
+            return isSdkPresentFallback(installLocation)
+        } else {
+            return new File(installLocation.directory, sentryFilename).exists()
+        }
     }
 }

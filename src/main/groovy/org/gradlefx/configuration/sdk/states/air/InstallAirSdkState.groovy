@@ -23,7 +23,7 @@ class InstallAirSdkState extends AbstractInstallSdkState {
 
     private static final String SOME_AIR_SDK_ROOT_DIRECTORY = "frameworks"
 
-    InstallAirSdkState(SdkInstallLocation sdkInstallLocation, File packagedSdkFile) {
-        super(sdkInstallLocation, packagedSdkFile, SOME_AIR_SDK_ROOT_DIRECTORY)
+    InstallAirSdkState(SdkInstallLocation sdkInstallLocation, File packagedSdkFile, String sentryFilename) {
+        super(sdkInstallLocation, packagedSdkFile, SOME_AIR_SDK_ROOT_DIRECTORY, sentryFilename)
     }
 }

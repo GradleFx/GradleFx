@@ -16,6 +16,7 @@
 
 package org.gradlefx.configuration.sdk.states
 
+import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradlefx.configuration.sdk.SdkInitState
 import org.gradlefx.configuration.sdk.SdkInitialisationContext
@@ -34,6 +35,7 @@ abstract class AbstractInstallSdkState implements SdkInitState {
     File packagedSdkFile
     Project project
     String someSdkRootDirectoryName
+    String sentryFilename
 
     /**
      *
@@ -41,11 +43,13 @@ abstract class AbstractInstallSdkState implements SdkInitState {
      * @param packagedSdkFile
      * @param someSdkRootDirectoryName This should be the name of a directory which is located at the root of the SDK.
      *                             This is being used to determine the relative location of the SDK within the archive
+     * @param sentryFilename the file to create after successful installation of the SDK
      */
-    AbstractInstallSdkState(SdkInstallLocation sdkInstallLocation, File packagedSdkFile, String someSdkRootDirectoryName) {
+    AbstractInstallSdkState(SdkInstallLocation sdkInstallLocation, File packagedSdkFile, String someSdkRootDirectoryName, String sentryFilename) {
         this.sdkInstallLocation = sdkInstallLocation
         this.packagedSdkFile = packagedSdkFile
         this.someSdkRootDirectoryName = someSdkRootDirectoryName
+        this.sentryFilename = sentryFilename
     }
 
     void process(SdkInitialisationContext context) {
@@ -55,6 +59,7 @@ abstract class AbstractInstallSdkState implements SdkInitState {
             unpackSdk()
             downloadSdkDependencies()
             allowExecutionPermissionsOnSdkFiles()
+            createSentryFile()
         } catch (Exception e) {
             revertInstall()
 
@@ -97,6 +102,15 @@ abstract class AbstractInstallSdkState implements SdkInitState {
      */
     void allowExecutionPermissionsOnSdkFiles() {
         sdkInstallLocation.directory.traverse { it.setExecutable(true, false) }
+    }
+
+    /**
+     * Create the sentry file at the end of the SDK installation process.
+     */
+    void createSentryFile() {
+        def sentryFile = new File(sdkInstallLocation.directory, sentryFilename)
+        if (!sentryFile.createNewFile())
+            throw new GradleException("Unable to create sentry file $sentryFile.absolutePath")
     }
 
 }

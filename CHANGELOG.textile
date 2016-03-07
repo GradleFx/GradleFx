@@ -1,5 +1,15 @@
 h2. GradleFx changelog
 
+h3. v1.3.3
+
+h5. Improvements
+* default flexUnit.command to SDK adl when using flexUnit player 'air'. https://github.com/GradleFx/GradleFx/issues/221
+* SDK auto-install now uses 'air.sentry' and 'flex.sentry' files to detect the presence of an already installed SDK. https://github.com/GradleFx/GradleFx/issues/217
+
+h5. Bugfixes
+* Fixed an exception when logging an error for dependency resolution failures. https://github.com/GradleFx/GradleFx/issues/223
+* SDK auto-install: recreate symlinks when auto-installing. https://github.com/GradleFx/GradleFx/pull/220
+
 h3. v1.3.2
 
 h5. New Features
