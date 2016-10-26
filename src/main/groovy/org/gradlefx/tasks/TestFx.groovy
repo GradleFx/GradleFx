@@ -40,15 +40,15 @@ import org.slf4j.LoggerFactory
 /*
  * A Gradle task to execute FlexUnit tests.
  */
-class Test extends DefaultTask {
+class TestFx extends DefaultTask {
 
-    private static final Logger LOG = LoggerFactory.getLogger Test
+    private static final Logger LOG = LoggerFactory.getLogger TestFx
 
     GradleFxConvention flexConvention
     FlexUnitConvention flexUnit
     PathToClassNameExtractor pathToClassNameExtractor
 
-    public Test() {
+    public TestFx() {
         group = TaskGroups.VERIFICATION
         description = "Run the FlexUnit tests."
 
