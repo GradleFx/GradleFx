@@ -36,19 +36,17 @@ import org.gradlefx.tasks.mobile.ReleaseAirMobilePackage
 import org.gradlefx.tasks.mobile.SimulatorAirMobilePackage
 import org.gradlefx.tasks.mobile.UninstallApp
 import org.gradlefx.tasks.mobile.UninstallSimulatorApp
-import org.gradlefx.validators.FlexSDKSpecifiedValidator
-import org.gradlefx.validators.runner.FailOnErrorValidatorRunner
 
 class GradleFxPlugin extends AbstractGradleFxPlugin {
 
     @Override
     protected void addTasks() {
         //generic tasks
-        addTask Tasks.BUILD_TASK_NAME, Build
+        addTask Tasks.BUILD_TASK_NAME, BuildFx
         addTask Tasks.COPY_RESOURCES_TASK_NAME, CopyResources
         addTask Tasks.COPY_TEST_RESOURCES_TASK_NAME, CopyTestResources
         addTask Tasks.PUBLISH_TASK_NAME, Publish
-        addTask Tasks.TEST_TASK_NAME, Test
+        addTask Tasks.TEST_TASK_NAME, TestFx
         addTask Tasks.COMPILE_TASK_NAME, Compile
         addTask Tasks.CLEAN_SDKS, CleanSdks
 
