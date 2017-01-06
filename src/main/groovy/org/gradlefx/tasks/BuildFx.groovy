@@ -18,9 +18,9 @@ package org.gradlefx.tasks
 
 import org.gradle.api.DefaultTask
 
-class Build extends DefaultTask {
+class BuildFx extends DefaultTask {
 
-    public Build() {
+    public BuildFx() {
         group = TaskGroups.BUILD
         description = 'Assembles and tests this project.'
 
