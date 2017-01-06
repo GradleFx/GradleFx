@@ -1,5 +1,10 @@
 h2. GradleFx changelog
 
+h3. v1.4.0
+
+h5. Compatibility
+* renamed "test" and "build" tasks to "testFx" and "buildFx" since the old names aren't allowed anymore in Gradle 3 https://github.com/GradleFx/GradleFx/pull/236
+
 h3. v1.3.3
 
 h5. Improvements
