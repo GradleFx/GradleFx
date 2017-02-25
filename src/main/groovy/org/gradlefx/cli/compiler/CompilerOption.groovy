@@ -1037,6 +1037,11 @@ public enum CompilerOption {
     PACKAGE("-package"),
 
     /**
+     * hide the ane lib symbols when there's multiple ANEs with the same functions name
+     */
+     HIDE_ANE_LIB_SYMBOLS("-hideAneLibSymbols"),
+
+    /**
      * packages an AIR application as an intermediate file (AIRI), but does not sign it. AIRI files cannot be installed.
      */
     PREPARE("-prepare"),

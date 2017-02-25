@@ -65,6 +65,10 @@ class BaseAirMobilePackage extends AdtTask {
             addArgs CompilerOption.USE_LEGACY_COMPILER.optionName, "no"
         }
 
+        if(flexConvention.airMobile.hideAneLibSymbols) {
+            addArgs CompilerOption.HIDE_ANE_LIB_SYMBOLS.optionName, "yes"
+        }
+
         if (StringUtils.isNotEmpty(flexConvention.airMobile.provisioningProfile)) {
             addArgs CompilerOption.PROVISIONING_PROFILE.optionName, flexConvention.airMobile.provisioningProfile
         }
