@@ -1,5 +1,13 @@
 h2. GradleFx changelog
 
+h3. v1.5.0
+
+h5. Compatibility
+* fixed: under gradle 3.1, gradlefx throws 'ResolveContext' exception https://github.com/GradleFx/GradleFx/pull/247
+
+h5. New Features
+* Added 'airMobile.hideAneLibSymbols' property for use with multiple ANEs in your iOS project https://github.com/GradleFx/GradleFx/pull/246
+
 h3. v1.4.0
 
 h5. Compatibility

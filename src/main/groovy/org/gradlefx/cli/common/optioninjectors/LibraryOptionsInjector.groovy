@@ -1,7 +1,6 @@
 package org.gradlefx.cli.common.optioninjectors
 
 import org.gradle.api.artifacts.Configuration
-import org.gradle.api.artifacts.ResolveContext
 import org.gradle.api.artifacts.ResolveException
 import org.gradlefx.cli.compiler.CompilerOption
 import org.gradlefx.cli.common.requirements.CompilerOptionsRequirement
@@ -73,11 +72,9 @@ trait LibraryOptionsInjector implements CompilerOptionsRequirement, ProjectRequi
         if (ghosts && ghosts.size()) {
             def errorMessage = "Couldn't find some dependency files - are you sure the path is correct? " +
                     "Unresolved dependency paths: ${ghosts.collect { it.path }}"
-            if(configuration instanceof ResolveContext) {
-                throw new ResolveException((ResolveContext)configuration, new Throwable(errorMessage))
-            } else {
-                throw new Exception(new Throwable("Configuration '" + configuration.name + "': " + errorMessage))
-            }
+            
+            throw new ResolveException(errorMessage, new Throwable(errorMessage))
+            
         }
     }
 
