@@ -61,7 +61,7 @@ abstract class AbstractGradleFxPlugin implements Plugin<Project> {
     
     protected void addDefaultConfigurations() {
         List names = project.configurations.collect { it.name }
-        
+
         Configurations.DEPENDENCY_CONFIGURATIONS.each { Configurations configuration ->
             if (!names.contains(configuration.configName())) addConfiguration configuration.configName()
         }
@@ -78,8 +78,13 @@ abstract class AbstractGradleFxPlugin implements Plugin<Project> {
     protected Task addTask(String name, Class taskClass, Closure condition) {
         //always add tasks to make sure they are immediately on the task graph,
         //but remove them after evaluation if it turns out we don't need them
-        Task task = project.tasks.create name, taskClass
-        
+        Task task;
+        if (project.tasks.findByPath(name) == null) {
+            task = project.tasks.create name, taskClass
+        } else {
+            task = project.tasks.replace name, taskClass
+        }
+
         project.afterEvaluate {
             if (!condition()) project.tasks.remove task
         }
