@@ -126,12 +126,18 @@ class AIRMobileConvention  {
      */
     private String arch
 
-
     /**
      * The -connect flag tells the AIR runtime on the device where to connect to a remote debugger over the network.
      * Applicaple for debug target type packages.
      */
     private String connectHost
+
+    /**
+     * The -listen flag tells the AIR runtime on the device to accept a connection from a debugger over a USB connection
+     * on a certain port.
+     * Applicaple for debug target type packages. This option cannot be used with -connect flag together
+     */
+    private int listenPort
 
     public AIRMobileConvention(Project project) {
         target = 'apk'
@@ -263,5 +269,13 @@ class AIRMobileConvention  {
 
     void setConnectHost(String connectHost) {
         this.connectHost = connectHost
+    }
+
+    int getListenPort() {
+        return listenPort
+    }
+
+    void setListenPort(int listenPort) {
+        this.listenPort = listenPort
     }
 }

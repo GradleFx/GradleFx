@@ -328,6 +328,7 @@ class GradleFxConventionTest extends Specification {
             extensionDir = 'anedir'
             platformSdk = 'platformSdk'
             targetDevice = 'targetDevice'
+            listenPort = 7936
         }
 
         then:
@@ -335,6 +336,7 @@ class GradleFxConventionTest extends Specification {
         flexConvention.airMobile.extensionDir == 'anedir'
         flexConvention.airMobile.platformSdk == 'platformSdk'
         flexConvention.airMobile.targetDevice == 'targetDevice'
+        flexConvention.airMobile.listenPort == 7936
     }
 
 }

@@ -1246,9 +1246,16 @@ public enum CompilerOption {
 
     /**
      * The -connect flag tells the AIR runtime on the device where to connect to a remote debugger over the network.
-     * Applicaple for debug target type packages.
+     * Applicaple for debug target type packages. This option cannot be used with -listen flag together
      */
     CONNECT("-connect"),
+
+    /**
+     * The -listen flag tells the AIR runtime on the device to accept a connection from a debugger over a USB connection
+     * on a certain port.
+     * Applicaple for debug target type packages. This option cannot be used with -connect flag together
+     */
+    LISTEN("-listen"),
 
     //---------------//
     //---- asdoc ----//
