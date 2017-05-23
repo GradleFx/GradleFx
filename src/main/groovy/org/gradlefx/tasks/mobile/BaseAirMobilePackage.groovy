@@ -50,6 +50,8 @@ class BaseAirMobilePackage extends AdtTask {
         if(flexConvention.airMobile.connectHost) {
             addArg CompilerOption.CONNECT.optionName
             addArg flexConvention.airMobile.connectHost
+        } else if(flexConvention.airMobile.listenPort) {
+            addArgs CompilerOption.LISTEN.optionName, flexConvention.airMobile.listenPort
         }
 
         if(flexConvention.airMobile.arch) {
