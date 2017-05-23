@@ -16,7 +16,7 @@
 
 package org.gradlefx.util
 
-class TemplateUtil {
+trait TemplateUtil {
 
    /**
     * Copies the content from a template file into a target file.
