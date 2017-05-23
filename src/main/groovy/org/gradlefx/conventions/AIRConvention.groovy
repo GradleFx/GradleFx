@@ -40,6 +40,7 @@ class AIRConvention {
     private String tsa
     /**
      * The location of the air descriptor file. Uses the project name by convention for this file.
+     * Supports @{version}, @{content} tokens
      */
     private String applicationDescriptor
     /**

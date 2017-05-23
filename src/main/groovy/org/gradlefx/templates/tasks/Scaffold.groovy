@@ -28,9 +28,7 @@ import org.gradlefx.util.TemplateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-@Mixin(TemplateUtil)
-class Scaffold extends DefaultTask {
+class Scaffold extends DefaultTask implements TemplateUtil {
     public static final String NAME = 'scaffold'
 
     protected static final Logger LOG = LoggerFactory.getLogger 'gradlefx'

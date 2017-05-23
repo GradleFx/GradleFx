@@ -16,7 +16,25 @@
 
 package org.gradlefx.util
 
-class TemplateUtil {
+trait TemplateUtil {
+
+   /**
+    * Creates temporary file and copies the content from a template file with tokens
+    * replaced by {@link #writeContent}
+    *
+    * @param source The template on which the result will be based
+    */
+   public File createFromTemplate(String source, File output = null) {
+       InputStream template = project.file(source).newInputStream()
+
+       if(!output) {
+           output = File.createTempFile(source, null)
+           output.deleteOnExit()
+       }
+
+       writeContent template, output, true
+       output
+   }
 
    /**
     * Copies the content from a template file into a target file.

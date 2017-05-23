@@ -16,11 +16,10 @@
 
 package org.gradlefx.util
 
-import org.gradlefx.conventions.GradleFxConvention
 import org.gradle.api.Project
+import org.gradlefx.conventions.GradleFxConvention
 
-@Mixin(TemplateUtil)
-class StubTemplateUtilBase {
+class StubTemplateUtilBase implements TemplateUtil {
 
     public GradleFxConvention flexConvention
 
