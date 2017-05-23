@@ -25,11 +25,12 @@ import org.gradlefx.conventions.AIRMobileConvention
 import org.gradlefx.conventions.FlexType
 import org.gradlefx.tasks.Tasks
 import org.gradlefx.tasks.adt.AdtTask
+import org.gradlefx.util.TemplateUtil
 
 /**
  * Base task for packaging mobile apps.
  */
-class BaseAirMobilePackage extends AdtTask {
+class BaseAirMobilePackage extends AdtTask implements TemplateUtil {
 
     public BaseAirMobilePackage() {
         description = "Packages the generated swf file into an mobile package";
@@ -88,7 +89,7 @@ class BaseAirMobilePackage extends AdtTask {
         }
 
         addArgs outputPath
-        addArgs project.file(flexConvention.air.applicationDescriptor)
+        addArgs createFromTemplate(flexConvention.air.applicationDescriptor)
 
         addArg CompilerOption.CHANGE_DIRECTORY.optionName
         addArg project.buildDir.path

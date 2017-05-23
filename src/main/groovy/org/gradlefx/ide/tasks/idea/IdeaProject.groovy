@@ -281,7 +281,7 @@ class IdeaProject extends AbstractIDEProject {
         }
     }
 
-    private void addFilesInPackage(parent) {
+    protected void addFilesInPackage(parent) {
         def filesParent = new Node(parent, 'files-to-package', [])
 
         flexConvention.air.includeFileTrees.each { ConfigurableFileTree fileTree ->
