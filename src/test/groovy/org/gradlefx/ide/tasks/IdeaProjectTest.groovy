@@ -84,11 +84,29 @@ class IdeaProjectTest {
     }
 
     @Test
+    void should_add_custom_src_dirs() {
+        given_project_name_is("AmandaHuggenkiss")
+        given_src_dirs_is(['src', '../outside'])
+        when_I_create_project_config()
+        then_the_iml_file_should_have_tag('<sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false"/>')
+        then_the_iml_file_should_have_tag('<sourceFolder url="file://' + project.file('../outside') + '" isTestSource="false"/>')
+    }
+
+    @Test
     void should_add_test_src_dirs() {
         given_project_name_is("AmandaHuggenkiss")
         given_test_src_dirs_is(['test', 'anotherTest'])
         when_I_create_project_config()
         then_the_iml_file_should_have_tag('<sourceFolder url="file://$MODULE_DIR$/test" isTestSource="true"/>')
+        then_the_iml_file_should_have_tag('<sourceFolder url="file://$MODULE_DIR$/anotherTest" isTestSource="true"/>')
+    }
+
+    @Test
+    void should_add_test_custom_src_dirs() {
+        given_project_name_is("AmandaHuggenkiss")
+        given_test_src_dirs_is(['../test', 'anotherTest'])
+        when_I_create_project_config()
+        then_the_iml_file_should_have_tag('<sourceFolder url="file://' + project.file('../test') + '" isTestSource="true"/>')
         then_the_iml_file_should_have_tag('<sourceFolder url="file://$MODULE_DIR$/anotherTest" isTestSource="true"/>')
     }
 
