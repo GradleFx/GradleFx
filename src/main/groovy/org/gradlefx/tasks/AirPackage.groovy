@@ -21,12 +21,13 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileTree
 import org.gradle.api.file.FileTreeElement
 import org.gradle.api.tasks.TaskAction
+import org.gradlefx.util.TemplateUtil
 import org.gradlefx.validators.actions.ValidateAirPackageTaskPropertiesAction
 import org.gradlefx.cli.compiler.CompilerOption;
 import org.gradlefx.conventions.FlexType;
 import org.gradlefx.conventions.GradleFxConvention
 
-class AirPackage extends DefaultTask {
+class AirPackage extends DefaultTask implements TemplateUtil {
 
     private static final String ANT_RESULT_PROPERTY = 'airPackageResult'
     private static final String ANT_OUTPUT_PROPERTY = 'airPackageOutput'
@@ -107,7 +108,7 @@ class AirPackage extends DefaultTask {
 
         airOptions.addAll([
             project.file(project.buildDir.name + '/' + flexConvention.output).absolutePath,
-            project.file(flexConvention.air.applicationDescriptor)
+            createFromTemplate(flexConvention.air.applicationDescriptor)
         ])
 
         addFiles(airOptions)

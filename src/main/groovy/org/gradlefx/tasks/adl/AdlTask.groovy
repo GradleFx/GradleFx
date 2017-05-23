@@ -21,13 +21,14 @@ import org.gradle.api.tasks.TaskAction
 import org.gradlefx.conventions.GradleFxConvention
 import org.gradlefx.tasks.TaskGroups
 import org.gradlefx.tasks.Tasks
+import org.gradlefx.util.TemplateUtil
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 /**
  * Task which launches ADL.
  */
-class AdlTask extends DefaultTask {
+class AdlTask extends DefaultTask implements TemplateUtil {
 
     protected static final Logger LOG = LoggerFactory.getLogger 'gradlefx'
 
@@ -59,7 +60,7 @@ class AdlTask extends DefaultTask {
         addArgThatNotNull '-profile', flexConvention.adl.profile
         addArgThatNotNull '-screensize', flexConvention.adl.screenSize
 
-        addArgs flexConvention.air.applicationDescriptor
+        addArgs createFromTemplate(flexConvention.air.applicationDescriptor)
         addArgs project.projectDir
         def stdOut = new ByteArrayOutputStream();
 
