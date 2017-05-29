@@ -223,10 +223,18 @@ class TestFx extends DefaultTask {
         return flexUnit.command
     }
 
+    /**
+     * Returns default value for FlexUnit's command field
+     *
+     * @return path to adl for 'air' player, path to flash player executable for 'flash' player
+     */
     private String findFlexUnitCommand() {
         if (flexUnit.player == 'air')
             return getAdlPath()
-        throwMissingCommandException("The Flash player executable is not found")
+        else if (flexUnit.player == 'flash') {
+            return getFlashPlayerPath()
+        }
+        throwMissingCommandException("Incorrect player type")
     }
 
     private String getAdlPath() {
@@ -237,6 +245,15 @@ class TestFx extends DefaultTask {
         if (!adlPath.canExecute())
             throwMissingCommandException("Unable to locate the ADL executable at $adlPath.absolutePath")
         return adlPath
+    }
+
+
+    private String getFlashPlayerPath() {
+        def flashPath = new File(System.getenv()['FLASH_PLAYER_EXE']);
+        if (!flashPath.canExecute())
+            throwMissingCommandException("The Flash player executable is not found")
+
+        return flashPath
     }
 
     private static void throwMissingCommandException(String message) {
