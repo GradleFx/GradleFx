@@ -28,7 +28,7 @@ class FlexUnitConvention {
 
     private String template //can be used for a custom template
     private String player           = 'flash'
-    private String command          = System.getenv()['FLASH_PLAYER_EXE']
+    private String command
     private String toDir
     private String workingDir
     private Boolean haltOnFailure   = false
@@ -46,7 +46,7 @@ class FlexUnitConvention {
     private String swfName          = 'TestRunner.swf'
     //list of additional compiler options as defined by the compc or mxmlc compiler
     private List <String> additionalCompilerOptions = []
-    
+
     public FlexUnitConvention(Project project) {
         toDir       = "${project.buildDir}/reports"
         workingDir  = project.buildDir.path
