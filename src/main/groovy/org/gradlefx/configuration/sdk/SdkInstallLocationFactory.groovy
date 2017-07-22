@@ -34,7 +34,7 @@ class SdkInstallLocationFactory {
     Project project
     String sentryFilename
 
-    SdkInstallLocationFactory(Project project, String sentryFilename) {
+    SdkInstallLocationFactory(Project project, String sentryFilename = null) {
         this.project = project
         this.sentryFilename = sentryFilename
         gradleFxConvention = (GradleFxConvention) project.convention.plugins.flex
