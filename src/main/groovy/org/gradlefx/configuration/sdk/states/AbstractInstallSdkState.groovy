@@ -21,11 +21,12 @@ import org.gradle.api.Project
 import org.gradlefx.configuration.sdk.SdkInitState
 import org.gradlefx.configuration.sdk.SdkInitialisationContext
 import org.gradlefx.configuration.sdk.SdkInstallLocation
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-import org.gradlefx.configuration.sdk.states.unpacking.SdkZipUnpacker
+import org.gradlefx.configuration.sdk.states.unpacking.SdkDMGUnpacker
 import org.gradlefx.configuration.sdk.states.unpacking.SdkTarGzUnpacker
 import org.gradlefx.configuration.sdk.states.unpacking.SdkTbz2Unpacker
+import org.gradlefx.configuration.sdk.states.unpacking.SdkZipUnpacker
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 abstract class AbstractInstallSdkState implements SdkInitState {
 
@@ -77,8 +78,11 @@ abstract class AbstractInstallSdkState implements SdkInitState {
         } else if (packagedSdkFile.name.endsWith("tbz2")) {
             LOG.info("Unpacking SDK...")
             new SdkTbz2Unpacker(project, sdkInstallLocation, packagedSdkFile, someSdkRootDirectoryName).unpack()
+        } else if (packagedSdkFile.name.endsWith("dmg")) {
+            LOG.info("Unpacking SDK...")
+            new SdkDMGUnpacker(project, sdkInstallLocation, packagedSdkFile, someSdkRootDirectoryName).unpack()
         } else {
-            throw new RuntimeException("Unsupported sdk packaging type. Supported formats are zip, tar.gz and tbz2")
+            throw new RuntimeException("Unsupported sdk packaging type. Supported formats are zip, tar.gz, tbz2 and dmg")
         }
     }
 
