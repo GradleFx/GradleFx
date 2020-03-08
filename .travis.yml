@@ -1,6 +1,6 @@
 language: groovy
 jdk:
-  - oraclejdk7
+  - openjdk7
 
 after_success:
   - if [ "$TRAVIS_BRANCH" == "develop" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
