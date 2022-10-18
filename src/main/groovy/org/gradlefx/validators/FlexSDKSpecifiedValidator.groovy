@@ -17,7 +17,7 @@
 package org.gradlefx.validators
 
 import groovy.io.FileType
-import org.apache.commons.lang.StringUtils
+import org.apache.commons.lang3.StringUtils
 
 class FlexSDKSpecifiedValidator extends AbstractProjectPropertyValidator {
 

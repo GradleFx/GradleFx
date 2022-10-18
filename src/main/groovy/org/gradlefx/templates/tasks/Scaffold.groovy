@@ -16,6 +16,7 @@
 
 package org.gradlefx.templates.tasks
 
+import org.gradle.api.AntBuilder
 import org.gradlefx.tasks.TaskGroups
 import org.gradlefx.templates.validators.actions.ValidateScaffoldTaskPropertiesAction
 
@@ -42,7 +43,7 @@ class Scaffold extends DefaultTask implements TemplateUtil {
     public Scaffold() {
         group = TaskGroups.GENERATING
         description = "Generate IDE independent project scaffold"
-        logging.setLevel LogLevel.INFO
+        ant.setLifecycleLogLevel(AntBuilder.AntMessagePriority.INFO)
         flexConvention = project.convention.plugins.flex
     }
 

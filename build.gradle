@@ -14,46 +14,25 @@
 * limitations under the License.
 */
 
-import org.gradle.api.XmlProvider
-import org.gradle.api.artifacts.maven.MavenDeployment
-
-apply plugin: 'groovy'
-apply plugin: 'maven'
-apply plugin: 'signing'
-apply plugin: 'idea'
+plugins {
+    id 'groovy'
+    id 'idea'
+}
 
 group = 'org.gradlefx'
 version = '1.5.1'
 ext.packaging = 'jar'
-
-def isDevBuild
-def isCiBuild
-def isReleaseBuild
-
-def sonatypeRepositoryUrl
-
-//set build variables based on build type (release, continuous integration, development)
-if(hasProperty("release")) {
-    isReleaseBuild = true
-    sonatypeRepositoryUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-} else if (hasProperty("ci")) {
-    isCiBuild = true
-    version += "-SNAPSHOT"
-    sonatypeRepositoryUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
-} else {
-    isDevBuild = true
-}
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compile gradleApi()
-    compile group: 'commons-lang', name: 'commons-lang', version: '2.6'
-    compile group: 'commons-io', name: 'commons-io', version: '2.4'
-    compile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.3.10'
-    testCompile group: 'org.spockframework', name: 'spock-core', version: '0.7-groovy-2.0'
+    implementation gradleApi()
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+    implementation 'commons-io:commons-io:2.11.0'
+    implementation 'org.codehaus.groovy:groovy-all:3.0.7'
+    testImplementation 'org.spockframework:spock-core:2.3-groovy-3.0'
 }
 
 task groovydocJar(type: Jar, dependsOn: groovydoc) {
@@ -70,72 +49,4 @@ artifacts {
     archives jar
     archives groovydocJar
     archives sourcesJar
-}
-
-task wrapper(type: Wrapper) {
-    group = 'Buildmaster'
-    description = 'Generates gradlew and gradlew.bat bootstrap scripts'
-    gradleVersion = '2.5'
-}
-
-//********* artifact signing *********
-if(isReleaseBuild) {
-    signing {
-        sign configurations.archives
-    }
-} else {
-    task signArchives {
-        // do nothing
-    }
-}
-
-uploadArchives {
-    repositories {
-        if (isDevBuild) {
-            mavenLocal()
-        }
-        else {
-            mavenDeployer {
-                if(isReleaseBuild) {
-                    beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-                }
-
-                repository(url: sonatypeRepositoryUrl) {
-                  authentication(userName: sonatypeUsername, password: sonatypePassword)
-                }
-
-                pom.project {
-                   name 'GradleFx'
-                   packaging 'jar'
-                   description 'GradleFx is a Gradle plugin for building Flex and Actionscript applications'
-                   url 'http://gradlefx.github.com/'
-
-                   scm {
-                       url 'scm:git@github.com:GradleFx/GradleFx.git'
-                       connection 'scm:git@github.com:GradleFx/GradleFx.git'
-                       developerConnection 'scm:git@github.com:GradleFx/GradleFx.git'
-                   }
-
-                   licenses {
-                       license {
-                           name 'The Apache Software License, Version 2.0'
-                           url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                           distribution 'repo'
-                       }
-                   }
-
-                   developers {
-                       developer {
-                           id 'yennicktrevels'
-                           name 'Yennick Trevels'
-                       }
-                       developer {
-                           id 'stevendick'
-                           name 'Steven Dick'
-                       }
-                   }
-               }
-            }
-        }
-    }
 }

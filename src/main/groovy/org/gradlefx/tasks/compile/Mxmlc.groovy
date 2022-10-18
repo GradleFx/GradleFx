@@ -16,7 +16,7 @@
 
 package org.gradlefx.tasks.compile
 
-import org.apache.commons.lang.StringUtils
+import org.apache.commons.lang3.StringUtils
 import org.gradle.api.Task
 import org.gradlefx.cli.compiler.*
 import org.gradlefx.cli.instructions.CompilerInstructionsBuilder

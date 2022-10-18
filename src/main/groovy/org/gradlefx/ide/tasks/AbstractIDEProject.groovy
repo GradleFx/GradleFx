@@ -17,6 +17,7 @@
 package org.gradlefx.ide.tasks
 
 import groovy.xml.XmlUtil
+import org.gradle.api.AntBuilder
 import org.gradle.api.DefaultTask
 import org.gradle.api.logging.LogLevel
 import org.gradle.api.tasks.TaskAction
@@ -48,7 +49,7 @@ abstract class AbstractIDEProject extends DefaultTask implements ProjectTask, Te
         group = TaskGroups.IDE
         description = "Generate $ideName project"
 
-        logging.setLevel LogLevel.INFO
+        ant.setLifecycleLogLevel(AntBuilder.AntMessagePriority.INFO)
         flexConvention = project.convention.plugins.flex
 
         dependsOn(Scaffold.NAME)
