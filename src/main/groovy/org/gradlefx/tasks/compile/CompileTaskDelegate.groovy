@@ -16,8 +16,8 @@
 
 package org.gradlefx.tasks.compile
 
-import org.gradlefx.conventions.GradleFxConvention
 import org.gradle.api.Task
+import org.gradlefx.conventions.GradleFxConvention
 
 abstract class CompileTaskDelegate implements CompileTask {
 

@@ -18,6 +18,7 @@ package org.gradlefx.tasks
 
 import groovy.text.SimpleTemplateEngine
 import org.apache.tools.ant.taskdefs.condition.Os
+import org.gradle.api.AntBuilder
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
 import org.gradle.api.file.FileTree
@@ -52,7 +53,7 @@ class TestFx extends DefaultTask {
         group = TaskGroups.VERIFICATION
         description = "Run the FlexUnit tests."
 
-        logging.setLevel LogLevel.INFO
+        ant.setLifecycleLogLevel(AntBuilder.AntMessagePriority.INFO)
 
         flexConvention = project.convention.plugins.flex
         flexUnit = flexConvention.flexUnit

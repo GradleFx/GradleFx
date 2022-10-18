@@ -16,6 +16,7 @@
 
 package org.gradlefx.ide.tasks
 
+import org.gradle.api.AntBuilder
 import org.gradle.api.DefaultTask
 import org.gradle.api.logging.LogLevel
 import org.gradle.api.tasks.TaskAction
@@ -40,7 +41,7 @@ class FlashBuilderClean extends DefaultTask implements CleanTask {
         group = TaskGroups.IDE
         description = "Cleans $ideName project, i.e. removes $ideName configuration files and folders"
 
-        logging.setLevel LogLevel.INFO
+        ant.setLifecycleLogLevel(AntBuilder.AntMessagePriority.INFO)
     }
 
     @Override

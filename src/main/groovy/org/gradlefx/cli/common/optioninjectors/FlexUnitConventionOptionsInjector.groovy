@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory
  */
 trait FlexUnitConventionOptionsInjector implements CompilerOptionsRequirement, GradleFxConventionRequirement, SourceFileFilter {
 
-    protected static final Logger LOG = LoggerFactory.getLogger 'gradlefx'
+    static final Logger LOG = LoggerFactory.getLogger 'gradlefx'
 
     void addAdditionalFlexUnitCompilerOptions() {
         compilerOptions.addAll flexConvention.flexUnit.additionalCompilerOptions

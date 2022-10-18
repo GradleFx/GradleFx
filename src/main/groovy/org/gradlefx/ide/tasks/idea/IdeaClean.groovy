@@ -17,6 +17,7 @@
 package org.gradlefx.ide.tasks.idea
 
 import groovy.io.FileType
+import org.gradle.api.AntBuilder
 import org.gradle.api.DefaultTask
 import org.gradle.api.logging.LogLevel
 import org.gradle.api.tasks.TaskAction
@@ -40,7 +41,7 @@ class IdeaClean extends DefaultTask implements CleanTask {
         ideName = 'IntelliJ Idea'
         description = "Cleans $ideName project, i.e. removes $ideName configuration files and folders"
 
-        logging.setLevel LogLevel.INFO
+        ant.setLifecycleLogLevel(AntBuilder.AntMessagePriority.INFO)
     }
 
     @Override
